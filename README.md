@@ -15,8 +15,8 @@ define a:
 Functions/agents have two parts, a part that’s executed repeatedly during program execution and an optional part that’s executed initially
 
 ```
-Define total:
-    Init:
+define total:
+    init:
         t = 0
 
     run(a):
@@ -26,26 +26,48 @@ Define total:
 Functions/agents can easily return data to where it was sent from:
 
 ```
-Define boomerang:
+define boomerang:
     run(n):
         n -> sender
 
-Define 
+define test:
+    run(n):
+        n = 
 ```
 
+
+Functions/agents can easily wait for data from another functions/agents (questionable?)
+
+```
+define error:
+    run(n):
+        while True:
+            temp <- errorprone
+```
+
+
+```
+define fibonacci:
+   init:
+       (0,0) -> fibonacci
+   
+   run(a,b):
+       a -> print
+       (b,a+b) -> fibonacci
+```
 
 
 
 Latency reporting
 
 ```
-Define a(input):
-    If someProcessesFailed():
+define a(input):
+    if someProcessesFailed():
         report() -> error
         report() -> analytics
 
-    Flag, data = input
-    If flag == 'feedback’:
+    flag, data = input
+    if flag == 'feedback’:
         LogAsCompleted(data)
     else:
         (data, timestamp,otherdata) -> b
