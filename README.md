@@ -1,6 +1,8 @@
-# swarm
+# Swarm
 
-Basic program structure is defining a set of functions/agents:
+## Functions/agents
+
+Basic program structure is defining a set of **functions/agents**:
 
 ```
 define a:
@@ -12,7 +14,7 @@ define a:
         (b,c) -> f
 ```
 
-Functions/agents have two parts, a part that’s executed repeatedly during program execution and an optional part that’s executed initially
+**Functions/agents** usually have two parts, a part that’s executed repeatedly during program execution and an optional part that’s executed initially
 
 ```
 define total:
@@ -33,7 +35,39 @@ define fibonacci:
        (b,a+b) -> fibonacci
 ```
 
-When 'run' is the only section defined, it can be abridged. The following two definitions are equivalent:
+Any number of inputs can be defined, sent to via the `.` command, for example `agent.input`
+
+```
+
+define example:
+    init:
+        # do stuff
+        
+    run(n):
+        n + ' received by example.run' -> print
+        
+    a(n):
+        n + ' received by example.a' -> print
+
+    b(n):
+        n + ' received by example.b' -> print
+
+define test:
+    init:
+        1 -> example
+        2 -> example.run
+        3 -> example.a
+        4 -> example.b
+```
+
+```
+1 received by example.run
+2 received by example.run
+3 received by example.a
+4 received by example.b
+```
+
+When `run` is the only section defined, it can be abridged. The following two definitions are equivalent:
 ```
 define example:
     run(n):
@@ -47,9 +81,9 @@ define example(n):
 
 
 
-Structures
+## Structures
 
-Structures are defined outside of functions/agents:
+**Structures** are defined outside of functions/agents:
 
 ```
 type point(x,y)
