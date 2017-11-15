@@ -47,6 +47,43 @@ define example(n):
 
 
 
+Structures
+
+Structures are defined outside of functions/agents:
+
+```
+type point(x,y)
+
+define shift:
+    init:
+        delta = point(0,0)
+
+    run(p):
+        point(p.x+delta.x,p.y+delta.y) -> nextThing
+    
+    changeShift(p):
+        delta.x,delta.y = p.x,p.y
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Latency reporting
 
 ```
