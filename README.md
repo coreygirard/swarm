@@ -1,15 +1,5 @@
 # swarm
 
-
-
-
-
-
-
-
-
-
-
 Basic program structure is defining a set of functions/agents:
 
 ```
@@ -33,52 +23,6 @@ define total:
         t = t + a
 ```        
 
-Functions/agents can easily return data to where it was sent from:
-
-```
-define boomerang:
-    run(n):
-        n -> sender
-
-define test:
-    run(n):
-        n = 
-```
-
-
-Functions/agents can easily wait for data from another functions/agents (questionable?)
-
-```
-
-define a(n):
-        n+2 -> b
-
-define b(n):
-        n*2 -> c
-
-define c(n):
-        n^2 -> driver
-
-
-define driver(n):
-        n -> a
-        n <- c
-        
-        n -> otherstuff
-```
-
-```
-define double(n):
-        n*2 -> sender
-        
-define stuff(n):
-        n = f(n)
-        
-        n -> double
-        n <- double
-        
-        n -> otherstuff
-```
 ```
 define fibonacci:
    init:
@@ -89,21 +33,46 @@ define fibonacci:
        (b,a+b) -> fibonacci
 ```
 
+When 'run' is the only section defined, it can be abridged. The following two definitions are equivalent:
+```
+define example:
+    run(n):
+        n -> other
+```
+```
+define example(n):
+        n -> other
+```
+
+
 
 
 Latency reporting
 
 ```
-define a(input):
-    if someProcessesFailed():
-        report() -> error
-        report() -> analytics
 
-    flag, data = input
-    if flag == 'feedback’:
-        LogAsCompleted(data)
-    else:
-        (data, timestamp,otherdata) -> b
+define stage1:
+    init:
+        inTransit = {}
+
+    run(n):
+        inTransit.append((n,getTimestamp()))
+        n -> c
+        
+    confirm(n,t):
+        if n not in inTransit:
+            ('not registered',n) -> error
+        else:
+            sentAt = get n from inTransit
+            delete n from inTransit
+            t-sentAt -> analytics
+
+define stage2(n):
+        n = process(n)
+        
+        (n,getTimestamp()) -> stage1.confirm
+        n -> stage3
+
 ```
 
 
@@ -152,15 +121,3 @@ define test:
         {'request':{'lights':'on'}} -> parseFromFB
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
