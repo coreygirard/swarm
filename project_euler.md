@@ -45,14 +45,18 @@ By considering the terms in the Fibonacci sequence whose values do not exceed fo
 
 define fib:
     init:
-        (1,1) ->
+        (1,2) -> fib
         
     run(a,b):
         if a <= 4000000:
-            a -> sum
+            a -> even
             (b,a+b) -> fib
         else:
-            -1 -> sum
+            -1 -> even
+
+define even(n):
+        if n%2 == 0 or n == -1:
+            n -> sum
 
 define sum:
     init:
@@ -63,5 +67,42 @@ define sum:
             total -> print
         else:
             total += n
+
+```
+
+### Problem 3
+
+The prime factors of 13195 are 5, 7, 13 and 29.
+
+What is the largest prime factor of the number 600851475143 ?
+
+```
+
+define initiate:
+    init:
+        ceil(sqrt(600851475143)) -> candidates
+
+define candidates:
+    init:
+        found = false
+
+    run(top):
+        while top > 0 and not found:
+            top -> filterPrime
+            top -= 1
+
+    setFound(_):
+        found = true
+
+define isPrime(n):
+        if n > 2:
+            prime = true
+            for i in range(2,n):
+                if not n%i:
+                    prime = false
+                    break
+            if prime:
+                -> candidates.setFound
+                n -> print
 
 ```
