@@ -49,13 +49,36 @@ define test:
 Functions/agents can easily wait for data from another functions/agents (questionable?)
 
 ```
-define error:
-    run(n):
-        while True:
-            temp <- errorprone
+
+define a(n):
+        n+2 -> b
+
+define b(n):
+        n*2 -> c
+
+define c(n):
+        n^2 -> driver
+
+
+define driver(n):
+        n -> a
+        n <- c
+        
+        n -> otherstuff
 ```
 
-
+```
+define double(n):
+        n*2 -> sender
+        
+define stuff(n):
+        n = f(n)
+        
+        n -> double
+        n <- double
+        
+        n -> otherstuff
+```
 ```
 define fibonacci:
    init:
