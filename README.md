@@ -1,5 +1,15 @@
 # swarm
 
+
+
+
+
+
+
+
+
+
+
 Basic program structure is defining a set of functions/agents:
 
 ```
@@ -72,6 +82,61 @@ define a(input):
     else:
         (data, timestamp,otherdata) -> b
 ```
+
+
+
+Example basic text handler
+
+```
+define HTTP:
+    run(req):
+        switch req.from:
+            8000:
+                req -> something
+            8080:
+                req -> parseFromFB
+                
+define parseFromFB(req):
+        generateConfirmation(req) -> sendHTTP
+        ('FB',req) -> parse
+        
+define parse(from,req):
+        (from,req) -> analytics
+        switch req.payload:
+            'lights':
+                req -> lifx
+            'camera':
+                req -> nest
+            'action':
+                req -> alarm
+            default:
+                'ERROR',req -> error
+
+define lifx(cmd):
+        switch cmd:
+            'on':
+                ('bedroom','on','#LIFX_URL#') -> sendHTTP
+            'off':
+                ('bedroom','off','#LIFX_URL#') -> sendHTTP
+            default:
+                'ERROR',req -> error
+
+define test:
+    init:
+        {'request':{'lights':'on'}} -> parseFromFB
+        {'request':{'lights':'off'}} -> parseFromFB
+        {'request':{'lights':'on'}} -> parseFromFB
+        {'request':{'lights':'on'}} -> parseFromFB
+
+```
+
+
+
+
+
+
+
+
 
 
 
