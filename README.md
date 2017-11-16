@@ -11,9 +11,46 @@ define hello:
 Hello World!
 ```
 
+## Conceptual structure
+
+The design of **Swarm** is meant to emulate the design paradigm of microservice architecture on a smaller scale (think one server instance rather than many). To that end, the overall structure is analogous to a set of distinct processes that communicate via HTTP-style requests. These pseudo-processes are called 'agents', and the requests are handled via the 'send' command (`->`).
+
+## The `send` command
+
+Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following:
+
+```python
+def doubleIt(n):
+    return n*2
+
+def tripleIt(n):
+    return n*3
+
+def f(n):
+    return tripleIt(doubleIt(n))
+
+print(f(1))
+```
+Here, `f` is called, and execution of everything else stops. Then `f` calls `doubleIt`, and `f` stops to wait for the results returned by `doubleIt`. Once `f` resumes, it then calls `tripleIt` again, and again waits for results. Finally, it returns the result back to the `print` function. **Swarm** handles this rather differently:
+
+```
+define main:
+    init:
+        1 -> doubleIt
+        
+define doubleIt(n):
+        n*2 -> tripleIt
+        
+define tripleIt(n):
+        n*3 -> print
+```
+The send command (`->`) sends the data on its left to the **agent** on its right. Mechanically, this can be modelled as the following: **agents** have a data queue, and they repeatedly pop items from the front of the queue and execute themselves on that data, for as long as there is data in the queue. The send command appends a piece of data to the back of that queue. This way, it is possible for these components to communicate in a non-blocking fashion.
+
+
+
 ## Functions/agents
 
-Basic program structure is defining a set of **functions/agents**:
+Basic program structure is defining a set of **Agents**:
 
 ```
 define average:
