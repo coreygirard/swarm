@@ -172,9 +172,34 @@ stuff happens
 ## Arrays
 
 ```
-define split(a):
-        b,c = a
-        (b,c) -> 
+define functionA:
+    init:
+        b,c = 'string',5
+        b,c -> functionB
+
+define functionB(data):
+        b,c = data
+        b = b + ', appended'
+        c += 2
+        b,c -> functionC
+
+define functionC(i,j):
+        i -> print
+        j -> print
+
+```
+```
+string, appended
+7
+```
+
+```
+define f:
+    init:
+        (2,3,5,7) -> print
+```
+```
+(2, 3, 5, 7)
 ```
 
 ## Dictionaries
@@ -182,14 +207,14 @@ define split(a):
 ```
 define checkPwd:
     init:
-        record = {'Wally':'CyWlfjRd2jmuUCnh',
+        record = {'Alice':'CyWlfjRd2jmuUCnh',
                   'Wally':'NYiAQpwgPjRJjniQ',
-                  'Wally':'8yZ8m3tNdfkEj0PV',
-                  'Wally':'CFNoT9eE50uylUpX',
-                  'Wally':'wUzdR5OirlxoTteU',
-                  'Wally':'kA9bXzNx4B9R3FuE',
-                  'Wally':'M1y9NjiBV96wV80L',
-                  'Wally':'6BPygbOJHp9QT4zu'}
+                  'Asok':'8yZ8m3tNdfkEj0PV',
+                  'Ted':'CFNoT9eE50uylUpX',
+                  'Dogbert':'wUzdR5OirlxoTteU',
+                  'Catbert':'kA9bXzNx4B9R3FuE',
+                  'Boss':'M1y9NjiBV96wV80L',
+                  'Dilbert':'6BPygbOJHp9QT4zu'}
                   
     run(user,hash):
         if record[user] == hash:
