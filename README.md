@@ -143,23 +143,65 @@ define example(n):
 
 You can imagine each **agent** as a process, and each **subagent** as a thread within that process. the `init` command, when used within an **agent**'s definition, will initialize variables that are shared among all **subagents**
 
+## Structures
 
+**Structures** are defined outside of functions/agents:
 
+```
+type point(x,y)
 
+define shift:
+    init:
+        delta = point(0,0)
 
+    run(p):
+        point(p.x+delta.x,p.y+delta.y) -> nextThing
+    
+    changeShift(p):
+        delta.x,delta.y = p.x,p.y
+
+```
+
+## Hello World (server version)
+
+```
+define HTTP:
+    receive(req):
+        req.from,'Hello World' -> HTTP.send
+```
+
+## Easy Analytics
+
+This simple wrapper sends a copy of every inbound or outbound request to the `analytics` agent.
+
+```
+define HTTP:
+    receive(req):
+        req -> analytics
+        # other stuff
+        ip -> server
+    
+    sendWrapper(ip,msg):
+        ip,msg -> analytics
+        ip,msg -> this.send
+
+define server(ip):
+        ip,'Hello' -> HTTP.sendWrapper
+```
 
 ## Basic text chat server
 ```
-define handleRequests(req):
-    switch req.port:
-        8080:
-            # some processing happens
-            ip,user,hash -> checkPwd
-        8000:
-            # some processing happens
-            ip,sender,receiver,message -> userManager.sendMsg
-        default:
-            req -> error
+define HTTP:
+    receive(req):
+        switch req.port:
+            8080:
+                # some processing happens
+                ip,user,hash -> checkPwd
+            8000:
+                # some processing happens
+                ip,sender,receiver,message -> userManager.sendMsg
+            default:
+                req -> error
 
 define checkPwd:
     init:
@@ -229,24 +271,6 @@ define userManager:
 
 
 
-## Structures
-
-**Structures** are defined outside of functions/agents:
-
-```
-type point(x,y)
-
-define shift:
-    init:
-        delta = point(0,0)
-
-    run(p):
-        point(p.x+delta.x,p.y+delta.y) -> nextThing
-    
-    changeShift(p):
-        delta.x,delta.y = p.x,p.y
-
-```
 
 
 
@@ -266,7 +290,7 @@ define shift:
 
 
 
-Latency reporting
+### Latency reporting
 
 ```
 
@@ -296,11 +320,10 @@ define stage2(n):
 
 
 
-Example basic text handler
+### Example basic smart home handler
 
 ```
-define HTTP:
-    run(req):
+define HTTP(req):
         switch req.from:
             8000:
                 req -> something
