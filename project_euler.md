@@ -114,7 +114,35 @@ A palindromic number reads the same both ways. The largest palindrome made from 
 
 Find the largest palindrome made from the product of two 3-digit numbers.
 ```
+define main:
+    init:
+        for i in [100:1000):
+            for j in [100:1000):
+                i,j -> mult
+        -1 -> mult
 
+define mult(xy):
+        if xy == -1:
+            -1 -> checkPal
+        else:
+            x,y = xy
+            x*y -> checkPal
+
+define checkPal(p):
+        if p == -1:
+            -1 -> getLargest
+        if str(p) == reversed(str(p)):
+            p -> 
+
+define getLargest:
+    init:
+        largest = 0
+    
+    run(n):
+        if n == -1:
+            largest -> print
+        else if n > largest:
+            largest = n
 ```
 
 
