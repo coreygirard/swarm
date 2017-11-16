@@ -1,5 +1,132 @@
 # Swarm
 
+## Hello World
+
+```
+define hello:
+    init:
+        "Hello World!" -> print
+```
+```
+Hello World!
+```
+
+## Values
+```
+define values:
+    init:
+        'concatenate' + ' ' + 'strings' -> print
+        '1 + 1 = ' + string(1+1) -> print
+        '7/3 = ' + string(7/3) -> print
+        true & false -> print
+        true | false -> print
+        true xor false -> print
+        !false -> print
+```
+```
+concatenate strings
+1 + 1 = 2
+7/3 = 2.3333333333
+false
+true
+true
+true
+```
+
+
+## Variables
+
+```
+define vars:
+    init:
+        s = 'this is a string'
+        s -> print
+        
+        a,b = 1,2
+        a,b -> print
+        
+        c,d = 3,4
+        c,d -> print
+
+        e = c,d+1
+        e -> print
+        
+        f,g = e
+        f -> print
+```
+```
+initial
+(1,2)
+(3,4)
+(3,5)
+3
+```
+
+## Loops
+
+```
+define looping:
+    init:
+        for n in (2,3,5,7):
+            n -> print
+
+        ' ' -> print
+
+        for i in range(4):
+            i -> print
+
+        ' ' -> print
+
+        j = 0
+        while j < 5:
+            j -> print
+            j += 1
+
+        ' ' -> print
+
+        j = 1
+        while true:
+            j -> print
+            j *= 2
+            if j > 16:
+                break
+```
+```
+2
+3
+5
+7
+
+0
+1
+2
+3
+
+0
+1
+2
+3
+4
+
+1
+2
+4
+8
+16
+```
+
+## 
+
+
+
+
+
+
+
+
+
+
+
 ## Functions/agents
 
 Basic program structure is defining a set of **functions/agents**:
