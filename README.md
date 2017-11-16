@@ -145,22 +145,56 @@ n is positive
 ## Switch
 
 ```
-define switching:
-    init:
-        a = 0
-        switch a:
+define switching(n):
+        switch n:
             0:
-                'a is equal to 0' -> print
-            1:
-                'a is equal to 1' -> print
-                
-        b = 5
-        switch b:
+                'equal to 0' -> print
+            1+1:
+                'equal to 2' -> print
             'apple':
                 'non sequitur' -> print
             default:
                 'stuff happens' -> print
+
+define main:
+    init:
+        0 -> switching
+        2 -> switching
+        'pear' -> switching
 ```
+```
+equal to 0
+equal to 2
+stuff happens
+```
+
+
+## Arrays
+
+```
+define split(a):
+        b,c = a
+        (b,c) -> 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
