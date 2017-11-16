@@ -202,6 +202,21 @@ define f:
 (2, 3, 5, 7)
 ```
 
+```
+define f:
+    init:
+        a = (1,2,3,4,5)
+        a[3] = 'apple'
+        a[2] -> print
+        a[3] -> print
+        a -> print
+```
+```
+2
+apple
+(1, 2, 3, 'apple', 5)
+```
+
 ## Dictionaries
 
 ```
