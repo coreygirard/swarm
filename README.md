@@ -17,9 +17,9 @@ The design of **Swarm** is meant to emulate the design paradigm of microservice 
 
 ## The `send` command
 
-Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following:
+Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following (Python):
 
-```python
+```
 def doubleIt(n):
     return n*2
 
@@ -87,7 +87,7 @@ define fibonacci:
        (b,a+b) -> fibonacci
 ```
 
-Any number of other inputs can be defined, sent to via the `.` command, for example `agent.input`
+Any number of other inputs can be defined, sent to via the `.` command, for example `agent.input`. Sending data to the function name itself, ie `-> agent` is equivalent to sending to the `.run` subagent, ie `-> agent.run`
 
 ```
 
@@ -141,33 +141,11 @@ define example(n):
         n -> other
 ```
 
+You can imagine each **agent** as a process, and each **subagent** as a thread within that process. the `init` command, when used within an **agent**'s definition, will initialize variables that are shared among all **subagents**
 
 
 
 
-
-```
-
-
-define checkPwd:
-    init:
-        record = {'Alice':   'CyWlfjRd2jmuUCnh',
-                  'Wally':   'NYiAQpwgPjRJjniQ',
-                  'Asok':    '8yZ8m3tNdfkEj0PV',
-                  'Ted':     'CFNoT9eE50uylUpX',
-                  'Dogbert': 'wUzdR5OirlxoTteU',
-                  'Catbert': 'kA9bXzNx4B9R3FuE',
-                  'Boss':    'M1y9NjiBV96wV80L',
-                  'Dilbert': '6BPygbOJHp9QT4zu'}
-
-    run(ip,user,hash):
-        if record[user] == hash:
-            ip,user,'secretPage' -> servePage
-        else:
-            ip,user,'passwordDenied' -> servePage
-
-
-```
 
 
 ## Basic text chat server
@@ -175,9 +153,11 @@ define checkPwd:
 define handleRequests(req):
     switch req.port:
         8080:
-            req -> checkPwd
+            # some processing happens
+            ip,user,hash -> checkPwd
         8000:
-            req -> userManager.sendMsg
+            # some processing happens
+            ip,sender,receiver,message -> userManager.sendMsg
         default:
             req -> error
 
@@ -195,6 +175,8 @@ define checkPwd:
     run(ip,user,hash):
         if record.get(user,'') == hash:
             ip,user -> userManager.login
+        else:
+            ip,user,'passwordDenied' -> servePage
 
 define userManager:
     init:
