@@ -110,22 +110,76 @@ define example(n):
 
 
 ```
+
+
 define checkPwd:
     init:
-        record = {'Alice':'CyWlfjRd2jmuUCnh',
-                  'Wally':'NYiAQpwgPjRJjniQ',
-                  'Asok':'8yZ8m3tNdfkEj0PV',
-                  'Ted':'CFNoT9eE50uylUpX',
-                  'Dogbert':'wUzdR5OirlxoTteU',
-                  'Catbert':'kA9bXzNx4B9R3FuE',
-                  'Boss':'M1y9NjiBV96wV80L',
-                  'Dilbert':'6BPygbOJHp9QT4zu'}
-                  
-    run(user,hash):
+        record = {'Alice':   'CyWlfjRd2jmuUCnh',
+                  'Wally':   'NYiAQpwgPjRJjniQ',
+                  'Asok':    '8yZ8m3tNdfkEj0PV',
+                  'Ted':     'CFNoT9eE50uylUpX',
+                  'Dogbert': 'wUzdR5OirlxoTteU',
+                  'Catbert': 'kA9bXzNx4B9R3FuE',
+                  'Boss':    'M1y9NjiBV96wV80L',
+                  'Dilbert': '6BPygbOJHp9QT4zu'}
+
+    run(ip,user,hash):
         if record[user] == hash:
-            user -> showSecretPage
+            ip,user,'secretPage' -> servePage
         else:
-            user,hash -> reportInvalidPwd
+            ip,user,'passwordDenied' -> servePage
+
+
+```
+
+
+## Basic text chat server
+```
+define handleRequests(req):
+    switch req.port:
+        8080:
+            req -> checkPwd
+        8000:
+            req -> userManager.sendMsg
+        default:
+            req -> error
+
+define checkPwd:
+    init:
+        record = {'Alice':   'CyWlfjRd2jmuUCnh',
+                  'Wally':   'NYiAQpwgPjRJjniQ',
+                  'Asok':    '8yZ8m3tNdfkEj0PV',
+                  'Ted':     'CFNoT9eE50uylUpX',
+                  'Dogbert': 'wUzdR5OirlxoTteU',
+                  'Catbert': 'kA9bXzNx4B9R3FuE',
+                  'Boss':    'M1y9NjiBV96wV80L',
+                  'Dilbert': '6BPygbOJHp9QT4zu'}
+
+    run(ip,user,hash):
+        if record.get(user,'') == hash:
+            ip,user -> userManager.login
+
+define userManager:
+    init:
+        loggedIn = {}
+        
+    login(ip,user):
+        loggedIn[user] = (ip,timestamp())
+
+    sendMsg(ip,sender,receiver,message):
+        if sender in loggedIn and receiver in loggedIn:
+            i,t = loggedIn[sender]
+            if i == ip and timestamp()-t < 60*5:
+                receiverIP,_ = loggedIn[receiver]
+                sender,receiver,receiverIP,message -> routeMsg
+        else if sender not in loggedIn:
+            i,'Please log in to chat' -> sendError
+        else if receiver not in loggedIn:
+            i,'''This person isn't available right now''' -> sendError
+                
+                    
+    
+
 ```
 
 
