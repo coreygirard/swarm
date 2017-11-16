@@ -153,5 +153,33 @@ define getLargest:
 What is the smallest positive number that is evenly divisible by all of the numbers from 1 to 20?
 
 ```
+define main:
+    init:
+        for n in [1:20]:
+            n -> factors
 
+define factors(n):
+        
+
+define 
+    init:
+        factors = {}
+        seen = 0
+
+    run(f):
+        for k,v in f:
+            factors[k] = max(factors.get(k,0),v)
+        seen -= 1
+
+        if seen == 0 and factors != {}:
+            factors -> postprocess
+
+    setExpected(n):
+        seen += n
+
+define postprocess(f):
+        n = 1
+        for k,v in f:
+            n *= k^v
+        n -> print
 ```
