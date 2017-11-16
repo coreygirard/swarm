@@ -11,213 +11,103 @@ define hello:
 Hello World!
 ```
 
-## Values
+## Functions/agents
+
+Basic program structure is defining a set of **functions/agents**:
+
 ```
-define values:
+define average:
     init:
-        'concatenate' + ' ' + 'strings' -> print
-        '1 + 1 = ' + string(1+1) -> print
-        '7/3 = ' + string(7/3) -> print
-        true & false -> print
-        true | false -> print
-        true xor false -> print
-        !false -> print
-```
-```
-concatenate strings
-1 + 1 = 2
-7/3 = 2.3333333333
-false
-true
-true
-true
+        total,n = 0,0
+
+    run(e):
+        total,n = total+e,n+1
+        total/n -> print
 ```
 
+**Functions/agents** have two specially named parts:
 
-## Variables
+- `init` is executed once initially
+- `run` is executed repeatedly, every time data is sent to the function/agent
 
 ```
-define vars:
+define total:
     init:
-        s = 'this is a string'
-        s -> print
+        t = 0
+
+    run(e):
+        t = t + e
+        t -> print
+```        
+
+```
+define fibonacci:
+   init:
+       (0,0) -> fibonacci
+   
+   run(a,b):
+       a -> print
+       (b,a+b) -> fibonacci
+```
+
+Any number of other inputs can be defined, sent to via the `.` command, for example `agent.input`
+
+```
+
+define example:
+    init:
+        # do stuff
         
-        a,b = 1,2
-        a,b -> print
+    run(n):
+        n + ' received by example.run' -> print
         
-        c,d = 3,4
-        c,d -> print
+    a(n):
+        n + ' received by example.a' -> print
 
-        e = c,d+1
-        e -> print
-        
-        f,g = e
-        f -> print
-```
-```
-initial
-(1,2)
-(3,4)
-(3,5)
-3
-```
+    b(n):
+        n + ' received by example.b' -> print
 
-## Loops
-
-```
-define looping:
+define test:
     init:
-        for n in (2,3,5,7):
-            n -> print
-
-        ' ' -> print
-
-        for i in [0:4):
-            i -> print
-
-        ' ' -> print
-
-        j = 0
-        while j < 5:
-            j -> print
-            j += 1
-
-        ' ' -> print
-
-        j = 1
-        while true:
-            j -> print
-            j *= 2
-            if j > 16:
-                break
-```
-```
-2
-3
-5
-7
-
-0
-1
-2
-3
-
-0
-1
-2
-3
-4
-
-1
-2
-4
-8
-16
-```
-
-## If/else
-
-```
-define conditions:
-    init:
-        if 7%2 == 1:
-            '7 is odd' -> print
-        
-        n = -2
-        if n == 0:
-            'n is zero' -> print
-        else if n > 0:
-            'n is positive' -> print
-        
-        n = 3
-        if n == 0:
-            'n is zero' -> print
-        else if n > 0:
-            'n is positive' -> print
-        else:
-            'n is negative' -> print
-```
-```
-7 is odd
-n is positive
-```
-
-## Switch
-
-```
-define switching(n):
-        switch n:
-            0:
-                'equal to 0' -> print
-            1+1:
-                'equal to 2' -> print
-            'apple':
-                'non sequitur' -> print
-            default:
-                'stuff happens' -> print
-
-define main:
-    init:
-        0 -> switching
-        2 -> switching
-        'pear' -> switching
-```
-```
-equal to 0
-equal to 2
-stuff happens
-```
-
-
-## Arrays
-
-```
-define functionA:
-    init:
-        b,c = 'string',5
-        b,c -> functionB
-
-define functionB(data):
-        b,c = data
-        b = b + ', appended'
-        c += 2
-        b,c -> functionC
-
-define functionC(i,j):
-        i -> print
-        j -> print
-
-```
-```
-string, appended
-7
+        5 -> example
+        4 -> example.run
+        3 -> example.a
+        2 -> example.b
 ```
 
 ```
-define f:
-    init:
-        (2,3,5,7) -> print
-```
-```
-(2, 3, 5, 7)
+5 received by example.run
+4 received by example.run
+3 received by example.a
+2 received by example.b
 ```
 
+Both `init` and `run` are optional. The following is completely valid:
+
 ```
-define f:
-    init:
-        a = (1,2,3,4,5)
-        a[3] = 'apple'
-        a[2] -> print
-        a[3] -> print
-        a -> print
-```
-```
-2
-apple
-(1, 2, 3, 'apple', 5)
+define example:
+    alternateInput(n):
+        # do things
 ```
 
-## Dictionaries
+In the above example, the command `42 -> example` would be invalid (because `run` hasn't been defined), but `42 -> example.alternateInput` would work.
+
+
+When `run` is the only section defined, it can be abridged. The following two definitions are equivalent:
+```
+define example:
+    run(n):
+        n -> other
+```
+```
+define example(n):
+        n -> other
+```
+
+
+
+
+
 
 ```
 define checkPwd:
@@ -262,83 +152,6 @@ define checkPwd:
 
 
 
-## Functions/agents
-
-Basic program structure is defining a set of **functions/agents**:
-
-```
-define a:
-    init:
-        temp = []
-
-    run(b,c):
-        temp.append(b)
-        (b,c) -> f
-```
-
-**Functions/agents** usually have two parts, a part that’s executed repeatedly during program execution and an optional part that’s executed initially
-
-```
-define total:
-    init:
-        t = 0
-
-    run(a):
-        t = t + a
-```        
-
-```
-define fibonacci:
-   init:
-       (0,0) -> fibonacci
-   
-   run(a,b):
-       a -> print
-       (b,a+b) -> fibonacci
-```
-
-Any number of inputs can be defined, sent to via the `.` command, for example `agent.input`
-
-```
-
-define example:
-    init:
-        # do stuff
-        
-    run(n):
-        n + ' received by example.run' -> print
-        
-    a(n):
-        n + ' received by example.a' -> print
-
-    b(n):
-        n + ' received by example.b' -> print
-
-define test:
-    init:
-        1 -> example
-        2 -> example.run
-        3 -> example.a
-        4 -> example.b
-```
-
-```
-1 received by example.run
-2 received by example.run
-3 received by example.a
-4 received by example.b
-```
-
-When `run` is the only section defined, it can be abridged. The following two definitions are equivalent:
-```
-define example:
-    run(n):
-        n -> other
-```
-```
-define example(n):
-        n -> other
-```
 
 
 
