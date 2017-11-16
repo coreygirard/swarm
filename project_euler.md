@@ -8,7 +8,7 @@ Find the sum of all the multiples of 3 or 5 below 1000.
 ```
 define driver:
     init:
-        for n in range(1000):
+        for n in [0:1000):
             n -> filter5
         -1 -> filter5
 
