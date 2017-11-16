@@ -177,8 +177,26 @@ define split(a):
         (b,c) -> 
 ```
 
+## Dictionaries
 
-
+```
+define checkPwd:
+    init:
+        record = {'Wally':'CyWlfjRd2jmuUCnh',
+                  'Wally':'NYiAQpwgPjRJjniQ',
+                  'Wally':'8yZ8m3tNdfkEj0PV',
+                  'Wally':'CFNoT9eE50uylUpX',
+                  'Wally':'wUzdR5OirlxoTteU',
+                  'Wally':'kA9bXzNx4B9R3FuE',
+                  'Wally':'M1y9NjiBV96wV80L',
+                  'Wally':'6BPygbOJHp9QT4zu'}
+                  
+    run(user,hash):
+        if record[user] == hash:
+            user -> showSecretPage
+        else:
+            user,hash -> reportInvalidPwd
+```
 
 
 
