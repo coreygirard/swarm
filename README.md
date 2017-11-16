@@ -72,7 +72,7 @@ define looping:
 
         ' ' -> print
 
-        for i in range(4):
+        for i in [0:4):
             i -> print
 
         ' ' -> print
