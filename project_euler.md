@@ -156,12 +156,15 @@ What is the smallest positive number that is evenly divisible by all of the numb
 define main:
     init:
         for n in [1:20]:
-            n -> factors
+            n -> factor
 
-define factors(n):
-        
+define factor(n):
+        d = {}
+        for f in factors(n):
+            d[f] = d.get(f,0)+1
+        d -> aggregate        
 
-define 
+define aggregate:
     init:
         factors = {}
         seen = 0
