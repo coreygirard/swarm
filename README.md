@@ -115,9 +115,52 @@ define looping:
 16
 ```
 
-## 
+## If/else
 
+```
+define conditions:
+    init:
+        if 7%2 == 1:
+            '7 is odd' -> print
+        
+        n = -2
+        if n == 0:
+            'n is zero' -> print
+        else if n > 0:
+            'n is positive' -> print
+        
+        n = 3
+        if n == 0:
+            'n is zero' -> print
+        else if n > 0:
+            'n is positive' -> print
+        else:
+            'n is negative' -> print
+```
+```
+7 is odd
+n is positive
+```
 
+## Switch
+
+```
+define switching:
+    init:
+        a = 0
+        switch a:
+            0:
+                'a is equal to 0' -> print
+            1:
+                'a is equal to 1' -> print
+                
+        b = 5
+        switch b:
+            'apple':
+                'non sequitur' -> print
+            default:
+                'stuff happens' -> print
+```
 
 
 
