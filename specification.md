@@ -35,32 +35,48 @@ true
 
 
 ## Variables
+Swarm uses dynamic typing:
+```
+v = 5
+v -> print
+v = 'string'
+v -> print
+```
+```
+5
+string
+```
 
+**Arrays** are one-dimensional containers for variables:
 ```
-define vars:
-    init:
-        s = 'this is a string'
-        s -> print
-        
-        a,b = 1,2
-        a,b -> print
-        
-        c,d = 3,4
-        c,d -> print
+(1,2,3)
+```
+Swarm supports multiple assignment:
+```
+a,b,c = 1,2,3
+a -> print
 
-        e = c,d+1
-        e -> print
-        
-        f,g = e
-        f -> print
+x = a,b,c
+x -> print
+
+i,j,k = x
+j -> print
 ```
 ```
-initial
-(1,2)
-(3,4)
-(3,5)
-3
+1
+(1,2,3)
+2
 ```
+The `.length` member function returns the length of an array:
+```
+a = (2,4,6,8,9)
+a.length -> print
+```
+```
+5
+```
+
+
 
 ## Loops
 
@@ -94,7 +110,7 @@ for i in [0:4):
 ```
 ```
 a = [4,8,15,16,23,42]
-for i in [0,len(a)):
+for i in [0:len(a)):
     a[i] -> print
 ```
 ```
