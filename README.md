@@ -179,16 +179,29 @@ ERROR in 'example': This is an example error
 
 ### print
 ```
-define example:
-    init:
-        'Strings work' -> print
-        5 -> print
-        'Integers work',5 -> error
+'Strings work' -> print
+5 -> print
+'Integers work',5 -> print
+
+' ' -> print.separator
+for i in [0:5):
+    i -> print
+
+'\n' -> print
+
+', ' -> print.separator
+for i in [0:5):
+    i -> print
+0, 1, 2, 3, 4,
+
+        
 ```
 ```
 Strings work
 5
 'Integers work',5
+0 1 2 3 4
+0, 1, 2, 3, 4,
 ```
 
 ### logging (to file)
@@ -202,9 +215,9 @@ define example:
 ```
 ```
 # excerpt of logging text file
-1510933165: [2017-11-17 3:39:25 PM GMT] Something happened
-1510933165: [2017-11-17 3:39:25 PM GMT] Something else happened
-1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
+1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] [example] And another thing
 ```
 
 ### logging (to screen)
@@ -219,9 +232,9 @@ define example:
         'And another thing' -> logging
 ```
 ```
-1510933165: [2017-11-17 3:39:25 PM GMT] Something happened
-1510933165: [2017-11-17 3:39:25 PM GMT] Something else happened
-1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
+1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] [example] And another thing
 ```
 
 ### analytics
