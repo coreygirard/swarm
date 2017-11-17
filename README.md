@@ -216,7 +216,7 @@ define example:
         'Something happened' -> logging
         'Something else happened' -> logging
         wait(3)
-        'And another thing -> logging
+        'And another thing' -> logging
 ```
 ```
 1510933165: [2017-11-17 3:39:25 PM GMT] Something happened
@@ -224,7 +224,31 @@ define example:
 1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
 ```
 
+### analytics
 
+```
+define example:
+    init:
+        'apple' -> analytics
+        'pear' -> analytics
+        wait(4)
+        'apple' -> analytics
+        wait(3*60)
+        'apple' -> analytics
+```
+```
+# analytics text file
+tag: 'apple'
+[2017-11-17 3:39:25 - 3:39:30 PM GMT] : 2
+[2017-11-17 3:42:25 - 3:42:30 PM GMT] : 1
+
+tag: 'pear'
+[2017-11-17 3:39:25 - 3:39:30 PM GMT] : 1
+```
+(Specification for `analytics` is subject to change)
+
+
+## User-modified agents
 
 Certain pre-existing agents are meant to be user-defined in order to add certain functionality, such as the `HTTP` agent:
 
