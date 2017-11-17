@@ -167,6 +167,7 @@ define shift:
 
 Certain agent names, such as `print`, `error`, `logging`, and `analytics`, are already assigned to internal functionality, and are therefore invalid for user-defined agents. They can, and should, be *sent* to, however:
 
+### error
 ```
 define example:
     init:
@@ -176,6 +177,7 @@ define example:
 ERROR in 'example': This is an example error
 ```
 
+### print
 ```
 define example:
     init:
@@ -188,6 +190,8 @@ Strings work
 5
 'Integers work',5
 ```
+
+### logging (to file)
 ```
 define example:
     init:
@@ -203,8 +207,39 @@ define example:
 1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
 ```
 
+### logging (to screen)
+```
+define example:
+    init:
+        true -> logging.toScreen
+        false -> logging.toFile
+        'Something happened' -> logging
+        'Something else happened' -> logging
+        wait(3)
+        'And another thing -> logging
+```
+```
+1510933165: [2017-11-17 3:39:25 PM GMT] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
+```
+
+
 
 Certain pre-existing agents are meant to be user-defined in order to add certain functionality, such as the `HTTP` agent:
+
+```
+define HTTP:
+    receive(req):
+        req -> analytics
+        # other stuff
+        ip -> server
+
+define example:
+        ip,'Hello' -> HTTP.send
+```
+`HTTP.send` can be sent to, but cannot be user-defined. `HTTP.receive` should be defined in order to route incoming HTTP traffic to various other agents in the program.
+
 
 
 
