@@ -48,9 +48,9 @@ The send command (`->`) sends the data on its left to the **agent** on its right
 
 
 
-## Functions/agents
+## Agents
 
-Basic program structure is defining a set of **Agents**:
+Basic program structure is defining a set of **agents**:
 
 ```
 define average:
@@ -62,7 +62,7 @@ define average:
         total/n -> print
 ```
 
-**Functions/agents** have two specially named parts:
+**Agents** have two specially named parts:
 
 - `init` is executed once initially
 - `run` is executed repeatedly, every time data is sent to the function/agent
@@ -127,7 +127,7 @@ define example:
         # do things
 ```
 
-In the above example, the command `42 -> example` would be invalid (because `run` hasn't been defined), but `42 -> example.alternateInput` would work.
+In the above example, the command `42 -> example` would be invalid (because `example.run` hasn't been defined), but `42 -> example.alternateInput` would work.
 
 
 When `run` is the only section defined, it can be abridged. The following two definitions are equivalent:
@@ -145,16 +145,17 @@ You can imagine each **agent** as a process, and each **subagent** as a thread w
 
 ## Structures
 
-**Structures** are defined outside of functions/agents:
+**Structures** are defined inside the `init` section of an agent:
 
 ```
-type point(x,y)
 
 define shift:
     init:
+        type point(x,y)
         delta = point(0,0)
 
     run(p):
+        p = point(p)
         point(p.x+delta.x,p.y+delta.y) -> nextThing
     
     changeShift(p):
