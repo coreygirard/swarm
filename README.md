@@ -163,6 +163,53 @@ define shift:
 
 ```
 
+## Built-in Agents
+
+Certain agent names, such as `print`, `error`, `logging`, and `analytics`, are already assigned to internal functionality, and are therefore invalid for user-defined agents. They can, and should, be *sent* to, however:
+
+```
+define example:
+    init:
+        'This is an example error' -> error
+```
+```
+ERROR in 'example': This is an example error
+```
+
+```
+define example:
+    init:
+        'Strings work' -> print
+        5 -> print
+        'Integers work',5 -> error
+```
+```
+Strings work
+5
+'Integers work',5
+```
+```
+define example:
+    init:
+        'Something happened' -> logging
+        'Something else happened' -> logging
+        wait(3)
+        'And another thing -> logging
+```
+```
+# excerpt of logging text file
+1510933165: [2017-11-17 3:39:25 PM GMT] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] And another thing
+```
+
+
+Certain pre-existing agents are meant to be user-defined in order to add certain functionality, such as the `HTTP` agent:
+
+
+
+# Examples
+
 ## Hello World (server version)
 
 ```
