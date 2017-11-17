@@ -77,10 +77,10 @@ for n in (2,3,5,7):
 ```
 
 To provide a range of values, Swarm uses mathematical interval notation. `(` or `)` mean *exclusive*, and `[` or `]` mean *inclusive*. For example:
-- `[4,7]` = `[4,5,6,7]`
-- `[4,7)` = `[4,5,6]`
-- `(4,7]` = `[5,6,7]`
-- `(4,7)` = `[5,6]`
+- `[4:7]` = `[4,5,6,7]`
+- `[4:7)` = `[4,5,6]`
+- `(4:7]` = `[5,6,7]`
+- `(4:7)` = `[5,6]`
 
 ```
 for i in [0:4):
@@ -106,7 +106,7 @@ for i in [0,len(a)):
 42
 ```
 
-
+**While loops** are identical to Python. If their condition evaluates to `true`, repeatedly execute the contents of the loop until the condition is no longer `true`.
 ```
 j = 0
 while j < 5:
@@ -120,7 +120,7 @@ while j < 5:
 3
 4
 ```
-
+`break` statements work as expected:
 ```
 j = 1
 while true:
@@ -135,6 +135,19 @@ while true:
 4
 8
 16
+```
+`continue` statements as well:
+```
+for i in [0:5):
+    if i == 3:
+        continue
+    i -> print
+```
+```
+0
+1
+2
+4
 ```
 
 
