@@ -64,56 +64,80 @@ initial
 
 ## Loops
 
+**For loops** iterate through a provided sequence, making the iterator value available within the loop
 ```
-define looping:
-    init:
-        for n in (2,3,5,7):
-            n -> print
-
-        ' ' -> print
-
-        for i in [0:4):
-            i -> print
-
-        ' ' -> print
-
-        j = 0
-        while j < 5:
-            j -> print
-            j += 1
-
-        ' ' -> print
-
-        j = 1
-        while true:
-            j -> print
-            j *= 2
-            if j > 16:
-                break
+for n in (2,3,5,7):
+    n -> print
 ```
 ```
 2
 3
 5
 7
+```
 
+To provide a range of values, Swarm uses mathematical interval notation. `(` or `)` mean *exclusive*, and `[` or `]` mean *inclusive*. For example:
+- `[4,7]` = `[4,5,6,7]`
+- `[4,7)` = `[4,5,6]`
+- `(4,7]` = `[5,6,7]`
+- `(4,7)` = `[5,6]`
+
+```
+for i in [0:4):
+    i -> print
+```
+```
 0
 1
 2
 3
+```
+```
+a = [4,8,15,16,23,42]
+for i in [0,len(a)):
+    a[i] -> print
+```
+```
+4
+8
+15
+16
+23
+42
+```
 
+
+```
+j = 0
+while j < 5:
+    j -> print
+    j += 1
+```
+```
 0
 1
 2
 3
 4
+```
 
+```
+j = 1
+while true:
+    j -> print
+    j *= 2
+    if j > 16:
+        break
+```
+```
 1
 2
 4
 8
 16
 ```
+
+
 
 ## If/else
 
