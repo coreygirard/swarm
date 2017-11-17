@@ -97,7 +97,7 @@ define candidates:
 define isPrime(n):
         if n > 2:
             prime = true
-            for i in range(2,n):
+            for i in [2,n):
                 if not n%i:
                     prime = false
                     break
