@@ -284,6 +284,6 @@ define server:
 
 # Further Examples
 
-[Basic Patterns](examples/examples.md)
-[Simple Project Euler Solutions](examples/project_euler.md)
-[Language Specification](examples/specification.md)
+[Basic Patterns](examples.md)
+[Simple Project Euler Solutions](project_euler.md)
+[Language Specification](specification.md)
