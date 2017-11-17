@@ -255,12 +255,14 @@ Certain pre-existing agents are meant to be user-defined in order to add certain
 ```
 define HTTP:
     receive(req):
-        req -> analytics
-        # other stuff
-        ip -> server
+        req -> server
 
-define example:
+define server:
+    init:
         ip,'Hello' -> HTTP.send
+        
+    run(req):
+        'Received something' -> print
 ```
 `HTTP.send` can be sent to, but cannot be user-defined. `HTTP.receive` should be defined in order to route incoming HTTP traffic to various other agents in the program.
 
