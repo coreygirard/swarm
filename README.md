@@ -215,9 +215,9 @@ define example:
 ```
 ```
 # excerpt of logging text file
-1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something happened
-1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something else happened
-1510933168: [2017-11-17 3:39:28 PM GMT] [example] And another thing
+1510933165: [2017-11-17 3:39:25 PM GMT] [example.init] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] [example.init] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] [example.init] And another thing
 ```
 
 ### logging (to screen)
@@ -232,9 +232,9 @@ define example:
         'And another thing' -> logging
 ```
 ```
-1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something happened
-1510933165: [2017-11-17 3:39:25 PM GMT] [example] Something else happened
-1510933168: [2017-11-17 3:39:28 PM GMT] [example] And another thing
+1510933165: [2017-11-17 3:39:25 PM GMT] [example.init] Something happened
+1510933165: [2017-11-17 3:39:25 PM GMT] [example.init] Something else happened
+1510933168: [2017-11-17 3:39:28 PM GMT] [example.init] And another thing
 ```
 
 ### analytics
