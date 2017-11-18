@@ -31,22 +31,32 @@ define main:
     run():
 
 
+facebook:
+    init:
+        url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
+        access_token = 'er0fja034fnoaeinrg0a384f0ag'
+
+    send(user_id,message):
+        data = {'recipient': {'id': user_id},
+                'message': {'text': message}}
+
+        {'type':'post','url':url+access_token,'data':data} -> HTTP.send -
 
 
 lights:
     off(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
         data = {'power':state}    
-        {'url':url,'data':data} -> HTTP.send
+        {'type':'put','url':url,'data':data} -> HTTP.send
 
     on(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
         data = {'power':state}    
-        {'url':url,'data':data} -> HTTP.send
+        {'type':'put','url':url,'data':data} -> HTTP.send
 
     toggle(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/toggle'
-        {'url':url,'data':{}} -> HTTP.send
+        {'type':'post','url':url,'data':{}} -> HTTP.send
 
         
 
