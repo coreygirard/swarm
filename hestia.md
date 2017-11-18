@@ -7,6 +7,14 @@ define HTTP:
             'facebook':
                 req -> facebook.receive
 
+define credentials:
+    init:
+        creds = {'lifx':     'aaaaaaaa',
+                 'facebook': 'bbbbbbbb',
+                 
+        creds['lifx']     ->     lifx.setToken
+        creds['facebook'] -> facebook.setToken
+
 define flic(req):
     run(req):
         req.args['button'],req.args['action'] -> main.flic
@@ -55,23 +63,30 @@ facebook:
 
         {'type':'post','url':url+access_token,'data':data} -> HTTP.send -
 
+    setToken(token):
+        access_token = token
+
 
 lights:
+    init:
+        headers = {"Authorization": "Bearer %s" % token}
+
     off(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
         data = {'power':state}    
-        {'type':'put','url':url,'data':data} -> HTTP.send
+        {'type':'put','headers':headers,'url':url,'data':data} -> HTTP.send
 
     on(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
         data = {'power':state}    
-        {'type':'put','url':url,'data':data} -> HTTP.send
+        {'type':'put','headers':headers,'url':url,'data':data} -> HTTP.send
 
     toggle(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/toggle'
-        {'type':'post','url':url,'data':{}} -> HTTP.send
+        {'type':'post','headers':headers,'url':url,'data':{}} -> HTTP.send
 
-        
+    setToken(token):
+        headers = {"Authorization": "Bearer %s" % token}
 
 
 
