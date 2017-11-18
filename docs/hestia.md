@@ -81,7 +81,7 @@ define main:
 facebook:
     init:
         self.url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
-        self.access_token = 'er0fja034fnoaeinrg0a384f0ag'
+        self.accessToken = 'er0fja034fnoaeinrg0a384f0ag'
 
     receive(req):
         # data = something like req.get_json()
@@ -96,10 +96,10 @@ facebook:
         data = {'recipient': {'id': user_id},
                 'message': {'text': message}}
 
-        {'type':'post','url':url+access_token,'data':data} -> HTTP.send -
+        {'type':'post','url':url+accessToken,'data':data} -> HTTP.send -
 
     setToken(token):
-        self.access_token = token
+        self.accessToken = token
 
     test:
         'facebook',200 -> watchdog.receive
