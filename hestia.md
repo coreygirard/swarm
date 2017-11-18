@@ -105,8 +105,14 @@ lifx:
     test:
         'lifx',200 -> watchdog.receive
 
-
-
+define weather:
+    init:
+        this.lat,this.lon = 0.0,0.0
+        self.lat,self.lon = 0.0,0.0
+        lat,lon = 0.0,0.0
+        
+    setLocation(lat,lon):
+        lat,lon = lat,lon
 
 
 
