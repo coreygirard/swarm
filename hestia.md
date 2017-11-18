@@ -1,13 +1,21 @@
 ```
 define HTTP:
-    receive(request):
-        switch req.folder:
+    receive(req):
+        switch req.folder: # something that means what subfolder of the url it was addressed to
             'flic':
-                req -> flic
+                req -> flic.receive
+            'facebook':
+                req -> facebook.receive
 
 define flic(req):
     run(req):
-        button,action = req.args['button'],req.args['action']
+        req.args['button'],req.args['action'] -> main.flic
+
+    test:
+        200 -> sender
+
+define main:
+    flic(button,action):
         switch button,action:
             'button1','single':
                 cmd = {'who':{'lights':'bedroom'},'what':{'state':'on'}
@@ -22,19 +30,24 @@ define flic(req):
                 cmd = {'who':{'lights':'closet'},'what':{'state':'off'}
                 cmd,'flic' -> main
             default:
-                'got invalid input',button,action -> logging
+                'got invalid Flic input',button,action -> logging
 
-    test:
-        200 -> sender
-
-define main:
-    run():
-
+    facebook(sender,message):
+        # something
 
 facebook:
     init:
         url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
         access_token = 'er0fja034fnoaeinrg0a384f0ag'
+
+    receive(req):
+        # data = something like req.get_json()
+        sender = data['entry'][0]['messaging'][0]['sender']['id']
+        message = data['entry'][0]['messaging'][0]['message']['text']
+
+        sender,message -> main.facebook
+        
+        # gotta do something to return a 200 to FB
 
     send(user_id,message):
         data = {'recipient': {'id': user_id},
