@@ -9,19 +9,42 @@ define HTTP:
 
 define credentials:
     init:
-        creds = {'lifx':     'aaaaaaaa',
-                 'facebook': 'bbbbbbbb',
+        self.creds = {'lifx':     'aaaaaaaa',
+                      'facebook': 'bbbbbbbb',
                  
-        creds['lifx']     ->     lifx.setToken
-        creds['facebook'] -> facebook.setToken
+
+        self.creds['lifx']     ->     lifx.setToken
+        self.creds['facebook'] -> facebook.setToken
 
 define watchdog:
     init:
+        type resp(status,timestamp)
+        self.timeout = 30
+
+        self.status = {'lifx':     resp('no response',timestamp()),
+                       'facebook': resp('no response',timestamp())}
+
         while true:
             true ->     lifx.test
             true -> facebook.test
+            wait(5)
 
     receive(service,status):
+        self.status[service] = (status,timestamp())
+        temp = {}
+        for service,stat in self.status:
+            if timestamp() < stat.timestamp + self.timeout:
+                temp[service] = stat
+            else:
+                temp[service] = resp('no response',timestamp()}
+        self.status = temp
+            
+    buildReport(ip):
+        # blah blah blah
+        # html stuff
+        # blah blah blah
+        # build from self.status
+        ip,finishedHTMLreport -> HTTP.send
 
 define flic(req):
     run(req):
@@ -57,8 +80,8 @@ define main:
 
 facebook:
     init:
-        url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
-        access_token = 'er0fja034fnoaeinrg0a384f0ag'
+        self.url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
+        self.access_token = 'er0fja034fnoaeinrg0a384f0ag'
 
     receive(req):
         # data = something like req.get_json()
@@ -76,7 +99,7 @@ facebook:
         {'type':'post','url':url+access_token,'data':data} -> HTTP.send -
 
     setToken(token):
-        access_token = token
+        self.access_token = token
 
     test:
         'facebook',200 -> watchdog.receive
@@ -107,12 +130,10 @@ lifx:
 
 define weather:
     init:
-        this.lat,this.lon = 0.0,0.0
         self.lat,self.lon = 0.0,0.0
-        lat,lon = 0.0,0.0
         
     setLocation(lat,lon):
-        lat,lon = lat,lon
+        self.lat,self.lon = lat,lon
 
 
 
