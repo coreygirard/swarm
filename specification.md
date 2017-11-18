@@ -220,6 +220,36 @@ equal to 0
 equal to 2
 stuff happens
 ```
+A nice feature coming from the fact that both the control and cases are evaluated expressions: it is possible to compare multiple values at once.
+
+```
+define switching(n,animal):
+        switch n,animal:
+            4,'lion':
+                'number is 4 and animal is lion' -> print
+            4,'bear':
+                'number is 4 and animal is bear' -> print
+            5,'lion':
+                'number is 5 and animal is lion' -> print
+            5,'bear':
+                'number is 5 and animal is bear' -> print
+            default:
+                'nothing matched' -> print
+
+define main:
+    init:
+        4,'lion' -> switching
+        5,'tiger' -> switching
+        4,'bear' -> switching
+        4,'' -> switching
+```
+```
+number is 4 and animal is lion
+nothing matched
+number is 4 and animal is bear
+nothing matched
+```
+
 
 
 ## Arrays
@@ -416,12 +446,36 @@ define shift:
 ```
 
 
+## Programmatic Flow
 
+It is possible to choose at runtime where a `->` statement points:
 
+```
+define helper(data,dest):
+        data*2 -> ref(dest)
 
+define main:
+    init:
+        4,'main.receive1' -> helper
+        5,'main.receive2' -> helper
+        1,'main' -> helper
+        3,'main.run' -> helper
 
+    run(n):
+        str(n) + ' received by main.run' -> print
 
+    receive1(n):
+        str(n) + ' received by main.receive1' -> print
 
+    receive2(n):
+        str(n) + ' received by main.receive2' -> print
+```
+```
+8 received by main.receive1
+10 received by main.receive2
+2 received by main.run
+6 received by main.run
+```
 
 
 
