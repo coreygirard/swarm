@@ -511,9 +511,36 @@ define complicatedFunction:
         n -> nextAgent
 ```
 
-This has the conceptual advantage of more clearly separating a complex process into atomic components, and keeping the syntax clean.
+This has the conceptual advantage of more clearly separating a complex process into atomic components. To make these and similar operations easier, the `self.name` property will return the agent's name. For example, the above code could be also written as:
 
+```
+define doStuff(n,dest):
+        2*n -> ref(dest)
 
+define doMoreStuff(n,dest):
+        3*n -> ref(dest)
+
+define complicatedFunction:
+    run(n):
+        n,self.name+'.stage2' -> doStuff
+        
+    stage2(n):
+        n,self.name+'.stage3' -> doMoreStuff
+        
+    stage3(n):
+        n -> nextAgent
+```
+
+If you need the subagent name, the `self.subname` property is also available.
+
+```
+define errorProne:
+    init:
+        self.name,self.subname -> print
+```
+```
+('errorProne','init')
+```
 
 ## Some patterns
 
