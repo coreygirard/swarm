@@ -33,6 +33,26 @@ define main:
 
 
 
+lights:
+    off(light):
+        url = 'https://api.lifx.com/v1/lights/' + light + '/state'
+        data = {'power':state}    
+        {'url':url,'data':data} -> HTTP.send
+
+    on(light):
+        url = 'https://api.lifx.com/v1/lights/' + light + '/state'
+        data = {'power':state}    
+        {'url':url,'data':data} -> HTTP.send
+
+    toggle(light):
+        url = 'https://api.lifx.com/v1/lights/' + light + '/toggle'
+        {'url':url,'data':{}} -> HTTP.send
+
+        
+
+
+
+
 
 
 
