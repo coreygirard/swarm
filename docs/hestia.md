@@ -106,7 +106,7 @@ facebook:
 
 lifx:
     init:
-        headers = {"Authorization": "Bearer %s" % token}
+        headers = {'Authorization': 'Bearer ' + token}
 
     off(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
@@ -123,7 +123,7 @@ lifx:
         {'type':'post','headers':headers,'url':url,'data':{}} -> HTTP.send
 
     setToken(token):
-        headers = {"Authorization": "Bearer %s" % token}
+        headers = {'Authorization': 'Bearer ' + token}
 
     test:
         'lifx',200 -> watchdog.receive
