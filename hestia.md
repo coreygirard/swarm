@@ -15,12 +15,20 @@ define credentials:
         creds['lifx']     ->     lifx.setToken
         creds['facebook'] -> facebook.setToken
 
+define watchdog:
+    init:
+        while true:
+            true ->     lifx.test
+            true -> facebook.test
+
+    receive(service,status):
+
 define flic(req):
     run(req):
         req.args['button'],req.args['action'] -> main.flic
 
     test:
-        200 -> sender
+        'flic',200 -> watchdog.receive
 
 define main:
     flic(button,action):
@@ -42,6 +50,10 @@ define main:
 
     facebook(sender,message):
         # something
+
+    test:
+        'main',200 -> watchdog.receive
+
 
 facebook:
     init:
@@ -66,8 +78,10 @@ facebook:
     setToken(token):
         access_token = token
 
+    test:
+        'facebook',200 -> watchdog.receive
 
-lights:
+lifx:
     init:
         headers = {"Authorization": "Bearer %s" % token}
 
@@ -88,6 +102,8 @@ lights:
     setToken(token):
         headers = {"Authorization": "Bearer %s" % token}
 
+    test:
+        'lifx',200 -> watchdog.receive
 
 
 
