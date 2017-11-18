@@ -477,11 +477,41 @@ define main:
 6 received by main.run
 ```
 
+This can frequently be useful to replace the common function call / return pattern in many languages. Instead of:
+```
+# python
+def doStuff(n):
+    return 2*n
 
+def doMoreStuff(n):
+    return 3*n
 
+def complicatedFunction(n)
+    n = doStuff(n)
+    n = doMoreStuff(n)
+    return n
+```
 
+Swarm would break the function stages apart into subagents:
+```
+define doStuff(n,dest):
+        2*n -> ref(dest)
 
+define doMoreStuff(n,dest):
+        3*n -> ref(dest)
 
+define complicatedFunction:
+    run(n):
+        n,'complicatedFunction.stage2' -> doStuff
+        
+    stage2(n):
+        n,'complicatedFunction.stage3' -> doMoreStuff
+        
+    stage3(n):
+        n -> nextAgent
+```
+
+This has the conceptual advantage of more clearly separating a complex process into atomic components, and keeping the syntax clean.
 
 
 
