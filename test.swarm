@@ -1,0 +1,7 @@
+define test:
+    init:
+        for i in [0:5):
+            i -> test.p
+        
+    p(n):
+        n -> print
