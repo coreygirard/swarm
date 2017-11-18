@@ -57,16 +57,16 @@ define main:
     flic(button,action):
         switch button,action:
             'button1','single':
-                cmd = {'who':{'lights':'bedroom'},'what':{'state':'on'}
+                cmd = {'who':{'lights':'bedroom'},'what':{'state':'on'}}
                 cmd,'flic' -> main
             'button1','hold':
-                cmd = {'who':{'lights':'bedroom'},'what':{'state':'off'}
+                cmd = {'who':{'lights':'bedroom'},'what':{'state':'off'}}
                 cmd,'flic' -> main
             'button2','single':
-                cmd = {'who':{'lights':'closet'},'what':{'state':'on'}
+                cmd = {'who':{'lights':'closet'},'what':{'state':'on'}}
                 cmd,'flic' -> main
             'button2','hold':
-                cmd = {'who':{'lights':'closet'},'what':{'state':'off'}
+                cmd = {'who':{'lights':'closet'},'what':{'state':'off'}}
                 cmd,'flic' -> main
             default:
                 'got invalid Flic input',button,action -> logging

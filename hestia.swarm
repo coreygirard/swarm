@@ -1,4 +1,4 @@
-```
+
 define HTTP:
     receive(req):
         switch req.folder: # something that means what subfolder of the url it was addressed to
@@ -36,7 +36,7 @@ define watchdog:
             if timestamp() < stat.timestamp + self.timeout:
                 temp[service] = stat
             else:
-                temp[service] = resp('no response',timestamp()}
+                temp[service] = resp('no response',timestamp())
         self.status = temp
             
     buildReport(ip):
@@ -57,16 +57,16 @@ define main:
     flic(button,action):
         switch button,action:
             'button1','single':
-                cmd = {'who':{'lights':'bedroom'},'what':{'state':'on'}
+                cmd = {'who':{'lights':'bedroom'},'what':{'state':'on'}}
                 cmd,'flic' -> main
             'button1','hold':
-                cmd = {'who':{'lights':'bedroom'},'what':{'state':'off'}
+                cmd = {'who':{'lights':'bedroom'},'what':{'state':'off'}}
                 cmd,'flic' -> main
             'button2','single':
-                cmd = {'who':{'lights':'closet'},'what':{'state':'on'}
+                cmd = {'who':{'lights':'closet'},'what':{'state':'on'}}
                 cmd,'flic' -> main
             'button2','hold':
-                cmd = {'who':{'lights':'closet'},'what':{'state':'off'}
+                cmd = {'who':{'lights':'closet'},'what':{'state':'off'}}
                 cmd,'flic' -> main
             default:
                 'got invalid Flic input',button,action -> logging
@@ -81,7 +81,7 @@ define main:
 facebook:
     init:
         self.url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
-        self.access_token = 'er0fja034fnoaeinrg0a384f0ag'
+        self.accessToken = 'er0fja034fnoaeinrg0a384f0ag'
 
     receive(req):
         # data = something like req.get_json()
@@ -92,14 +92,14 @@ facebook:
         
         # gotta do something to return a 200 to FB
 
-    send(user_id,message):
-        data = {'recipient': {'id': user_id},
+    send(userID,message):
+        data = {'recipient': {'id': userID},
                 'message': {'text': message}}
 
-        {'type':'post','url':url+access_token,'data':data} -> HTTP.send -
+        {'type':'post','url':url+accessToken,'data':data} -> HTTP.send
 
     setToken(token):
-        self.access_token = token
+        self.accessToken = token
 
     test:
         'facebook',200 -> watchdog.receive
@@ -137,7 +137,3 @@ define weather:
 
 
 
-
-
-
-```

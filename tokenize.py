@@ -4,32 +4,43 @@ import re
 
 Tag = namedtuple('Tag','tag value')
 
-def tokenize(line):
+def tokens(line):
     line = line.strip(' ')
     if line == '':
         return []
 
+    # grab string literals
     match = re.match("^(.*)('[^'].*?')(.*)$",line)
     if match:
         a,b,c = match.groups()
-        return tokenize(a) + [Tag('literal',b)] + tokenize(c)
-    
+        return tokens(a) + [Tag('literal',b)] + tokens(c)
+
     for symbol in list(':,(){}[]=-.+<>'):
         match = re.match('^(.*)[' + symbol + '](.*)$',line)
         if match:
-            return tokenize(match.groups()[0]) + [Tag(symbol,symbol)] + tokenize(match.groups()[1])
+            return tokens(match.groups()[0]) + [Tag(symbol,symbol)] + tokens(match.groups()[1])
 
     for symbol in ['->','==','-=','+=','<=','>=']:
         match = re.match('^(.*)' + symbol + '(.*)$',line)
         if match:
-            return tokenize(match.groups()[0]) + [Tag(symbol,symbol)] + tokenize(match.groups()[1])
+            return tokens(match.groups()[0]) + [Tag(symbol,symbol)] + tokens(match.groups()[1])
 
-    for prefix in ['switch','for','while','type','define']:
+    match = re.match('^(.*) in (.*)$',line)
+    if match:
+        return tokens(match.groups()[0]) + [Tag('in','in')] + tokens(match.groups()[1])
+
+    for prefix in ['if','else','else if','switch','for','while','type','define']:
         match = re.match('^'+prefix+' (.*)$',line)
         if match:
-            return [Tag(prefix,prefix)] + tokenize(match.groups()[0])
+            return [Tag(prefix,prefix)] + tokens(match.groups()[0])
 
-    match = re.match("^[a-zA-Z0-9]+$",line)
+    for symbol in ['->','==','-=','+=','<=','>=']:
+        match = re.match('^(.*)' + symbol + '(.*)$',line)
+        if match:
+            return tokens(match.groups()[0]) + [Tag(symbol,symbol)] + tokens(match.groups()[1])
+
+
+    match = re.match("^[a-zA-Z][a-zA-Z0-9]*$",line)
     if match:
         return [Tag('variable',line)]
 
@@ -44,8 +55,13 @@ def tokenize(line):
 
     return [line]
 
-
-
+def tokenize(lines):
+    for i in range(len(lines)):
+        #print(lines[i].code)
+        lines[i].code = tokens(lines[i].code)
+        #print(' '.join([e.tag for e in lines[i].code]))
+        #print('\n')
+    return lines
 
 
 
