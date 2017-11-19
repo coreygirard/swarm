@@ -51,23 +51,61 @@ Between one and three (inclusive) arguments can be provided, separated by `:`:
 - `string[a:c]` will return the characters between indices `a` and `c`, inclusive of `a` and exclusive of `c`. Will automatically step left if `c` indicates an index left of `a`.
 - `string[a:]` returns the characters between index `a` inclusive and the end of the string inclusive
 - `string[:c]` is equivalent to `string[0:c]`
-- `string[a:b:c]` will start at index `a` and step towards index `c` with steps of size `b`. 
+- `string[a:b:c]` will start at index `a` and step towards index `c` with steps of size `b`. Is inclusive of `a` but exclusive of `c`, and returns `''` if `sign(b) != sign(c-a)`. Step size can be any non-zero integer, positive or negative.
 
-`'teststring'[0]` returns `'t'`
-`'teststring'[1]` returns `'e'`
-`'teststring'[-1]` returns `'g'`
-`'teststring'[-9]` returns `'e'`
+- `string[:b:c]` is equivalent to `string[0:b:c]` if `b` is positive, or `string[-1:b:c]` if `b` is negative.
+- `string[a:b:]` steps from `a` with step size `b` until the end of the string
+- `string[:b:]` is equivalent to `string[0:b:]` if `b` is positive, or `string[-1:b:]` if `b` is negative.
 
-`'teststring'[0:4]` returns `'test'`
-`'teststring'[4:10]` returns `'string'`
+### `string[a]`
+- `'teststring'[0]` returns `'t'`
+- `'teststring'[1]` returns `'e'`
+- `'teststring'[-1]` returns `'g'`
+- `'teststring'[-9]` returns `'e'`
 
-`'teststring'[:4]` returns `'test'`
-`'teststring'[4:]` returns `'string'`
-`string[:n] + string[n:]` always equals `string`
+### `string[a:c]`
+- `'teststring'[0:4]` returns `'test'`
+- `'teststring'[4:10]` returns `'string'`
+
+### `string[a:]`
+- `'teststring'[4:]` returns `'string'`
+- `'0123456789'[4:]` returns `'456789'`
+
+### `string[:c]`
+- `'teststring'[:4]` returns `'test'`
+- `'0123456789'[:4]` returns `'0123'`
+
+### `string[a:b:c]`
+- `'teststring'[0:2:10]` returns `'tssrn'`
+- `'0123456789'[0:2:10]` returns `'02468'`
+- `'teststring'[1:3:9]` returns `'esi'`
+- `'0123456789'[1:3:9]` returns `'147'`
+- `'teststring'[1:3:7]` returns `'es'`
+- `'0123456789'[1:3:7]` returns `'14'`
+
+### `string[a:b:]`
+- `'teststring'[-1:-1:]` returns `'gnirtstset'`
+- `'0123456789'[-1:-1:]` returns `'9876543210'`
+- `'teststring'[3:3:]` returns `'trg'`
+
+### `string[:b:c]`
+- `'teststring'[:-1:2]` returns `'gnirtst'`
+- `'0123456789'[:-1:2]` returns `'9876543'`
+- `'teststring'[:2:7]` returns `'tssr'`
+- `'0123456789'[:2:7]` returns `'0246'`
+
+### `string[:b:]`
+- `'teststring'[:2:]` returns `'tssrn'`
+- `'0123456789'[:2:]` returns `'02468'`
+- `'teststring'[:-1:]` returns `'gnirtstset'`
+- `'0123456789'[:-1:]` returns `'9876543210'`
 
 
 
-A useful pattern is to prevent leftwards stepping by providing `b` of `1`. Particularly useful to prevent undesired behavior when `a` and `c` are chosen at runtime.
+**Other Notes**
+- `string[:n] + string[n:]` always equals `string`
+- Arrays can be passed as indices as well: `s[2,7,8,9]` is equivalent to `s[2]+s[7]+s[8]+s[9]`. These indices need not be in sorted order: `'teststring'[6,7,0,1]` returns `'rite'`
+- A useful pattern is to prevent leftwards stepping by providing `b` of `1`. Particularly useful to prevent undesired behavior when `a` and `c` are chosen at runtime.
 `'abcde'[1:4]` returns `'bcd'`
 `'abcde'[1:1:4]` returns `'bcd'`
 `'abcde'[3:0]` returns `'dcb'`
@@ -75,18 +113,8 @@ A useful pattern is to prevent leftwards stepping by providing `b` of `1`. Parti
 
 
 
-- `'teststring'[0:-1]` returns `'teststring'`
-- `s = [0:4)+[-3:-1]` then `'teststring'[s]` returns `'testing'`
+- `s = [:4)+[-3:-1]` then `'teststring'[s]` returns `'testing'`
 - `'teststring'[2,7,8,9]` returns `'sing'`
-- `'teststring'[0:2:9]` returns `'tssrn'`
-- `'teststring'[-1:-10]` returns `'gnirtstset'`
-- `'teststring'[0:-1:9]` is a compile error
-
-<!-- - `'teststring'[0:3)` returns `'tes'` -->
-<!-- - `'teststring'(0:3)` returns `'es'` -->
-<!-- - `'teststring'(10:0]` returns `'gnirtstset'` -->
-<!-- - `'teststring'[0:2:10)` returns `'tssrn'` -->
-<!-- - `'teststring'[0:-1:10)` is a compile error -->
 
 
 ### Properties
@@ -126,7 +154,7 @@ A useful pattern is to prevent leftwards stepping by providing `b` of `1`. Parti
  'path':['dir1','dir2','dir3','text.html']}
 ```
 
-
+- `buildurl(d)` Returns a string built from the provided dictionary. `buildurl(u.parseurl())` will return a URL functionally equivalent to `u`, though it may not be identical.
 
 
 
