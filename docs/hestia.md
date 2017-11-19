@@ -36,7 +36,7 @@ define watchdog:
             if timestamp() < stat.timestamp + self.timeout:
                 temp[service] = stat
             else:
-                temp[service] = resp('no response',timestamp()}
+                temp[service] = resp('no response',timestamp())
         self.status = temp
             
     buildReport(ip):
@@ -46,7 +46,7 @@ define watchdog:
         # build from self.status
         ip,finishedHTMLreport -> HTTP.send
 
-define flic(req):
+define flic:
     run(req):
         req.args['button'],req.args['action'] -> main.flic
 
@@ -78,7 +78,7 @@ define main:
         'main',200 -> watchdog.receive
 
 
-facebook:
+define facebook:
     init:
         self.url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
         self.accessToken = 'er0fja034fnoaeinrg0a384f0ag'
@@ -92,11 +92,11 @@ facebook:
         
         # gotta do something to return a 200 to FB
 
-    send(user_id,message):
-        data = {'recipient': {'id': user_id},
+    send(userID,message):
+        data = {'recipient': {'id': userID},
                 'message': {'text': message}}
 
-        {'type':'post','url':url+accessToken,'data':data} -> HTTP.send -
+        {'type':'post','url':url+accessToken,'data':data} -> HTTP.send
 
     setToken(token):
         self.accessToken = token
@@ -104,7 +104,7 @@ facebook:
     test:
         'facebook',200 -> watchdog.receive
 
-lifx:
+define lifx:
     init:
         headers = {'Authorization': 'Bearer ' + token}
 
@@ -134,9 +134,6 @@ define weather:
         
     setLocation(lat,lon):
         self.lat,self.lon = lat,lon
-
-
-
 
 
 
