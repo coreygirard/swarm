@@ -27,26 +27,66 @@ for i in 'apple':
     f += i
 ```
 
-Querying
+**Querying**
 
 - `'sub' in 'substring'` returns `true`
 - `'strings' in 'substring'` returns `false`
 - `'substring' in 'sub'` returns `false`
 - `'string' in 'string'` returns `true`
 
-Accessing
+**Accessing**
 
-- `'teststring'[0]` returns `'t'` (string of length 1. No 'char' type here)
-- `'teststring'[0:3]` returns `'test'`
-- `'teststring'[4:9]` returns `'string'`
-- `'teststring'[0:3)` returns `'tes'`
-- `'teststring'(0:3)` returns `'es'`
+String elements are numbered in two schemes:
+- From the left increasing from 0
+- From the right decreasing from -1
+
+|t   |e   |s   |t   |s   |t   |r   |i   |n   |g
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0   |1   |2   |3   |4   |5   |6   |7   |8   |9
+|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1
+
+Between one and three (inclusive) arguments can be provided, separated by `:`:
+
+- `string[a]` will return the character at index `a` as a string of length 1
+- `string[a:c]` will return the characters between indices `a` and `c`, inclusive of `a` and exclusive of `c`. Will automatically step left if `c` indicates an index left of `a`.
+- `string[a:]` returns the characters between index `a` inclusive and the end of the string inclusive
+- `string[:c]` is equivalent to `string[0:c]`
+- `string[a:b:c]` will start at index `a` and step towards index `c` with steps of size `b`. 
+
+`'teststring'[0]` returns `'t'`
+`'teststring'[1]` returns `'e'`
+`'teststring'[-1]` returns `'g'`
+`'teststring'[-9]` returns `'e'`
+
+`'teststring'[0:4]` returns `'test'`
+`'teststring'[4:10]` returns `'string'`
+
+`'teststring'[:4]` returns `'test'`
+`'teststring'[4:]` returns `'string'`
+`string[:n] + string[n:]` always equals `string`
+
+
+
+A useful pattern is to prevent leftwards stepping by providing `b` of `1`. Particularly useful to prevent undesired behavior when `a` and `c` are chosen at runtime.
+`'abcde'[1:4]` returns `'bcd'`
+`'abcde'[1:1:4]` returns `'bcd'`
+`'abcde'[3:0]` returns `'dcb'`
+`'abcde'[3:1:0]` returns `''`
+
+
+
 - `'teststring'[0:-1]` returns `'teststring'`
 - `s = [0:4)+[-3:-1]` then `'teststring'[s]` returns `'testing'`
+- `'teststring'[2,7,8,9]` returns `'sing'`
+- `'teststring'[0:2:9]` returns `'tssrn'`
 - `'teststring'[-1:-10]` returns `'gnirtstset'`
-- `'teststring'(10:0]` returns `'gnirtstset'`
-- `'teststring'[0:2:10)` returns `'tssrn'`
-- `'teststring'[0:-1:10)` returns `''`
+- `'teststring'[0:-1:9]` is a compile error
+
+<!-- - `'teststring'[0:3)` returns `'tes'` -->
+<!-- - `'teststring'(0:3)` returns `'es'` -->
+<!-- - `'teststring'(10:0]` returns `'gnirtstset'` -->
+<!-- - `'teststring'[0:2:10)` returns `'tssrn'` -->
+<!-- - `'teststring'[0:-1:10)` is a compile error -->
 
 
 ### Properties
@@ -95,7 +135,9 @@ Accessing
 
 
 
-
+---
+---
+---
 
 
 
