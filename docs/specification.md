@@ -1,11 +1,52 @@
 # Swarm
 
+## Ranges
+
+Range notation in Swarm is a more compact way of specifying lists that are composed of integers and follow a linear pattern.
+`[a:b:c]` is the canonical form, but many variations exist. This form defines a sequence that starts with `a`, steps by `b`, and ends with a value `n` where `n <= c`. Examples:
+- `[0:1:8]` is equivalent to `[0,1,2,3,4,5,6,7,8]`
+- `[0:1:0]` is equivalent to `[0]`
+- `[0:2:6]` is equivalent to `[0,2,4,6]`
+- `[0:2:5]` is equivalent to `[0,2,4]`
+- `[6:-2:-4]` is equivalent to `[6,4,2,0,-2,-4]`
+`b` can be omitted (`[a:c]`), and defaults to `1` if `a < c` or `-1` if `a > c`. If `a == c`, `[a:b:c]` returns `[a]` no matter the value or existence of `b`.
+
+Additionally, either `[` or `]` may be exchanged for the corresponding parenthesis, which makes that bound exclusive rather than inclusive. For example:
+
+- `[4:7]` = `[4,5,6,7]`
+- `[4:7)` = `[4,5,6]`
+- `(4:7]` = `[5,6,7]`
+- `(4:7)` = `[5,6]`
+
+The same applies where `b != 1`:
+- `(4:2:8)` = `[6]`
+- `(0:3:12]` = `[3,6,9,12]`
+`(` works by simply skipping what would have been the first element if `[` had been used.
+`)` works by ensuring that the final element in the sequence is less than `c`
+
+If `a == c` and one or both bounds are exclusive, an empty array is the result:
+- `[5:b:5]` = `[5]` for any `b`
+- `[5:b:5)` = `[]` for any `b`
+- `(5:b:5]` = `[]` for any `b`
+- `(5:b:5)` = `[]` for any `b`
+
+### Properties
+
+- `.length` Returns the number of elements in the range
+
+### Methods
+
+- `a.overlap(b)` Returns a new `Range` that contains only the elements in both `a` and `b`.
+`[1:7].overlap([4:9])` = '[4:7]'
+`[1:2:7].overlap([4:2:9])` = '[]'
+
+
 ## Strings
 
 Strings are represented as linked lists (maybe) until they are sent to another agent.
 
 ### Operations
-Concatenation
+**Concatenation**
 ```
 a = 'ap' + 'ple'
 
@@ -40,12 +81,14 @@ String elements are numbered in two schemes:
 - From the left increasing from 0
 - From the right decreasing from -1
 
-|t   |e   |s   |t   |s   |t   |r   |i   |n   |g
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|0   |1   |2   |3   |4   |5   |6   |7   |8   |9
-|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1
+|t   |e   |s   |t   |s   |t   |r   |i   |n   |g   |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0   |1   |2   |3   |4   |5   |6   |7   |8   |9   |
+|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1  |
 
-Between one and three (inclusive) arguments can be provided, separated by `:`:
+The canonical format
+
+Between one and three (inclusive) arguments can be provided, separated by `:`
 
 - `string[a]` will return the character at index `a` as a string of length 1
 - `string[a:c]` will return the characters between indices `a` and `c`, inclusive of `a` and exclusive of `c`. Will automatically step left if `c` indicates an index left of `a`.
@@ -57,25 +100,25 @@ Between one and three (inclusive) arguments can be provided, separated by `:`:
 - `string[a:b:]` steps from `a` with step size `b` until the end of the string
 - `string[:b:]` is equivalent to `string[0:b:]` if `b` is positive, or `string[-1:b:]` if `b` is negative.
 
-### `string[a]`
+#### `string[a]`
 - `'teststring'[0]` returns `'t'`
 - `'teststring'[1]` returns `'e'`
 - `'teststring'[-1]` returns `'g'`
 - `'teststring'[-9]` returns `'e'`
 
-### `string[a:c]`
+#### `string[a:c]`
 - `'teststring'[0:4]` returns `'test'`
 - `'teststring'[4:10]` returns `'string'`
 
-### `string[a:]`
+#### `string[a:]`
 - `'teststring'[4:]` returns `'string'`
 - `'0123456789'[4:]` returns `'456789'`
 
-### `string[:c]`
+#### `string[:c]`
 - `'teststring'[:4]` returns `'test'`
 - `'0123456789'[:4]` returns `'0123'`
 
-### `string[a:b:c]`
+#### `string[a:b:c]`
 - `'teststring'[0:2:10]` returns `'tssrn'`
 - `'0123456789'[0:2:10]` returns `'02468'`
 - `'teststring'[1:3:9]` returns `'esi'`
@@ -83,19 +126,19 @@ Between one and three (inclusive) arguments can be provided, separated by `:`:
 - `'teststring'[1:3:7]` returns `'es'`
 - `'0123456789'[1:3:7]` returns `'14'`
 
-### `string[a:b:]`
+#### `string[a:b:]`
 - `'teststring'[-1:-1:]` returns `'gnirtstset'`
 - `'0123456789'[-1:-1:]` returns `'9876543210'`
 - `'teststring'[3:3:]` returns `'trg'`
 - `'0123456789'[3:3:]` returns `'369'`
 
-### `string[:b:c]`
+#### `string[:b:c]`
 - `'teststring'[:-1:2]` returns `'gnirtst'`
 - `'0123456789'[:-1:2]` returns `'9876543'`
 - `'teststring'[:2:7]` returns `'tssr'`
 - `'0123456789'[:2:7]` returns `'0246'`
 
-### `string[:b:]`
+#### `string[:b:]`
 - `'teststring'[:2:]` returns `'tssrn'`
 - `'0123456789'[:2:]` returns `'02468'`
 - `'teststring'[:-1:]` returns `'gnirtstset'`
