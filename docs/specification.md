@@ -37,8 +37,89 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 ### Methods
 
 - `a.overlap(b)` Returns a new `Range` that contains only the elements in both `a` and `b`.
-`[1:7].overlap([4:9])` = '[4:7]'
-`[1:2:7].overlap([4:2:9])` = '[]'
+`[1:7].overlap([4:9])` = `[4:7]`
+`[1:2:7].overlap([4:2:9])` = `[]`
+
+- `.normalize()` Converts the `Range`, in-place, to a normalized form, ie inclusive on both ends, and with `a` and `c` as close as possible.
+`(4:8).normalize()` = `[5:7]`
+`(6:2].normalize()` = `[5:2]`
+`(0:3:14].normalize()` = `[3:3:12]`
+`(-2:-5:-105]` = `[-7:-5:-102]`
+
+
+
+
+## Arrays
+
+### Operations
+
+Array elements are numbered in two schemes:
+- From the left increasing from 0
+- From the right decreasing from -1
+
+For example, given the array `a = [5,7,42,6,1,-6,7,-4,9,13]`:
+
+|5   |7   |42  |6   |1   |-6  |7   |-4  |9   |13  |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|0   |1   |2   |3   |4   |5   |6   |7   |8   |9   |
+|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1  |
+
+**Accessing**
+
+Either scheme can be used to access array elements:
+
+`a[0]` = `5`
+`a[-10]` = `5`
+
+`a[2]` = `42`
+`a[-8]` = `42`
+
+`a[9]` = `13`
+`a[-1]` = `13`
+
+Multiple elements can be chosen, separated by commas:
+
+- `a[4,7,-9,3]` = `[1,-4,7,6]`
+
+`Range` can also be used to access elements:
+
+`a[2:5)` = `[42,6,1]`
+`a[7:-2:1]` = `[-4,-6,6,7]`
+
+When using a `Range` to specify an array subset, specifying `a` and `c` becomes optional, since we're working with a bounded interval already.
+
+- If `a` is omitted and `b` is positive, the sequence starts at element `0`
+`[2,7,3,6,4,5][:1:3]` = `[2,7,3,6]`
+`[2,7,3,6,4,5][::3]` = `[2,7,3,6]`
+
+- If `a` is omitted and `b` is negative, the sequence starts at element `-1`
+`[2,7,3,6,4,5][:-1:3]` = `[5,4,6]`
+
+- If `c` is omitted and `b` is positive, the sequence stops at or before the last element
+`[2,7,3,6,4,5][3:1:]` = `[6,4,5]`
+`[2,7,3,6,4,5][3::]` = `[6,4,5]`
+
+- If `c` is omitted and `b` is negative, the sequence stops at or before the first element
+`[2,7,3,6,4,5][3:-1:]` = `[6,3,7,2]`
+
+- If both `a` and `c` are omitted and `b` is positive:
+`[2,7,3,6,4,5][:1:]` = `[2,7,3,6,4,5]`
+`[2,7,3,6,4,5][::]` = `[2,7,3,6,4,5]`
+`[2,7,3,6,4,5][:2:]` = `[2,3,4]`
+
+- If both `a` and `c` are omitted and `b` is negative:
+`[2,7,3,6,4,5][:-1:]` = `[5,4,6,3,7,2]`
+`[2,7,3,6,4,5][:-2:]` = `[5,6,7]`
+
+
+### Properties
+
+- `.length` Returns the length of the string
+
+
+### Methods
+
+
 
 
 ## Strings
@@ -77,28 +158,12 @@ for i in 'apple':
 
 **Accessing**
 
-String elements are numbered in two schemes:
-- From the left increasing from 0
-- From the right decreasing from -1
-
 |t   |e   |s   |t   |s   |t   |r   |i   |n   |g   |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 |0   |1   |2   |3   |4   |5   |6   |7   |8   |9   |
 |-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1  |
 
-The canonical format
-
-Between one and three (inclusive) arguments can be provided, separated by `:`
-
-- `string[a]` will return the character at index `a` as a string of length 1
-- `string[a:c]` will return the characters between indices `a` and `c`, inclusive of `a` and exclusive of `c`. Will automatically step left if `c` indicates an index left of `a`.
-- `string[a:]` returns the characters between index `a` inclusive and the end of the string inclusive
-- `string[:c]` is equivalent to `string[0:c]`
-- `string[a:b:c]` will start at index `a` and step towards index `c` with steps of size `b`. Is inclusive of `a` but exclusive of `c`, and returns `''` if `sign(b) != sign(c-a)`. Step size can be any non-zero integer, positive or negative.
-
-- `string[:b:c]` is equivalent to `string[0:b:c]` if `b` is positive, or `string[-1:b:c]` if `b` is negative.
-- `string[a:b:]` steps from `a` with step size `b` until the end of the string
-- `string[:b:]` is equivalent to `string[0:b:]` if `b` is positive, or `string[-1:b:]` if `b` is negative.
+Accessing string elements is identical to accessing array elements, with the exception that the output is returned as a string:
 
 #### `string[a]`
 - `'teststring'[0]` returns `'t'`
