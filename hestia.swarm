@@ -46,7 +46,7 @@ define watchdog:
         # build from self.status
         ip,finishedHTMLreport -> HTTP.send
 
-define flic(req):
+define flic:
     run(req):
         req.args['button'],req.args['action'] -> main.flic
 
@@ -78,7 +78,7 @@ define main:
         'main',200 -> watchdog.receive
 
 
-facebook:
+define facebook:
     init:
         self.url = 'https://graph.facebook.com/v2.6/me/messages?access_token='
         self.accessToken = 'er0fja034fnoaeinrg0a384f0ag'
@@ -104,7 +104,7 @@ facebook:
     test:
         'facebook',200 -> watchdog.receive
 
-lifx:
+define lifx:
     init:
         headers = {'Authorization': 'Bearer ' + token}
 
