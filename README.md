@@ -305,13 +305,14 @@ html = '''
 </html>
 '''
 
-body = '<ul>\n'
+body = '<ul>'
 for i in listItems:
-    body += '<li>{item}</li>\n'.replace('{item}',i)
-body += '</ul>\n'
+    body += '<li>{item}</li>'.replace('{item}',i)
+body += '</ul>'
 
 html.replace((('{{{body}}}',body),
               ('<<<title>>>','Fruit: A Primer')))
+
 html.human
 html -> print
 ```
@@ -331,20 +332,104 @@ html -> print
   </body>
 </html>
 ```
+Note that no particular syntax is required to denote where to replace, ie `<<<title>>>` and `{{{body}}}` both worked fine. Anything you can specify via regex, you can replace. The replacement happens one pair at a time, over the entire document:
+```
+s = 'aab'
+s.replace((('ab','aab'),
+           ('aab','aa')))
+s -> print
+s = 'aab'
+s.replace((('aab','aa'),
+           ('ab','aab')))
+s -> print
+```
+```
+aaa
+aa
+```
+
+Let's try a somewhat more complex HTML generation example:
 
 ```
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+define records:
+    init:
+        status1 = {'Service X':'green',
+                   'Service Y':'green',
+                   'Service Z':'green'}
+        status2 = {'Service I':'green',
+                   'Service J':'red',
+                   'Service K':'green'}
 
-<ul>
-<li>First item in list.</li>
-<li>Second item in list.</li>
-<li>Last item in list.</li>
-</ul>
+    run(ip):
+        ip,{'Status: Group 1':status1,'Status: Group 2':status2} -> build
+    
+define build(ip,data):
+        template = '''
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>{{{title}}}</title>
+          </head>
+          <body>
+            {{{body}}}
+          </body>
+        </html>
+        '''
+
+        body = ''
+        for group,elem in data:
+            body += '<h2>{{{group}}}</h2>'.replace('{{{group}}}',group)
+            body += '<p><ul>'
+            for service,status in elem:
+                body += '<li style="color:{{{status}}}">{{{service}}}</li>'.replace((('{{{service}}}',service),
+                                                                                     ('{{{status}}}',status)))
+            body += '</ul></p>'
+
+        template.replace((('{{{title}}}','STATUS REPORT'),
+                          ('{{{body}}}',body)))
+        
+        template.human
+        template -> HTTP.send(ip)
 ```
 
 
-For example, the following will remove all bold tags from a string, while leaving their contents unchanged.
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>STATUS REPORT</title>
+  </head>
+  <body>
+    <h2>Status: Group 1</h2>
+    <p>
+      <ul>
+        <li style="color:green">Service X</li>
+        <li style="color:green">Service Y</li>
+        <li style="color:green">Service Z</li>
+      </ul>
+    </p>
+    <h2>Status: Group 2</h2>
+    <p>
+      <ul>
+        <li style="color:green">Service I</li>
+        <li style="color:red">Service J</li>
+        <li style="color:green">Service K</li>
+      </ul>
+    </p>
+  </body>
+</html>
+
+```
+
+
+
+
+
+
+
+
+
+Regexes with or without capture groups are also valid arguments to pass to `.replace`. For example, the following will remove all bold tags from a string, while leaving their contents unchanged.
 ```
 someBigString.replace(((r'<b>(.*?)</b>',r'\1')))
 ```
