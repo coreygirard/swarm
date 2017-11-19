@@ -87,6 +87,7 @@ Between one and three (inclusive) arguments can be provided, separated by `:`:
 - `'teststring'[-1:-1:]` returns `'gnirtstset'`
 - `'0123456789'[-1:-1:]` returns `'9876543210'`
 - `'teststring'[3:3:]` returns `'trg'`
+- `'0123456789'[3:3:]` returns `'369'`
 
 ### `string[:b:c]`
 - `'teststring'[:-1:2]` returns `'gnirtst'`
