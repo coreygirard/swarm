@@ -27,14 +27,44 @@ for i in 'apple':
     f += i
 ```
 
+Querying
 
+- `'sub' in 'substring'` returns `true`
+- `'strings' in 'substring'` returns `false`
+- `'substring' in 'sub'` returns `false`
+- `'string' in 'string'` returns `true`
+
+Accessing
+
+- `'teststring'[0]` returns `'t'` (string of length 1. No 'char' type here)
+- `'teststring'[0:3]` returns `'test'`
+- `'teststring'[4:9]` returns `'string'`
+- `'teststring'[0:3)` returns `'tes'`
+- `'teststring'(0:3)` returns `'es'`
+- `'teststring'[0:-1]` returns `'teststring'`
+- `s = [0:4)+[-3:-1]` then `'teststring'[s]` returns `'testing'`
+- `'teststring'[-1:-10]` returns `'gnirtstset'`
+- `'teststring'(10:0]` returns `'gnirtstset'`
+- `'teststring'[0:2:10)` returns `'tssrn'`
+- `'teststring'[0:-1:10)` returns `''`
+
+
+### Properties
+
+- `.length` Returns the length of the string
 
 
 ### Methods
 
-- `.length`: Returns the length of the string
-- `.replace`: Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
+- `.index(sub)` Returns the indices where substring `sub` is found. Returns empty list if not found
+- `.join(i)` Concatenates the strings in `i`, separated by the given string
+- `.replace()` Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments: `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
+- `.lower()` Convert all uppercase characters to lowercase
+- `.upper()` Convert all lowercase characters to uppercase
+- `.split(sep)` Splits a string into an array of strings, using `sep` as the delimiter.
 
+
+### URL methods
 
 
 
