@@ -1,5 +1,68 @@
 # Swarm
 
+## Strings
+
+Strings are represented as linked lists (maybe) until they are sent to another agent.
+
+### Operations
+Concatenation
+```
+a = 'ap' + 'ple'
+
+b = 'ap'
+b = b + 'ple'
+
+c = 'ap'
+c += 'ple'
+
+d = ''
+d += 'app'
+d += 'le'
+
+e = 'ple'
+e = 'ap' + e
+
+f = ''
+for i in 'apple':
+    f += i
+```
+
+
+
+
+### Methods
+
+- `.length`: Returns the length of the string
+- `.replace`: Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Hello World
 
 ```
