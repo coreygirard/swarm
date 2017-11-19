@@ -66,7 +66,25 @@ Accessing
 
 ### URL methods
 
-
+- `.parseurl()` Returns a dictionary containing the URL components, in the following fomat:
+```
+# 'https://corey:password@www.example.com:8080/dir1/dir2/dir3/text.html?key1=value1&key2=value2#frag'.parseurl()
+{'scheme':'https',
+ 'user':'corey',
+ 'password':'password',
+ 'host':'www.example.com',
+ 'port':8080,
+ 'path':['dir1','dir2','dir3','text.html'],
+ 'query':{'key1':'value1',
+          'key2':'value2'},
+ 'fragment':'frag'}
+```
+```
+# 'https://example.com/dir1/dir2/dir3/text.html'.parseurl()
+{'scheme':'https',
+ 'host':'example.com',
+ 'path':['dir1','dir2','dir3','text.html']}
+```
 
 
 
