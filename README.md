@@ -15,6 +15,13 @@ Hello World!
 
 The design of **Swarm** is meant to emulate the design paradigm of microservice architecture on a smaller scale (think one server instance rather than many). To that end, the overall structure is analogous to a set of distinct processes that communicate via HTTP-style requests. These pseudo-processes are called 'agents', and the requests are handled via the 'send' command (`->`).
 
+## Design goals
+
+- Handles HTTP requests easily "out of the box"
+- Excels as a server talking to many APIs
+- Easy multiprocessing and flexible scaling
+- Powerful and efficient HTML generation
+
 ## The `send` command
 
 Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following (Python):
@@ -279,7 +286,73 @@ define server:
 ```
 `HTTP.send` can be sent to, but cannot be user-defined. `HTTP.receive` should be defined in order to route incoming HTTP traffic to various other agents in the program.
 
+## HTML generation
 
+Swarm is designed to make HTML generation as easy as possible:
+
+```
+listItems = ['apple','pear','orange','banana']
+
+html = '''
+<!DOCTYPE html>
+<html>
+<head>
+<title><<<title>>></title>
+</head>
+<body>
+{{{body}}}
+</body>
+</html>
+'''
+
+body = '<ul>\n'
+for i in listItems:
+    body += '<li>{item}</li>\n'.replace('{item}',i)
+body += '</ul>\n'
+
+html.replace((('{{{body}}}',body),
+              ('<<<title>>>','Fruit: A Primer')))
+html.human
+html -> print
+```
+```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Fruit: A Primer</title>
+  </head>
+  <body>
+    <ul>
+      <li>apple</li>
+      <li>pear</li>
+      <li>orange</li>
+      <li>banana</li>
+    </ul>
+  </body>
+</html>
+```
+
+```
+<h1>My First Heading</h1>
+<p>My first paragraph.</p>
+
+<ul>
+<li>First item in list.</li>
+<li>Second item in list.</li>
+<li>Last item in list.</li>
+</ul>
+```
+
+
+For example, the following will remove all bold tags from a string, while leaving their contents unchanged.
+```
+someBigString.replace(((r'<b>(.*?)</b>',r'\1')))
+```
+This command will bold all instances of 'Swarm' or 'swarm', and italic all instances of 'Agent', 'Agents', 'agent', or 'agents':
+```
+someBigString.replace(((r'([Ss]warm)',r'<b>\1</b>'),
+                       (r'([Aa]gent[s]?)',r'<i>\1</i>')))
+```
 
 
 # Further Examples
