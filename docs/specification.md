@@ -70,50 +70,50 @@ For example, given the array `a = [5,7,42,6,1,-6,7,-4,9,13]`:
 
 **Accessing**
 
-Either scheme can be used to access array elements:
+Either scheme can be used to access array elements:  
 
-`a[0]` = `5`
-`a[-10]` = `5`
+`a[0]` = `5`  
+`a[-10]` = `5`  
 
-`a[2]` = `42`
-`a[-8]` = `42`
+`a[2]` = `42`  
+`a[-8]` = `42`  
 
-`a[9]` = `13`
-`a[-1]` = `13`
+`a[9]` = `13`  
+`a[-1]` = `13`  
 
-Multiple elements can be chosen, separated by commas:
+Multiple elements can be chosen, separated by commas:  
 
-- `a[4,7,-9,3]` = `[1,-4,7,6]`
+- `a[4,7,-9,3]` = `[1,-4,7,6]`  
 
-`Range` can also be used to access elements:
+`Range` can also be used to access elements:  
 
-`a[2:5)` = `[42,6,1]`
-`a[7:-2:1]` = `[-4,-6,6,7]`
+`a[2:5)` = `[42,6,1]`  
+`a[7:-2:1]` = `[-4,-6,6,7]`  
 
-When using a `Range` to specify an array subset, specifying `a` and `c` becomes optional, since we're working with a bounded interval already.
+When using a `Range` to specify an array subset, specifying `a` and `c` becomes optional, since we're working with a bounded interval already.  
 
-- If `a` is omitted and `b` is positive, the sequence starts at element `0`
->`[2,7,3,6,4,5][:1:3]` = `[2,7,3,6]`
->`[2,7,3,6,4,5][::3]` = `[2,7,3,6]`
+- If `a` is omitted and `b` is positive, the sequence starts at element `0`  
+`[2,7,3,6,4,5][:1:3]` = `[2,7,3,6]`  
+`[2,7,3,6,4,5][::3]` = `[2,7,3,6]`  
 
-- If `a` is omitted and `b` is negative, the sequence starts at element `-1`
->`[2,7,3,6,4,5][:-1:3]` = `[5,4,6]`
+- If `a` is omitted and `b` is negative, the sequence starts at element `-1`  
+`[2,7,3,6,4,5][:-1:3]` = `[5,4,6]`  
 
-- If `c` is omitted and `b` is positive, the sequence stops at or before the last element
->`[2,7,3,6,4,5][3:1:]` = `[6,4,5]`
->`[2,7,3,6,4,5][3::]` = `[6,4,5]`
+- If `c` is omitted and `b` is positive, the sequence stops at or before the last element  
+`[2,7,3,6,4,5][3:1:]` = `[6,4,5]`  
+`[2,7,3,6,4,5][3::]` = `[6,4,5]`  
 
-- If `c` is omitted and `b` is negative, the sequence stops at or before the first element
->`[2,7,3,6,4,5][3:-1:]` = `[6,3,7,2]`
+- If `c` is omitted and `b` is negative, the sequence stops at or before the first element  
+`[2,7,3,6,4,5][3:-1:]` = `[6,3,7,2]`  
 
-- If both `a` and `c` are omitted and `b` is positive:
->`[2,7,3,6,4,5][:1:]` = `[2,7,3,6,4,5]`
->`[2,7,3,6,4,5][::]` = `[2,7,3,6,4,5]`
->`[2,7,3,6,4,5][:2:]` = `[2,3,4]`
+- If both `a` and `c` are omitted and `b` is positive:  
+`[2,7,3,6,4,5][:1:]` = `[2,7,3,6,4,5]`  
+`[2,7,3,6,4,5][::]` = `[2,7,3,6,4,5]`  
+`[2,7,3,6,4,5][:2:]` = `[2,3,4]`  
 
-- If both `a` and `c` are omitted and `b` is negative:
->`[2,7,3,6,4,5][:-1:]` = `[5,4,6,3,7,2]`
->`[2,7,3,6,4,5][:-2:]` = `[5,6,7]`
+- If both `a` and `c` are omitted and `b` is negative:  
+`[2,7,3,6,4,5][:-1:]` = `[5,4,6,3,7,2]`  
+`[2,7,3,6,4,5][:-2:]` = `[5,6,7]`  
 
 
 #### Properties
