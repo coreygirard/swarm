@@ -116,7 +116,7 @@ When using a `Range` to specify an array subset, specifying `a` and `c` becomes 
 
 #### Properties
 
-- `.length` Returns the length of the string
+- `.length` Returns the length of the array
 
 
 #### Methods
@@ -235,6 +235,7 @@ Accessing string elements is identical to accessing array elements, with the exc
 
 ### Methods
 
+- `.escape()` Escapes HTML characters: `'<i>This</i> is an <b>example</b>'.escape()` = `'&lt;i&gt;This&lt;/i&gt; is an &lt;b&gt;example&lt;/b&gt;'`
 - `.index(sub)` Returns the indices where substring `sub` is found. Returns empty list if not found
 - `.join(i)` Concatenates the strings in `i`, separated by the given string
 - `.replace()` Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments: `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
@@ -322,12 +323,33 @@ define average:
 
 This defines an agent named `average`, with four *subagents*: `init`, `run`, `a`, and `b`.
 
-#### Subagents
 
-A subagent can be modelled as a combination of two things: a `function`, and a `queue`. The `queue` can be appended to by any subagent, including the subagent who owns the queue. As long as there are objects in the queue, the subagent pops objects from it and executes the `function` with the object as input.
+#### Properties
 
 
-**Agents** have two specially named parts
+
+#### Methods
+
+
+## Subagents
+
+A subagent can be modelled as a combination of two things: a `function` and a `queue`. The queue can be appended to by any subagent, including the subagent who owns the queue. As long as there are objects in the queue, the subagent pops objects from it and executes the function with the object as input. Each subagent has its own thread, and can error, crash, and generally operate independently.
+
+To send data to a `queue`, the send command is used: `42 -> average.run`
+
+There are two specially-named subagents:
+- `init` is executed once initially, and can set up variables global to all subagents of the agent
+- `run` can be referred to via `-> agent.run` or `-> agent`
+
+All subagents except for `init` must take at least one input, while `init` takes none. 
+
+
+#### Properties
+
+- `.queue.length` Returns the current length of the subagent's queue
+
+
+#### Methods
 
 
 
