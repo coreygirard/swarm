@@ -1,10 +1,12 @@
 
-## Scaling
+## Scaling / Elasticity
+
+Swarm also provides easy ways to elastically scale 'microservices'. For example, take a simple flow:
 
 ### Unscaled
 
 ```
-define stream:
+define fast:
     init:
         while true:
             4 -> slow
@@ -15,10 +17,12 @@ define slow(n):
         n*2 -> print
 ```
 
+It appears we have quite a bottleneck in the agent `b`. If only we could have more of them. Rather than forcing the user to fiddle with copy-pasting and renaming, Swarm offers easy static duplication of agents:
+
 ### Static scaling
 
 ```
-define stream:
+define fast:
     init:
         while true:
             4 -> slow
@@ -28,24 +32,26 @@ define stream:
 define slow:
     init:
         self.run2.instances.desired = 5
-        self.i = 0
 
     run(n):
-        n -> slow[self.i]
-        self.i = (self.i+1) % self.run2.instances.current
+        # Here we randomly choose an instance
+        i = random.choice([0:self.run2.instances.current))
+        n -> slow[i]
 
     run2(n):
         wait(5)
         n*2 -> print
 ```
 
+We can also scale elastically at runtime, based on perceived demand:
+
 ### Dynamic scaling
 
 ```
-define stream:
+define fast:
     init:
         while true:
-            4 -> loadBalancer            
+            4 -> slow          
             wait(1)
 
 define slow:
@@ -58,8 +64,9 @@ define slow:
         self.run2.instances.desired = 1
 
     run(n):
+        # Here we distribute to the instances sequentially
         self.i = self.i % self.run2.instances.current
-        4 -> b[self.i]
+        n -> b[self.i]
         self.i += 1
         
         totalQueue = 0
@@ -75,8 +82,10 @@ define slow:
 
     run2(n):
         wait(5)
-        n*2 -> b
+        n*2 -> print
 ```
+
+
 
 
 ---

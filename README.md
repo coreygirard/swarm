@@ -22,6 +22,19 @@ The design of **Swarm** is meant to emulate the design paradigm of microservice 
 - Easy multiprocessing and flexible scaling
 - Powerful and efficient HTML generation
 
+## Philosophy
+
+- Language design should encourage good program design
+- If possible, don't reinvent the wheel. People already know how to use wheels.
+- Prioritize legibility. Code is written once. It's read many times, usually by people unfamiliar with it (even your own future self!)
+- Be just clever enough
+- Less is more
+
+## Language Vision
+
+- A single file can be run locally, deployed to a single cloud server, or auto-deployed to a set of servers, by only changing a few options. (This seems most easily doable by having a deployment manager that reads the code, either asks the user or reads a brief deployment config file, and deploys it in the desired fashion. Presumably transpiling will be required, potentially rewriting one source file into many, for many distinct services, while keeping all the links of flow intact)
+- A single file (or several files with imports, if it aids human conceptualization) can describe an entire composite of microservices
+
 ## The `send` command
 
 Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following (Python):
