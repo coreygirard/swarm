@@ -118,7 +118,7 @@ When using a `Range` to specify an array subset, specifying `a` and `c` becomes 
 
 #### Properties
 
-- `.length` Returns the length of the array
+- **`.length`** Returns the length of the array
 
 
 #### Methods
@@ -232,23 +232,23 @@ Accessing string elements is identical to accessing array elements, with the exc
 
 ### Properties
 
-- `.length` Returns the length of the string
+- **`.length` Returns the length of the string
 
 
 ### Methods
 
-- `.escape()` Escapes HTML characters: `'<i>This</i> is an <b>example</b>'.escape()` = `'&lt;i&gt;This&lt;/i&gt; is an &lt;b&gt;example&lt;/b&gt;'`
-- `.index(sub)` Returns the indices where substring `sub` is found. Returns empty list if not found
-- `.join(i)` Concatenates the strings in `i`, separated by the given string
-- `.replace()` Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments: `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
-- `.lower()` Convert all uppercase characters to lowercase
-- `.upper()` Convert all lowercase characters to uppercase
-- `.split(sep)` Splits a string into an array of strings, using `sep` as the delimiter.
+- **`.escape()`** Escapes HTML characters: `'<i>This</i> is an <b>example</b>'.escape()` = `'&lt;i&gt;This&lt;/i&gt; is an &lt;b&gt;example&lt;/b&gt;'`
+- **`.index(sub)`** Returns the indices where substring `sub` is found. Returns empty list if not found
+- **`.join(i)`** Concatenates the strings in `i`, separated by the given string
+- **`.replace()`** Replaces, in-place, certain substrings with supplied substrings. Can be called with a pair of arguments: `.replace(fromSubstring,toSubstring)`. Can also be called with multiple pairs of arguments: `.replace(((from1,to1),(from2,to2)))`. When multiple from/to pairs are provided, they are executed sequentially over the entire string.
+- **`.lower()`** Convert all uppercase characters to lowercase
+- **`.upper()`** Convert all lowercase characters to uppercase
+- **`.split(sep)`** Splits a string into an array of strings, using `sep` as the delimiter.
 
 
 ### URL methods
 
-- `.parseurl()` Returns a dictionary containing the URL components, in the following fomat:
+- **`.parseurl()`** Returns a dictionary containing the URL components, in the following fomat:
 ```
 # 'https://corey:password@www.example.com:8080/dir1/dir2/dir3/text.html?key1=value1&key2=value2#frag'.parseurl()
 {'scheme':'https',
@@ -268,7 +268,7 @@ Accessing string elements is identical to accessing array elements, with the exc
  'path':['dir1','dir2','dir3','text.html']}
 ```
 
-- `buildurl(d)` Returns a string built from the provided dictionary. `buildurl(u.parseurl())` will return a URL functionally equivalent to `u`, though it may not be identical.
+- **`buildurl(d)`** Returns a string built from the provided dictionary. `buildurl(u.parseurl())` will return a URL functionally equivalent to `u`, though it may not be identical.
 
 
 
@@ -350,7 +350,11 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 #### Properties
 
-- `.queue.length` Returns the current length of the subagent's queue
+- **`.queue.length`** Returns the current length of the subagent's queue
+- **`.instances.min`** (read/write)
+- **`.instances.max`** (read/write)
+- **`.instances.desired`** (read/write)
+- **`.instances.current`** (read-only)
 
 
 #### Methods
