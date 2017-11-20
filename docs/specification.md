@@ -2,6 +2,8 @@
 
 ## Ranges
 
+#### Creating
+
 Range notation in Swarm is a more compact way of specifying lists that are composed of integers and follow a linear pattern.
 `[a:b:c]` is the canonical form, but many variations exist. This form defines a sequence that starts with `a`, steps by `b`, and ends with a value `n` where `n <= c`. Examples:
 - `[0:1:8]` is equivalent to `[0,1,2,3,4,5,6,7,8]`
@@ -30,11 +32,11 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 - `(5:b:5]` = `[]` for any `b`
 - `(5:b:5)` = `[]` for any `b`
 
-### Properties
+#### Properties
 
 - `.length` Returns the number of elements in the range
 
-### Methods
+#### Methods
 
 - `a.overlap(b)` Returns a new `Range` that contains only the elements in both `a` and `b`.
 `[1:7].overlap([4:9])` = `[4:7]`
@@ -51,7 +53,7 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 
 ## Arrays
 
-### Operations
+#### Operations
 
 Array elements are numbered in two schemes:
 - From the left increasing from 0
@@ -112,12 +114,12 @@ When using a `Range` to specify an array subset, specifying `a` and `c` becomes 
 `[2,7,3,6,4,5][:-2:]` = `[5,6,7]`
 
 
-### Properties
+#### Properties
 
 - `.length` Returns the length of the string
 
 
-### Methods
+#### Methods
 
 
 
@@ -126,7 +128,7 @@ When using a `Range` to specify an array subset, specifying `a` and `c` becomes 
 
 Strings are represented as linked lists (maybe) until they are sent to another agent.
 
-### Operations
+#### Operations
 **Concatenation**
 ```
 a = 'ap' + 'ple'
@@ -264,6 +266,92 @@ Accessing string elements is identical to accessing array elements, with the exc
 ```
 
 - `buildurl(d)` Returns a string built from the provided dictionary. `buildurl(u.parseurl())` will return a URL functionally equivalent to `u`, though it may not be identical.
+
+
+
+
+
+
+
+
+
+
+## Types
+
+`Types` are defined within the `init` subagent:
+
+```
+define agent:
+    init:
+        type point(x,y)
+    
+    run(e):
+        p = point(2.0,3.0)
+        
+        p.x -> print
+        p -> print
+```
+
+- `type point(x,y)` defines an object type called `point`, with components `x` and `y`
+- `point('x':2.0,'y':3.0)` creates a `point` object
+- `p.x` accesses the `x` component
+- `p ->` will convert the `point` object to the dictionary `{'x':2.0,'y':3.0}` and send it
+
+
+
+
+
+## Agent
+
+Basic agent:
+
+```
+define average:
+    init:
+        self.n = 0
+        
+    run(e):
+        e -> print
+        
+    a(b):
+        # code
+    
+    c(d):
+        # code
+```
+
+This defines an agent named `average`, with four *subagents*: `init`, `run`, `a`, and `b`.
+
+
+
+
+
+**Agents** have two specially named parts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
