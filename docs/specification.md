@@ -160,10 +160,10 @@ for i in 'apple':
 
 **Accessing**
 
-|t   |e   |s   |t   |s   |t   |r   |i   |n   |g   |
-|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-|0   |1   |2   |3   |4   |5   |6   |7   |8   |9   |
-|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1  |
+|Value           |t   |e   |s   |t   |s   |t   |r   |i   |n   |g   |
+|            :---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|Index from left |0   |1   |2   |3   |4   |5   |6   |7   |8   |9   |
+|Index from right|-10 |-9  |-8  |-7  |-6  |-5  |-4  |-3  |-2  |-1  |
 
 Accessing string elements is identical to accessing array elements, with the exception that the output is returned as a string:
 
@@ -356,6 +356,9 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 
 
+## Request objects
+
+What is received by the HTTP.receive subagent.
 
 
 
@@ -374,6 +377,90 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 
 
+
+
+
+## Elasticity
+
+Swarm also provides easy ways to elastically scale 'microservices'. For example, take a simple flow:
+
+```
+define a:
+    init:
+        while true:
+            4 -> b
+            wait(1)
+
+define b(n):
+        wait(5)
+        n*2 -> c
+
+define c(n):
+        n -> print
+```
+It appears we have quite a bottleneck in the agent `b`. If only we could have more of them. Rather than forcing the user to fiddle with copy-pasting and renaming, Swarm offers easy static duplication of agents:
+
+```
+define a:
+    init:
+        self.i = 0
+        while true:
+            4 -> b[self.i]
+            self.i = (self.i+1)%5
+            wait(1)
+
+define b(n) * 5:
+        wait(5)
+        n*2 -> c
+
+define c(n):
+        n -> print
+```
+
+We can also scale elastically at runtime, based on perceived demand:
+
+```
+define a:
+    init:
+        self.i = 0
+        while true:
+            4 -> loadBalancer
+            
+            wait(1)
+
+define loadBalancer:
+    init:
+        self.i = 0
+
+    run(n):
+        self.i = self.i % b.instances.current
+        4 -> b[self.i]
+        self.i += 1
+        
+        totalQueue = 0
+        for e in b.instances:
+            totalQ += e.queue.length
+        avgQueue = totalQueue / b.instances.current
+        
+        if avgQueue > someThreshold and b.instances.desired < maxInstances:
+            b.instances.desired += 1
+        
+        if avgQueue < someOtherThreshold and b.instances.desired > minInstances:
+            b.instances.desired -= 1            
+
+define b(n):
+        wait(5)
+        n*2 -> c
+
+define c(n):
+        n -> print
+```
+
+- `.instances.current` is read-only
+- `.instances.desired` is read/write
+- Both are non-negative integers
+
+The program tries to scale `.instances.current` to match `.instances.desired`. An increase will happen almost instantaneously, but a decrease will happen after the excess instances have no data in their queue.
 
 
 
@@ -483,7 +570,7 @@ a.length -> print
 
 **For loops** iterate through a provided sequence, making the iterator value available within the loop
 ```
-for n in (2,3,5,7):
+for n in [2,3,5,7]:
     n -> print
 ```
 ```
