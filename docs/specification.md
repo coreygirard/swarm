@@ -11,7 +11,9 @@ Range notation in Swarm is a more compact way of specifying lists that are compo
 - `[0:2:6]` is equivalent to `[0,2,4,6]`
 - `[0:2:5]` is equivalent to `[0,2,4]`
 - `[6:-2:-4]` is equivalent to `[6,4,2,0,-2,-4]`
-`b` can be omitted (`[a:c]`), and defaults to `1` if `a < c` or `-1` if `a > c`. If `a == c`, `[a:b:c]` returns `[a]` no matter the value or existence of `b`.
+
+`b` can be omitted (`[a:c]`), and defaults to `1` if `a < c` or `-1` if `a > c`. 
+If `a == c`, `[a:b:c]` returns `[a]` no matter the value or existence of `b`.
 
 Additionally, either `[` or `]` may be exchanged for the corresponding parenthesis, which makes that bound exclusive rather than inclusive. For example:
 
@@ -39,17 +41,17 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 #### Methods
 
 - `a.overlap(b)` Returns a new `Range` that contains only the elements in both `a` and `b`.
-`[1:7].overlap([4:9])` = `[4:7]`
-`[1:2:7].overlap([4:2:9])` = `[]`
+>`[1:7].overlap([4:9])` = `[4:7]`
+>`[1:2:7].overlap([4:2:9])` = `[]`
 
 - `.normalize()` Converts the `Range`, in-place, to a normalized form, ie inclusive on both ends, and with `a` and `c` as close as possible.
-`(4:8).normalize()` = `[5:7]`
-`(6:2].normalize()` = `[5:2]`
-`(0:3:14].normalize()` = `[3:3:12]`
-`(-2:-5:-105]` = `[-7:-5:-102]`
+>`(4:8).normalize()` = `[5:7]`
+>`(6:2].normalize()` = `[5:2]`
+>`(0:3:14].normalize()` = `[3:3:12]`
+>`(-2:-5:-105]` = `[-7:-5:-102]`
 
 
-
+---
 
 ## Arrays
 
@@ -91,27 +93,27 @@ Multiple elements can be chosen, separated by commas:
 When using a `Range` to specify an array subset, specifying `a` and `c` becomes optional, since we're working with a bounded interval already.
 
 - If `a` is omitted and `b` is positive, the sequence starts at element `0`
-`[2,7,3,6,4,5][:1:3]` = `[2,7,3,6]`
-`[2,7,3,6,4,5][::3]` = `[2,7,3,6]`
+>`[2,7,3,6,4,5][:1:3]` = `[2,7,3,6]`
+>`[2,7,3,6,4,5][::3]` = `[2,7,3,6]`
 
 - If `a` is omitted and `b` is negative, the sequence starts at element `-1`
-`[2,7,3,6,4,5][:-1:3]` = `[5,4,6]`
+>`[2,7,3,6,4,5][:-1:3]` = `[5,4,6]`
 
 - If `c` is omitted and `b` is positive, the sequence stops at or before the last element
-`[2,7,3,6,4,5][3:1:]` = `[6,4,5]`
-`[2,7,3,6,4,5][3::]` = `[6,4,5]`
+>`[2,7,3,6,4,5][3:1:]` = `[6,4,5]`
+>`[2,7,3,6,4,5][3::]` = `[6,4,5]`
 
 - If `c` is omitted and `b` is negative, the sequence stops at or before the first element
-`[2,7,3,6,4,5][3:-1:]` = `[6,3,7,2]`
+>`[2,7,3,6,4,5][3:-1:]` = `[6,3,7,2]`
 
 - If both `a` and `c` are omitted and `b` is positive:
-`[2,7,3,6,4,5][:1:]` = `[2,7,3,6,4,5]`
-`[2,7,3,6,4,5][::]` = `[2,7,3,6,4,5]`
-`[2,7,3,6,4,5][:2:]` = `[2,3,4]`
+>`[2,7,3,6,4,5][:1:]` = `[2,7,3,6,4,5]`
+>`[2,7,3,6,4,5][::]` = `[2,7,3,6,4,5]`
+>`[2,7,3,6,4,5][:2:]` = `[2,3,4]`
 
 - If both `a` and `c` are omitted and `b` is negative:
-`[2,7,3,6,4,5][:-1:]` = `[5,4,6,3,7,2]`
-`[2,7,3,6,4,5][:-2:]` = `[5,6,7]`
+>`[2,7,3,6,4,5][:-1:]` = `[5,4,6,3,7,2]`
+>`[2,7,3,6,4,5][:-2:]` = `[5,6,7]`
 
 
 #### Properties
@@ -122,7 +124,7 @@ When using a `Range` to specify an array subset, specifying `a` and `c` becomes 
 #### Methods
 
 
-
+---
 
 ## Strings
 
@@ -274,7 +276,7 @@ Accessing string elements is identical to accessing array elements, with the exc
 
 
 
-
+---
 
 
 ## Types
@@ -300,7 +302,7 @@ define agent:
 
 
 
-
+---
 
 ## Agents
 
@@ -331,6 +333,8 @@ This defines an agent named `average`, with four *subagents*: `init`, `run`, `a`
 #### Methods
 
 
+---
+
 ## Subagents
 
 A subagent can be modelled as a combination of two things: a `function` and a `queue`. The queue can be appended to by any subagent, including the subagent who owns the queue. As long as there are objects in the queue, the subagent pops objects from it and executes the function with the object as input. Each subagent has its own thread, and can error, crash, and generally operate independently.
@@ -354,11 +358,11 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 
 
-
+---
 
 ## Request objects
 
-What is received by the HTTP.receive subagent.
+What is received by the `HTTP.receive` subagent.
 
 
 
@@ -388,33 +392,35 @@ Swarm also provides easy ways to elastically scale 'microservices'. For example,
 define a:
     init:
         while true:
-            4 -> b
+            4 -> slow
             wait(1)
 
-define b(n):
+define slow(n):
         wait(5)
-        n*2 -> c
-
-define c(n):
-        n -> print
+        n*2 -> print
 ```
 It appears we have quite a bottleneck in the agent `b`. If only we could have more of them. Rather than forcing the user to fiddle with copy-pasting and renaming, Swarm offers easy static duplication of agents:
 
 ```
 define a:
     init:
-        self.i = 0
         while true:
-            4 -> b[self.i]
-            self.i = (self.i+1)%5
+            4 -> slow
             wait(1)
 
-define b(n) * 5:
-        wait(5)
-        n*2 -> c
 
-define c(n):
-        n -> print
+define slow:
+    init:
+        self.run2.instances.desired = 5
+        self.i = 0
+
+    run(n):
+        n -> slow[self.i]
+        self.i = (self.i+1) % self.run2.instances.current
+
+    run2(n):
+        wait(5)
+        n*2 -> print
 ```
 
 We can also scale elastically at runtime, based on perceived demand:
@@ -422,38 +428,38 @@ We can also scale elastically at runtime, based on perceived demand:
 ```
 define a:
     init:
-        self.i = 0
         while true:
-            4 -> loadBalancer
-            
+            4 -> loadBalancer            
             wait(1)
 
-define loadBalancer:
+define slow:
     init:
         self.i = 0
+        
+        self.run2.instances.min = 1
+        self.run2.instances.max = 5
+
+        self.run2.instances.desired = 1
 
     run(n):
-        self.i = self.i % b.instances.current
+        self.i = self.i % self.run2.instances.current
         4 -> b[self.i]
         self.i += 1
         
         totalQueue = 0
-        for e in b.instances:
+        for e in slow.instances:
             totalQ += e.queue.length
-        avgQueue = totalQueue / b.instances.current
+        avgQueue = totalQueue / self.run2.instances.current
         
-        if avgQueue > someThreshold and b.instances.desired < maxInstances:
-            b.instances.desired += 1
+        if avgQueue > someThreshold and self.run2.instances.desired < self.run2.instances.max:
+            self.run2.instances.desired += 1
         
-        if avgQueue < someOtherThreshold and b.instances.desired > minInstances:
-            b.instances.desired -= 1            
+        if avgQueue < someOtherThreshold and self.run2.instances.desired > self.run2.instances.min:
+            self.run2.instances.desired -= 1            
 
-define b(n):
+    run2(n):
         wait(5)
-        n*2 -> c
-
-define c(n):
-        n -> print
+        n*2 -> b
 ```
 
 - `.instances.current` is read-only
