@@ -301,7 +301,7 @@ define agent:
 
 
 
-## Agent
+## Agents
 
 Basic agent:
 
@@ -322,8 +322,9 @@ define average:
 
 This defines an agent named `average`, with four *subagents*: `init`, `run`, `a`, and `b`.
 
+#### Subagents
 
-
+A subagent can be modelled as a combination of two things: a `function`, and a `queue`. The `queue` can be appended to by any subagent, including the subagent who owns the queue. As long as there are objects in the queue, the subagent pops objects from it and executes the `function` with the object as input.
 
 
 **Agents** have two specially named parts
