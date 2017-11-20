@@ -36,15 +36,15 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 
 #### Properties
 
-- `.**length**` Returns the number of elements in the range
+- **`.length`** Returns the number of elements in the range
 
 #### Methods
 
-- `a.**overlap**(b)` Returns a new `Range` that contains only the elements in both `a` and `b`.  
+- **`a.overlap(b)`** Returns a new `Range` that contains only the elements in both `a` and `b`.  
 `[1:7].overlap([4:9])` = `[4:7]`  
 `[1:2:7].overlap([4:2:9])` = `[]`  
 
-- `.**normalize**()` Converts the `Range`, in-place, to a normalized form, ie inclusive on both ends, and with `a` and `c` as close as possible.  
+- **`.normalize()`** Converts the `Range`, in-place, to a normalized form, ie inclusive on both ends, and with `a` and `c` as close as possible.  
 `(4:8).normalize()` = `[5:7]`  
 `(6:2].normalize()` = `[5:2]`  
 `(0:3:14].normalize()` = `[3:3:12]`  
