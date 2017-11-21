@@ -37,11 +37,10 @@ The design of **Swarm** is meant to emulate the design paradigm of microservice 
 
 ## To Do
 
-- [x] This is done
-- [x] This is done
-- [x] This is done
-- [ ] This is not done
-- [ ] This is not done
+- [x] Document language vision and philosophy
+- [ ] Complete working interpreter
+- [ ] Document all implemented functionality
+- [ ] Complete optimized working/interpreter
 
 ## The `send` command
 

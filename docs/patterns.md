@@ -85,9 +85,19 @@ define slow:
         n*2 -> print
 ```
 
+The program tries to scale `.instances.current` to match `.instances.desired`. An increase will happen almost instantaneously, but a decrease will happen after the excess instances have no data in their queue.
+
+---
+
 ## String tricks
 
 using .replace to automatically append {{{ and }}} to things in a dictionary 
 
 
 ---
+
+
+
+
+
+

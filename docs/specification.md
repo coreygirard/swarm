@@ -511,19 +511,6 @@ What is received by the `HTTP.receive` subagent.
 - `.instances.desired` is read/write
 - Both are non-negative integers
 
-The program tries to scale `.instances.current` to match `.instances.desired`. An increase will happen almost instantaneously, but a decrease will happen after the excess instances have no data in their queue.
-
-
-
-
-
-
-
-
-
----
----
----
 
 
 
@@ -539,16 +526,82 @@ The program tries to scale `.instances.current` to match `.instances.desired`. A
 
 
 
-## Hello World
+
+
+
+## Boolean Logic
+
+`true` = `true`  
+`false` = `false`  
+
+`!true` = `false`  
+`not false` = `true`  
+
+`true and false` = `true & false` = `false`  
+`true or false` = `true | false` = `true`  
+
+Included for completeness and misanthropes:
+`true nand false` = `not (true and false)` = `not false` = `true`  
+`true nor false` = `not (true or false)` = `not true` = `false`  
+
+`true xor false` = `true != false` = `true`  
+`true xnor false` = `true == false` = `false`  
+
+(`IMPLY` is not implemented, because all lines must be drawn somewhere)
+
+
+## Typing
+
+Within a subagent, Swarm is duck typed, much like Python:
 
 ```
-define hello:
+define example:
     init:
-        "Hello World!" -> print
+        v = 5
+        v -> print
+        v = 'string'
+        v -> print
 ```
 ```
-Hello World!
+5
+string
 ```
+
+It is possible to freely pass objects between subagents or agents:
+
+```
+define example:
+    init:
+        {'n':5} -> recvAndPrint
+
+define recvAndPrint(data):
+        data.n -> print
+```
+
+However, arbitrarily strong typing can be forced upon objects passed between subagents or agents:
+
+```
+type strict:
+    int n:
+        n % 2 == 0
+        n > -3
+
+define agent1:
+    init:
+        strict(8) -> recvAndPrint # would succeed
+        strict(3) -> recvAndPrint # would error, because 'strict' requires an even integer greater than -3
+        3 -> recvAndPrint         # would error, because the object being passed is not the type required by 'recvAndPrint'
+        
+define recvAndPrint(strict data):
+        data.n -> print
+```
+
+
+
+---
+---
+---
+
 
 ## Values
 ```
