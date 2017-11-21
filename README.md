@@ -35,6 +35,14 @@ The design of **Swarm** is meant to emulate the design paradigm of microservice 
 - A single file can be run locally, deployed to a single cloud server, or auto-deployed to a set of servers, by only changing a few options. (This seems most easily doable by having a deployment manager that reads the code, either asks the user or reads a brief deployment config file, and deploys it in the desired fashion. Presumably transpiling will be required, potentially rewriting one source file into many, for many distinct services, while keeping all the links of flow intact)
 - A single file (or several files with imports, if it aids human conceptualization) can describe an entire composite of microservices
 
+## To Do
+
+- [x] This is done
+- [x] This is done
+- [x] This is done
+- [ ] This is not done
+- [ ] This is not done
+
 ## The `send` command
 
 Understanding the 'send' command is critical for effective programming in Swarm. **Agents** don't communicate through traditional function calls, such as the following (Python):

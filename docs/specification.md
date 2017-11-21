@@ -281,24 +281,133 @@ Accessing string elements is identical to accessing array elements, with the exc
 
 ## Types
 
-`Types` are defined within the `init` subagent:
+`Types` are defined outside of agents:
 
 ```
-define agent:
-    init:
-        type point(x,y)
-    
-    run(e):
-        p = point(2.0,3.0)
-        
+type point:
+    float x:
+        x >= -180.0
+        x <= 180.0
+
+    float y:
+        y >= -90.0
+        y <= 90.0
+
+define agent1:
+    run(i):
+        p = point(2.0,3.0)        
         p.x -> print
-        p -> print
+        p -> agent2
+
+define agent2:
+    run(point e):
+        x,y = e.x,e.y
 ```
 
-- `type point(x,y)` defines an object type called `point`, with components `x` and `y`
-- `point('x':2.0,'y':3.0)` creates a `point` object
-- `p.x` accesses the `x` component
-- `p ->` will convert the `point` object to the dictionary `{'x':2.0,'y':3.0}` and send it
+If the `type` is omitted from a subagent definition (`run(point e):`), it defaults to `dict`, which is unrestricted. 
+The benefits of defining a `type` are essentially in creating a contract between the 
+developers of each microservice/agent. The variable types of each component can optionally be
+specified, and any number of statements may be provided, all of which must evaluate to `true` to
+avoid an error. The following doesn't specify variable type:
+
+```
+type nonnegative:
+    n:
+        n >= 0
+```
+
+Multiple types can be provided for the same variable, in which case any of them are valid. A component
+must obey the statements about its variable type only:
+
+```
+type strange:
+    float i:
+        i < 0
+        
+    int i:
+        i >= 0
+```
+
+Above, `i` can be either a negative `float` or a non-negative integer. Any expression can be 
+asserted in a `type` definition:
+
+```
+type even:
+    int i:
+        i%2 == 0
+```
+
+The following will allow days of the week or `false` value:
+
+```
+
+type day:
+    string day:
+        day in ['monday','tuesday','wednesday','thursday','friday','saturday','sunday']
+    
+    bool day:
+        day == false
+
+```
+
+Mutually exclusive assertions are possible, even for the same variable type. The following can be an 
+even integer greater than 5, *or* an odd integer less than or equal to 9:
+
+```
+type strange:
+    int i:
+        i % 2 == 0
+        i > 5
+    
+    int i:
+        i % 2 == 1
+        i <= 9
+```
+
+This is to prevent monstrosities like the following:
+
+```
+# DON'T DO THIS
+type awful:
+    int i:
+        (i % 2 == 0 and i > 5) or (i % 2 == 1 and i <= 9)
+```
+
+Assertions involving multiple components are also possible:
+
+```
+type tangled:
+    int a:
+        a >= 0
+    
+    int b:
+        b >= 0
+    
+    :
+        (a + b) % 2 == 0
+```
+
+Default values are also possible. After the following definition, `example()` will create `{'a':4,'b':0.1}`:
+```
+type example:
+    int a = 4:
+        a < 6
+    
+    bool a:
+        a == false
+    
+    float b:
+        b < -4.0
+    
+    float b = 0.1:
+        b >= 0.0
+```
+
+Naturally, only one default per component is permissible.
+
+Definitions of `type` will automatically be included in any agents that create them or receive them.
+If an agent is sending a defined `type` to another agent who doesn't specify a receiving `type`,
+the object will arrive as a simple `dict`, with all fields intact.
 
 
 
@@ -352,17 +461,21 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 #### Properties
 
-- **`.queue.length`** Returns the current length of the subagent's queue
-- **`.instances.min`** (read/write)
-- **`.instances.max`** (read/write)
-- **`.instances.desired`** (read/write)
-- **`.instances.current`** (read-only)
+- **`.queue.length`** Returns the current length of the subagent's queue (read-only)
+- **`.queue.first`** Returns the object at the front of the queue (ie, next in line to be processed) (read-only)
+- **`.queue.last`** Returns the object at the back of the queue (read-only)
+- **`.instances.min`** (read/write, non-negative integer)
+- **`.instances.max`** (read/write, non-negative integer)
+- **`.instances.desired`** (read/write, non-negative integer)
+- **`.instances.current`** (read-only, non-negative integer)
 
 
 #### Methods
 
-
-
+- **`.queue.popfirst()`** Removes and returns the object at the front of the queue (in place)
+- **`.queue.poplast()`** Removes and returns the object at the back of the queue (in place)
+- **`.queue.insertfirst()`** Inserts an object at the front of the queue
+- **`.queue.insertlast()`** Inserts an object at the end of the queue
 
 ---
 

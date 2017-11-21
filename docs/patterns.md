@@ -17,7 +17,7 @@ define slow(n):
         n*2 -> print
 ```
 
-It appears we have quite a bottleneck in the agent `b`. If only we could have more of them. Rather than forcing the user to fiddle with copy-pasting and renaming, Swarm offers easy static duplication of agents:
+It appears we have quite a bottleneck in the agent `slow`. If only we could have more of them. Rather than forcing the user to fiddle with copy-pasting and renaming, Swarm offers easy static duplication of agents:
 
 ### Static scaling
 
@@ -85,7 +85,9 @@ define slow:
         n*2 -> print
 ```
 
+## String tricks
 
+using .replace to automatically append {{{ and }}} to things in a dictionary 
 
 
 ---
