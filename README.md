@@ -32,7 +32,7 @@ The design of **Swarm** is meant to emulate the design paradigm of microservice 
 
 ## Language Vision
 
-- A single file can be run locally, deployed to a single cloud server, or auto-deployed to a set of servers, by only changing a few options. (This seems most easily doable by having a deployment manager that reads the code, either asks the user or reads a brief deployment config file, and deploys it in the desired fashion. Presumably transpiling will be required, potentially rewriting one source file into many, for many distinct services, while keeping all the links of flow intact)
+- A single file can be run locally, deployed to a single cloud server, or auto-deployed to a set of servers, by only changing a few options. (This seems most easily doable by having a deployment manager that reads the code, either asks the user or reads a brief deployment config file, and deploys it in the desired fashion. Presumably transpiling will be required (Go seems a good target), potentially rewriting one source file into many, for many distinct services, while keeping all the links of flow intact)
 - A single file (or several files with imports, if it aids human conceptualization) can describe an entire composite of microservices
 
 ## To Do
@@ -441,8 +441,24 @@ define build(ip,data):
 
 ```
 
+    <h2>Status: Group 1</h2>
+    <p>
+      <ul>
+        <li style="color:green">Service X</li>
+        <li style="color:green">Service Y</li>
+        <li style="color:green">Service Z</li>
+      </ul>
+    </p>
+    <h2>Status: Group 2</h2>
+    <p>
+      <ul>
+        <li style="color:green">Service I</li>
+        <li style="color:red">Service J</li>
+        <li style="color:green">Service K</li>
+      </ul>
+    </p>
 
-
+It's hideous, but it was easy!
 
 
 
