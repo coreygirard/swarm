@@ -16,8 +16,8 @@ class Node(object):
         child.parent = self
         self.children.append(child)
 
-    def __repr__(self):
-        return self.code + str(self.children)
+    #def __repr__(self):
+    #    return self.code + str(self.children)
 
 def loadfile(filename):
     code = []
@@ -48,44 +48,8 @@ def tree(filename):
             
     return root
 
-# -----------------------------------------------------------
-
-class Literal(object):
-    def __init__(self,v):
-        self.v = v
-    
-    def exe(self):
-        return self.v
-
-    def __repr__(self):
-        return str(self.v)
-
-class Pr(object):
-    def recv(self,e):
-        print(e)
-
-    def __repr__(self):
-        return 'print'
-
-class Send(object):
-    def __init__(self,f,t):
-        self.f = f
-        self.t = t
-    
-    def exe(self):
-        self.t.recv(self.f.exe())
-
-    def __repr__(self):
-        return 'Send(' + repr(self.f) + '->' + repr(self.t) + ')'
-
-def buildLine(line):
-    #token = tokens(line)
-    #if [token[1].value,token[2].value] == ['->','print']:
-    #    return Send(Literal(token[0].value),Pr())
-    return Send(Literal(5),Pr())
 
 # -----------------------------------------------------------
-
 
 class Line(object):
     def __init__(self,code):
@@ -93,6 +57,9 @@ class Line(object):
         
     def exe(self):
         print("fake-executing '" + self.code + "'")
+
+def buildLine(line):
+    return Line(line)
 
 class Parent(object):
     def __init__(self,code,children):
@@ -104,11 +71,67 @@ class Parent(object):
         for c in self.children:
             c.exe()
 
+class PrimitiveFor(object):
+    def __init__(self,iterator,children):
+        self.iterator = iterator
+        self.children = children
+    
+    def exe(self):
+        for i in self.iterator.iterate():
+            for c in self.children:
+                c.exe()
+        
+class PrimitiveRange(object):
+    def __init__(self,*args):
+        if len(args) == 4:
+            self.l = args[0]
+            self.a = args[1]
+            self.b = 1
+            self.c = args[2]
+            self.r = args[3]
+        elif len(args) == 5:
+            self.l = args[0]
+            self.a = args[1]
+            self.b = args[2]
+            self.c = args[3]
+            self.r = args[4]
+
+    def iterate(self):
+        start = self.a
+        if self.l == '(':
+            start = start + self.b
+        stop = self.c
+        if self.r == ')':
+            stop = stop - 1
+        t = start
+        while t <= stop:
+            yield t
+            t = t + self.b
+
 def convert(t):
-    if t.children == []:     # If it's a single raw line
+    c = t.code
+    if c.startswith('for '):
+        assert(t.children != [])
+        
+        match = re.match(r'^for (.+?) in (.+?):$',c)
+        if match:
+            variables = match.groups()[0]
+            iterator = match.groups()[1]
+            
+            print(iterator)
+            match = re.match(r'(\[|\()([0-9]+)(?:[:]([0-9]+)){1,2}(\]|\))',iterator)
+            rangeParams = list(match.groups())
+            for i in range(len(rangeParams)):
+                if rangeParams[i] not in '()[]':
+                    rangeParams[i] = int(rangeParams[i])
+            
+            
+
+        return PrimitiveFor(PrimitiveRange(*rangeParams),[buildLine(e.code) for e in t.children])
+        
+        print(t.code)
+        print(t.children[0].code)
         return buildLine(t.code)
-    else:                    # If it's a structure, like 'for', 'define', etc
-        return Parent(t.code,[convert(e) for e in t.children])
 
 
 # --------------------------------------------------------
@@ -117,21 +140,22 @@ class Subagent(object):
     def __init__(self,code):
         self.code = code
     
-    def __repr__(self):
-        return 'Subagent(' + str(self.code) + ')'
+    #def __repr__(self):
+    #    return 'Subagent(' + str(self.code) + ')'
 
     def exe(self):
-        self.code.exe()
+        for c in self.code:
+            c.exe()
 
 def makeSubagent(s):
-    return Subagent(convert(s))
+    return Subagent([convert(e) for e in s.children])
 
 class Agent(object):
     def __init__(self,subagent):
         self.subagent = subagent
     
-    def __repr__(self):
-        return 'Agent(' + str(self.subagent) + ')'
+    #def __repr__(self):
+    #    return 'Agent(' + str(self.subagent) + ')'
     
     def init(self):
         if 'init' in self.subagent:
