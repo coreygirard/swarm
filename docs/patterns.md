@@ -89,12 +89,6 @@ The program tries to scale `.instances.current` to match `.instances.desired`. A
 
 ---
 
-## String tricks
-
-using .replace to automatically append {{{ and }}} to things in a dictionary 
-
-
----
 
 
 
