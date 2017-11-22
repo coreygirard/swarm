@@ -15,13 +15,13 @@ def tokens(line):
         a,b,c = match.groups()
         return tokens(a) + [Tag('literal',b)] + tokens(c)
 
-    for symbol in list(':,(){}[]=-.+<>'):
-        match = re.match('^(.*)[' + symbol + '](.*)$',line)
+    for symbol in ['->','==','-=','+=','<=','>=']:
+        match = re.match('^(.*)' + symbol + '(.*)$',line)
         if match:
             return tokens(match.groups()[0]) + [Tag(symbol,symbol)] + tokens(match.groups()[1])
 
-    for symbol in ['->','==','-=','+=','<=','>=']:
-        match = re.match('^(.*)' + symbol + '(.*)$',line)
+    for symbol in list(':,(){}[]=-.+<>'):
+        match = re.match('^(.*)[' + symbol + '](.*)$',line)
         if match:
             return tokens(match.groups()[0]) + [Tag(symbol,symbol)] + tokens(match.groups()[1])
 

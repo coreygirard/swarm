@@ -53,6 +53,57 @@ If `a == c` and one or both bounds are exclusive, an empty array is the result:
 `(-2:-5:-105]` = `[-7:-5:-102]`  
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 ## Arrays
@@ -154,6 +205,61 @@ a,b,c = t
 - **`.pop([i])`** Removes and returns the element at index `i`. If `i` is omitted, it defaults to the last item.  
 - **`.sort()`**
 - **`a[:-1:]`** Returns a reversed copy of array `a`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
@@ -310,9 +416,192 @@ Accessing string elements is identical to accessing array elements, with the exc
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+## Dictionaries
+
+#### Operations
+
+**Creation**
+
+```
+height = {'Alice': 5*12 + 8,
+          'Bob': 5*12 + 11}
+
+temp = {}
+```
+
+**Inserting**
+`height['Eve'] = 5*12 + 9`
+
+**Modifying**
+`height['Bob'] = 6*12`
+
+**Accessing**
+`height['Alice']` Gives error if key not in dictionary
+
+**Deleting**
+`delete height['Alice']`
+
+
+### Properties
+
+### Methods
+
+- `k in d` Returns `true` if `k` is a key of `d`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 ## Sets?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ---
 
@@ -454,6 +743,58 @@ the object will arrive as a simple `dict`, with all fields intact.
 
 #### Methods
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ---
 
 ## Agents
@@ -521,6 +862,52 @@ All subagents except for `init` must take at least one input, while `init` takes
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## print
 ```
 'Strings work' -> print
@@ -550,9 +937,57 @@ Strings work
 
 #### Properties
 
-- **`.separator`** The string to print after every input. Default: `\n`
+- **`.separator`** The string to print after every input. (read/write) Default: `\n`
 
 #### Methods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## error
@@ -562,15 +997,66 @@ define example:
         'This is an example error' -> error
 ```
 ```
-ERROR in 'example': This is an example error
+ERROR in 'example.init': This is an example error
 ```
 
 
 #### Properties
 
 - **`.levels`** A list of the error severity levels, ranked from least to most severe. Default: `['green','yellow','red']` (read/write)
+- **`.ignoreBelow`** Sets the severity level below which errors are ignored (read/write) Default: `green`
 
 #### Methods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## logging
@@ -613,6 +1099,56 @@ define example:
 #### Methods
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## analytics
 
 ```
@@ -641,6 +1177,52 @@ tag: 'pear'
 #### Methods
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## http
 
 ```
@@ -666,7 +1248,9 @@ define server:
 
 #### Methods
 
+#### Subagents
 
+- **`.receive`** Define to manually handle/route incoming HTTP requests
 
 
 

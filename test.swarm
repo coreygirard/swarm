@@ -1,7 +1,20 @@
+
 define test:
     init:
-        for i in [0:5):
-            i -> test.p
-        
-    p(n):
-        n -> print
+        4 -> print
+        4 -> print
+
+define trial:
+    init:
+        6 -> print
+        6 -> print
+
+
+#define test:
+#    init:
+#        for i in [0:5):
+#            i -> test.p
+#        
+#    p(n):
+#        n -> print
+#
