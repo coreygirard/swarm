@@ -94,14 +94,6 @@ class Line(object):
     def exe(self):
         print("fake-executing '" + self.code + "'")
 
-#class Sequence(object):
-    #def __init__(self,lines):
-        #self.lines = lines
-    
-    #def exe(self):
-        #for line in self.lines:
-            #line.exe()
-
 class Parent(object):
     def __init__(self,code,children):
         self.code = code
@@ -119,6 +111,8 @@ def convert(t):
         return Parent(t.code,[convert(e) for e in t.children])
 
 
+# --------------------------------------------------------
+
 class Subagent(object):
     def __init__(self,code):
         self.code = code
@@ -126,8 +120,11 @@ class Subagent(object):
     def __repr__(self):
         return 'Subagent(' + str(self.code) + ')'
 
+    def exe(self):
+        self.code.exe()
+
 def makeSubagent(s):
-    return Subagent(s.children)
+    return Subagent(convert(s))
 
 class Agent(object):
     def __init__(self,subagent):
@@ -135,6 +132,10 @@ class Agent(object):
     
     def __repr__(self):
         return 'Agent(' + str(self.subagent) + ')'
+    
+    def init(self):
+        if 'init' in self.subagent:
+            self.subagent['init'].exe()
 
 def makeAgent(a):
     subagent = {}
@@ -151,6 +152,10 @@ def makeAgent(a):
 class Program(object):
     def __init__(self,agent):
         self.agent = agent
+
+    def init(self):
+        for a in self.agent.values():
+            a.init()
 
 def makeProgram(t):
     # TODO: handle type definitions as well
@@ -171,7 +176,9 @@ def makeProgram(t):
 
 t = tree('test.swarm')
 
-print(makeProgram(t).agent)
+p = makeProgram(t)
+
+p.init()
 
 
 

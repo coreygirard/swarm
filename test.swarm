@@ -3,6 +3,8 @@ define test:
     init:
         4 -> print
         4 -> print
+        testing
+            9 -> print
     
     otherStuff:
         hello
