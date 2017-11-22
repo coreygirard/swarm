@@ -42,6 +42,7 @@ def tree(filename):
         else:
             while line.depth < ptr.depth:
                 ptr = ptr.parent
+            ptr = ptr.parent
             ptr.add(line)
             ptr = ptr.children[-1]
             
@@ -120,28 +121,49 @@ def convert(t):
 
 class Subagent(object):
     def __init__(self,code):
-        pass
+        self.code = code
+    
+    def __repr__(self):
+        return 'Subagent(' + str(self.code) + ')'
 
-def makeSubagent():
-    pass
+def makeSubagent(s):
+    return Subagent(s.children)
 
 class Agent(object):
-    def __init__(self,subagents):
-        pass
+    def __init__(self,subagent):
+        self.subagent = subagent
+    
+    def __repr__(self):
+        return 'Agent(' + str(self.subagent) + ')'
 
-def makeAgent(t):
-    pass
+def makeAgent(a):
+    subagent = {}
+    for line in a.children:
+        c = line.code
+        assert(re.match(r'^[a-zA-Z0-9]+:$',c) != None)
+        
+        match = re.match(r'^([a-zA-Z0-9]+):$',c)
+        if match:
+            subagent[match.groups()[0]] = makeSubagent(line)
+    
+    return Agent(subagent)
 
 class Program(object):
-    def __init__(self,agents):
-        self.agents = agents
+    def __init__(self,agent):
+        self.agent = agent
 
 def makeProgram(t):
     # TODO: handle type definitions as well
-    p = []
-    for line in t:
-        print(line)
+    agent = {}
+    for line in t.children:
+        c = line.code
+        assert(c.startswith('define '))
+        
+        match = re.match(r'^define (.*):$',c)
+        if match:
+            agent[match.groups()[0]] = makeAgent(line)
 
+    return Program(agent)
 
 
 
@@ -149,10 +171,7 @@ def makeProgram(t):
 
 t = tree('test.swarm')
 
-p = convert(t)
-p.exe()
-
-
+print(makeProgram(t).agent)
 
 
 
