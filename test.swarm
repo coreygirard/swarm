@@ -1,9 +1,13 @@
 
 define test:
     init:
-        self.b = 2
         for n in [0:3]:
             n -> print
+        
+        i = 0
+        while i < 5:
+            i -> print
+            i = i + 1
 
 
 #define test:
