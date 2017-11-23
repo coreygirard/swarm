@@ -1,8 +1,9 @@
 
 define test:
     init:
-        for n in [0:3):
-            9 -> print
+        self.b = 2
+        for n in [0:3]:
+            n -> print
 
 
 #define test:

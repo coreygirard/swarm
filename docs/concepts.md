@@ -127,3 +127,115 @@ define example(n):
 
 You can imagine each **agent** as a process, and each **subagent** as a thread within that process. the `init` command, when used within an **agent**'s definition, will initialize variables that are shared among all **subagents**
 
+
+## Scope
+
+```
+define driver:
+    init:
+        for n in [1:3]:
+            n -> agent
+
+define agent:
+    init:
+        self.e = 4
+    
+    run(q):
+        self.e -> 4
+```
+```
+4
+4
+4
+```
+```
+define driver:
+    init:
+        for n in [1:3]:
+            n -> agent
+
+define agent:
+    init:
+        e = 4
+    
+    run(q):
+        e -> 4
+```
+```
+ERROR: 'e' is not defined
+```
+```
+define driver:
+    init:
+        for n in [1:3]:
+            n -> agent
+
+define agent:
+    init:
+        self.e = 4
+    
+    run(q):
+        self.e = q
+        self.e -> 4
+```
+```
+1
+2
+3
+```
+```
+define agent:
+    init:
+        e = 10
+        e -> print
+        for e in [0:3]:
+            e -> print
+        e -> print
+```
+```
+10
+0
+1
+2
+3
+3
+```
+```
+define agent:
+    init:
+        e = 10
+        e -> print
+        for e in [0:3]:
+            e *= 2
+            e -> print
+        e -> print
+```
+```
+10
+0
+2
+4
+6
+6
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
