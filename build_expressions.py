@@ -1,4 +1,5 @@
 import re
+import operator
 import build_primitives as primitives
 
 
@@ -72,12 +73,13 @@ def buildLiteralsAndVariables(e,scope):
 
 def tokenizeExpression(e,scope):
     e = [e]
-    for symbol in ['[*]{2}','\(','\)','(?<![*])[*](?![*])','[-]','[+]','[/]']:
+    for symbol in ['<=','>=','==','[*]{2}','\(','\)','(?<![*])[*](?![*])','[-]','[+]','[/]','[<]','[>]']:
         temp = []
         for i in e:
             temp = temp + [a.strip() for a in re.split(r'(' + symbol + ')',i) if a.strip() != '']
         e = temp
 
+    print(e)
     e = buildLiteralsAndVariables(e,scope)
     return e
 
@@ -91,6 +93,8 @@ def collapse(e,op,c):
     return c(inputs)
 
 def recurse(exp):    
+    print(exp)
+    
     assert(exp.count('(') == exp.count(')'))
     
     # reduce parenthetical expressions to single values
@@ -104,6 +108,24 @@ def recurse(exp):
         b = recurse(b[1:-1])
         exp = a+[b]+c
 
+    if len(exp) == 1:
+        return exp[0]
+        
+    assert(sum([s in exp for s in ['<','>','==','!=','<=','>=']]) <= 1) # TODO: add support for expressions like 'A < B < C'
+    if any([s in exp for s in ['<','>','==','!=','<=','>=']]):
+        for char,f in {'<':operator.lt,
+                       '>':operator.gt,
+                       '==':operator.eq,
+                       '!=':operator.ne,
+                       '<=':operator.le,
+                       '>=':operator.ge}.items():
+            if char in exp:
+                i = exp.index(char)
+                a = recurse(exp[:i])
+                b = recurse(exp[i+1:])
+                return primitives.PrimitiveComparison(a,f,b)
+            
+    
     if len(exp) == 1:
         return exp[0]
 

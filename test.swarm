@@ -1,17 +1,17 @@
 
 define test:
     init:
-        a,b = 13,42
+        #a,b = 13,42
         
-        a -> print
-        b -> print
-        a,b -> print
+        #a -> print
+        #b -> print
+        #a,b -> print
     
-        for n in [0:3]:
-            n -> print
+        #for n in [0:3]:
+        #    n,3 -> print
         
         i = 0
-        while i < 8:
+        while i <= 8:
             i -> print
             i = i + 2
 

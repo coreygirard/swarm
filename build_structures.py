@@ -4,6 +4,7 @@ from pprint import pprint
 import re
 import build_lines as lines
 import build_primitives as primitives
+import build_expressions as expressions
 
 
 
@@ -58,10 +59,13 @@ def convert(t,scope):
         if match:
             condition = match.groups()[0]
             condition = condition.strip()
+            condition = expressions.buildExpression(condition,scope)
             
-            return primitives.PrimitiveWhile(condition,
+            loop = primitives.PrimitiveWhile(condition,
                                              scope,
                                              [convert(e,scope) for e in t.children])
+            print(loop.condition)
+            return loop
                                              
             
     else:

@@ -64,13 +64,22 @@ class PrimitiveWhile(object):
         self.condition = condition
         self.scope = scope
         self.children = children
+        print(self.condition)
     
     def exe(self):
-        while eval(self.condition,self.scope.getLocals()):
+        #while eval(self.condition,self.scope.getLocals()):
+        while self.condition.exe():
             for c in self.children:
                 c.exe()
 
-
+class PrimitiveComparison(object):
+    def __init__(self,left,op,right):
+        self.left = left
+        self.op = op
+        self.right = right
+    
+    def exe(self):
+        return self.op(self.left.exe(),self.right.exe())
 
         
 class PrimitiveRange(object):
