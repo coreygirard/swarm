@@ -5,9 +5,15 @@ keywords = ['and','or','not','nand','nor','xor','xnor']
 def buildLiteralsAndVariables(e,scope):
     temp = []
     for i in e:
+        if type(i) != type('str'):
+            temp.append(i)
+            continue
+        
         i = i.strip()
-        if re.fullmatch(r'([0-9]+)',i):
-            temp.append(('literal',i))
+        if re.fullmatch(r'([0-9]+[.][0-9]+)',i):
+            temp.append(('literal',float(i)))
+        elif re.fullmatch(r'([0-9]+)',i): # integer
+            temp.append(('literal',int(i)))
             #temp.append(primitives.PrimitiveLiteral(int(i))) # TODO: handle non-ints
         elif re.fullmatch(r'([a-zA-Z0-9]+)',i) and i not in keywords:
             temp.append(('reference',i))
@@ -28,10 +34,44 @@ for keyword in keywords:
 
 def tokenizeExpression(e,scope):
     e = [e]
+    for reg,actual in [("[']{3}","'''"),('["]{3}','"""'),("[']","'"),('["]','"')]:
+        pattern = r'(' + reg + '.*?' + reg + ')'
+        #print(pattern)
+        temp = []
+        for w in e:
+            if type(w) != type('str'):
+                temp.append(w)
+            else:
+                for i in re.split(pattern,w):
+                    if i.startswith(actual) or i.startswith(actual):
+                        i = i[len(actual):-len(actual)]
+                        temp.append(('literal',i))
+                    else:
+                        temp.append(i)
+
+                '''
+                for q in i:
+                    print(i)
+                    print(temp)
+                    if q.startswith("'") or q.startswith('"'):
+                        while q.startswith("'") or q.startswith('"'):
+                            q = q[1:-1]
+                        temp.append(('literal',q))
+                    else:
+                        temp += q
+                '''
+        e = temp
+    print(e)
+    
     for symbol in symbols:
         temp = []
         for i in e:
-            temp = temp + [a.strip() for a in re.split(r'(' + symbol + ')',i) if a.strip() != '']
+            if type(i) != type('str'):
+                temp.append(i)
+            else:
+                for a in re.split(r'(' + symbol + ')',i):
+                    if a.strip() != '':
+                        temp += [a.strip()]
         e = temp
 
     e = buildLiteralsAndVariables(e,scope)
@@ -56,8 +96,19 @@ test = [
 '5 and',
 '4 and 4',
 'and',
-' and '
+' and ',
+'0.444',
+'0.444 and 9',
+"'string literal' and otherStuff"
 ]
+
+lit = ' and '.join(["'literal'",
+                    '"literal"',
+                    """'''literal'''""",
+                    '''"""literal"""'''])
+test = [lit]
+
+print(lit)
 
 for d in test:
     print(d)
