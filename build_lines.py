@@ -23,13 +23,13 @@ def buildLine(line,vh):
         a,b = c.split('=')
         a,b = a.strip(),b.strip()
     
-        return primitives.PrimitiveAssign(primitives.PrimitiveReference(a,vh),
+        return primitives.PrimitiveAssign(expressions.buildReference(a,vh),
                                           expressions.buildExpression(b,vh))
     elif '->' in c:
         a,b = c.split('->')
         a,b = a.strip(),b.strip()
         
-        a = primitives.PrimitiveReference(a,vh)
+        a = expressions.buildExpression(a,vh)
         b = primitives.PrimitivePrint()
         return primitives.PrimitiveSend(a,b)
     else:

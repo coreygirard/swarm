@@ -141,10 +141,58 @@ def recurse(exp):
 
     raise Exception('invalid expression')
 
-
-def buildExpression(e,scope):
+def buildSimpleExpression(e,scope):
     e = tokenizeExpression(e,scope)
     e = recurse(e)
     return e
+
+class ComplexExpression(object):
+    def __init__(self,exp,scope):
+        self.exp = [buildSimpleExpression(e,scope) for e in exp]
+        
+    def exe(self):
+        if len(self.exp) == 1:
+            return self.exp[0].exe()
+        else:
+            return [e.exe() for e in self.exp]
+
+def buildExpression(e,scope):
+    e = [i for i in e.split(',') if i != '']
+    return ComplexExpression(e,scope)
+
+
+
+
+
+
+
+
+
+class ComplexReference(object):
+    def __init__(self,k,scope):
+        self.ref = [primitives.PrimitiveReference(i,scope) for i in k]
+    
+    def set(self,v):
+        if len(self.ref) == 1:
+            self.ref[0].set(v)
+        else:
+            assert(len(v) == len(self.ref))
+            for a,b in zip(self.ref,v):
+                a.set(b)
+        
+def buildReference(e,scope):
+    e = [i for i in e.split(',') if i != '']
+    return ComplexReference(e,scope)
+
+
+
+
+
+
+
+
+
+
+
 
 

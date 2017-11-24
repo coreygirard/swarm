@@ -1,6 +1,12 @@
 
 define test:
     init:
+        a,b = 13,42
+        
+        a -> print
+        b -> print
+        a,b -> print
+    
         for n in [0:3]:
             n -> print
         
