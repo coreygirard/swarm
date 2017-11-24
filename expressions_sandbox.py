@@ -108,35 +108,68 @@ def collapseParentheses(e):
     e = a+[b]+c
     return recurse(e)
 
-def recurse(e):
-    #print(e)
+exp = [
+'(3)+(5+3)',
+'2**3**4',
+'2+3**4',
+'2**3+4',
+'-3**4',
+'-3**4+-5**3',
+'-3**4-4+-5**3',
+'2*3+4-5+6*7'
+]
+
+def recurse(exp):    
+    assert(exp.count('(') == exp.count(')'))
     
-    if len(e) == 1:
-        return e[0]
-    
-    if '(' in e:
-        return collapseParentheses(e)
-        
-    if '-' in e:
-        indices = [i for i,x in enumerate(e) if x == '-']
-        for i in reversed(indices): # go right to left to avoid disturbing future indices
-            if i == 0 or (type(e[i-1]) == type('str') and i+1 < len(e)):
-                e[i] = ExpressionMult([['*',Literal(-1)],['*',e[i+1]]])
-                del e[i+1]
-        
-    if '+' in e or '-' in e:
-        return collapse(e,['+','-'],ExpressionAdd)
-    elif '*' in e or '/' in e:
-        return collapse(e,['*','/'],ExpressionMult)
-    elif '**' in e:
-        indices = [i for i,x in enumerate(e) if x == '**']
-        for i in reversed(indices): # go right to left to avoid disturbing future indices
-            e[i-1] = ExpressionExponent(e[i-1],e[i+1])
-            del e[i:i+2]
-        return recurse(e)
-    else:
-        raise Exception("invalid expression")
-        
+    # reduce parenthetical expressions to single values
+    while '(' in exp:
+        i = exp.index('(')
+        a = exp[:i]
+        b = [exp[i]]
+        c = exp[i+1:]
+        while b.count('(') != b.count(')'):
+            b.append(c.pop(0))
+        b = recurse(b[1:-1])
+        exp = a+[b]+c
+
+    if len(exp) == 1:
+        return exp[0]
+
+    # reduce exponential expressions to single values
+    while '**' in exp:
+        indices = [i for i,x in enumerate(exp) if x == '**']
+        i = indices[-1]
+        exp[i-1] = ExpressionExponent(exp[i-1],exp[i+1])
+        del exp[i:i+2]
+
+    if len(exp) == 1:
+        return exp[0]
+
+    # reduce -n notation to single values
+    indices = [i for i,x in enumerate(exp) if x == '-']
+    for i in reversed(indices):
+        if i == 0 or type(exp[i-1]) == type('str'):
+            exp[i] = ExpressionAdd([['-',exp[i+1]]])
+            del exp[i+1]
+
+    # reduce +n notation to single values
+    indices = [i for i,x in enumerate(exp) if x == '+']
+    for i in reversed(indices):
+        if i == 0 or type(exp[i-1]) == type('str'):
+            exp[i] = ExpressionAdd([['+',exp[i+1]]])
+            del exp[i+1]
+
+    if len(exp) == 1:
+        return exp[0]
+
+    if '+' in exp or '-' in exp:
+        return collapse(exp,['+','-'],ExpressionAdd)
+    if '*' in exp or '/' in exp:
+        return collapse(exp,['*','/'],ExpressionMult)
+
+    raise Exception('invalid expression')
+
 
 def buildExpression(e):
     e = tokenizeExpression(e)
@@ -192,7 +225,39 @@ e = [
 ]
 
 
-driver(e)
+#driver(e)
+
+from pprint import pprint
+import random
+c = '()-+*/0123456789 '
+
+test = []
+while len(test) < 1000:
+    e = ''.join([random.choice(c) for i in range(random.randint(0,20))])
+    try:
+        eval(e)
+        if '//' not in e:
+            test.append(e)
+    except:
+        print('FAILED! Found ' + str(len(test)) + ' valid so far')
+pprint(test)
+
+
+for d in test:
+
+    try:
+        parsed = buildExpression(d)
+        result = parsed.exe()
+        shouldBe = eval(d)
+    except:
+        print("Choked on '" + d + "'")
+
+    if result != shouldBe:
+        print('Expression: ' + d)
+        print('Parsed:     ' + str(parsed))
+        print('Result:     ' + str(result))
+        print('Should be:  ' + str(shouldBe))
+        print('\n')
 
 
 
