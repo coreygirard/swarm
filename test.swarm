@@ -5,9 +5,9 @@ define test:
             n -> print
         
         i = 0
-        while i < 5:
+        while i < 8:
             i -> print
-            i = i + 1
+            i = i + 2
 
 
 #define test:

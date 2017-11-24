@@ -1,4 +1,5 @@
 import re
+import build_primitives as primitives
 
 
 class Literal(object):
@@ -56,27 +57,20 @@ class ExpressionExponent(object):
     def __repr__(self):
         return 'ExpressionExponent(' + str(self.a) + '**' + str(self.b) + ')'
 
-class Variable(object):
-    def __init__(self,code):
-        self.code = code
-    
-    def __repr__(self):
-        return 'Variable(' + str(self.code) + ')'
-
-def buildLiteralsAndVariables(e):
-    #e = re.split(r'([a-zA-Z0-9]+)',e)
+def buildLiteralsAndVariables(e,scope):
     temp = []
     for i in e:
+        i = i.strip()
         if re.fullmatch(r'([0-9]+)',i):
-            temp.append(Literal(int(i))) # TODO: handle non-ints
+            temp.append(primitives.PrimitiveLiteral(int(i))) # TODO: handle non-ints
         elif re.fullmatch(r'([a-zA-Z0-9]+)',i):
-            temp.append(Variable(i))
+            temp.append(primitives.PrimitiveReference(i,scope))
         else:
-            temp.append(i.strip())
+            temp.append(i)
     e = temp
     return e
 
-def tokenizeExpression(e):
+def tokenizeExpression(e,scope):
     e = [e]
     for symbol in ['[*]{2}','\(','\)','(?<![*])[*](?![*])','[-]','[+]','[/]']:
         temp = []
@@ -84,7 +78,7 @@ def tokenizeExpression(e):
             temp = temp + [a.strip() for a in re.split(r'(' + symbol + ')',i) if a.strip() != '']
         e = temp
 
-    e = buildLiteralsAndVariables(e)
+    e = buildLiteralsAndVariables(e,scope)
     return e
 
 def collapse(e,op,c):
@@ -95,29 +89,6 @@ def collapse(e,op,c):
     for a,b in zip(indices,indices[1:]):
         inputs.append([e[a],recurse(e[a+1:b])])
     return c(inputs)
-
-def collapseParentheses(e):
-    assert(e.count('(') == e.count(')'))
-    i = e.index('(')
-    a = e[:i]
-    b = [e[i]]
-    c = e[i+1:]
-    while b.count('(') != b.count(')'):
-        b.append(c.pop(0))
-    b = recurse(b[1:-1])
-    e = a+[b]+c
-    return recurse(e)
-
-exp = [
-'(3)+(5+3)',
-'2**3**4',
-'2+3**4',
-'2**3+4',
-'-3**4',
-'-3**4+-5**3',
-'-3**4-4+-5**3',
-'2*3+4-5+6*7'
-]
 
 def recurse(exp):    
     assert(exp.count('(') == exp.count(')'))
@@ -171,93 +142,9 @@ def recurse(exp):
     raise Exception('invalid expression')
 
 
-def buildExpression(e):
-    e = tokenizeExpression(e)
+def buildExpression(e,scope):
+    e = tokenizeExpression(e,scope)
     e = recurse(e)
     return e
-
-
-
-
-def driver(expr):
-    for e in expr:
-        t = buildExpression(e)
-        #print(t)
-        if t.exe() != eval(e):
-            print(e)
-            print('Result: ' + str(t.exe()))
-            print('Should be: ' + str(eval(e)))
-            print('\n')
-
-#print(buildExpression('((3+4)*2)*     2 -7**4 - 54'))
-e = [
-'3+4',
-'3-4',
-'-3+4',
-'-3-4',
-'-3+53-3-3+10',
-'3+(2-1)',
-'((3+4)*2)*     2 -7**4**2 - 54',
-'((3+4)*2)*     2 -7**4 - 54',
-'((3+4)*2)*     2 -74 - 54',
-'(2**3)**4',
-'-3**4',
-'-3**3',
-'(-3)**4',
-'(1)',
-'2+1',
-'2+1-3',
-'2+1+10',
-'(2+1)',
-'3+(2+1)',
-'(2+1)-1',
-'3+(2+1)-1',
-'3*5',
-'3*5+6',
-'3*-5+6',
-'3*56/-2*4',
-'-3*5+3',
-'3+4',
-'(2+1)',
-'(1+2)+3',
-'(1+2)-(5-3)',
-'3*4'
-]
-
-
-#driver(e)
-
-from pprint import pprint
-import random
-c = '()-+*/0123456789 '
-
-test = []
-while len(test) < 1000:
-    e = ''.join([random.choice(c) for i in range(random.randint(0,20))])
-    try:
-        eval(e)
-        if '//' not in e:
-            test.append(e)
-    except:
-        print('FAILED! Found ' + str(len(test)) + ' valid so far')
-pprint(test)
-
-
-for d in test:
-
-    try:
-        parsed = buildExpression(d)
-        result = parsed.exe()
-        shouldBe = eval(d)
-    except:
-        print("Choked on '" + d + "'")
-
-    if result != shouldBe:
-        print('Expression: ' + d)
-        print('Parsed:     ' + str(parsed))
-        print('Result:     ' + str(result))
-        print('Should be:  ' + str(shouldBe))
-        print('\n')
-
 
 
