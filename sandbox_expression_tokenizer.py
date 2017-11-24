@@ -36,7 +36,6 @@ def tokenizeExpression(e,scope):
     e = [e]
     for reg,actual in [("[']{3}","'''"),('["]{3}','"""'),("[']","'"),('["]','"')]:
         pattern = r'(' + reg + '.*?' + reg + ')'
-        #print(pattern)
         temp = []
         for w in e:
             if type(w) != type('str'):
@@ -48,20 +47,7 @@ def tokenizeExpression(e,scope):
                         temp.append(('literal',i))
                     else:
                         temp.append(i)
-
-                '''
-                for q in i:
-                    print(i)
-                    print(temp)
-                    if q.startswith("'") or q.startswith('"'):
-                        while q.startswith("'") or q.startswith('"'):
-                            q = q[1:-1]
-                        temp.append(('literal',q))
-                    else:
-                        temp += q
-                '''
         e = temp
-    print(e)
     
     for symbol in symbols:
         temp = []

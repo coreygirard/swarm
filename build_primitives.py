@@ -64,7 +64,6 @@ class PrimitiveWhile(object):
         self.condition = condition
         self.scope = scope
         self.children = children
-        print(self.condition)
     
     def exe(self):
         #while eval(self.condition,self.scope.getLocals()):

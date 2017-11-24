@@ -64,7 +64,6 @@ def convert(t,scope):
             loop = primitives.PrimitiveWhile(condition,
                                              scope,
                                              [convert(e,scope) for e in t.children])
-            print(loop.condition)
             return loop
                                              
             

@@ -57,7 +57,7 @@ class ExpressionExponent(object):
 
     def __repr__(self):
         return 'ExpressionExponent(' + str(self.a) + '**' + str(self.b) + ')'
-
+'''
 def buildLiteralsAndVariables(e,scope):
     temp = []
     for i in e:
@@ -82,6 +82,70 @@ def tokenizeExpression(e,scope):
     print(e)
     e = buildLiteralsAndVariables(e,scope)
     return e
+'''
+
+keywords = ['and','or','not','nand','nor','xor','xnor']
+
+def buildLiteralsAndVariables(e,scope):
+    temp = []
+    for i in e:
+        if type(i) != type('str'):
+            temp.append(i)
+            continue
+        
+        i = i.strip()
+        if re.fullmatch(r'([0-9]+[.][0-9]+)',i):
+            temp.append(primitives.PrimitiveLiteral(float(i)))
+        elif re.fullmatch(r'([0-9]+)',i): # integer
+            temp.append(primitives.PrimitiveLiteral(int(i)))
+            #temp.append(primitives.PrimitiveLiteral(int(i))) # TODO: handle non-ints
+        elif re.fullmatch(r'([a-zA-Z0-9]+)',i) and i not in keywords:
+            temp.append(primitives.PrimitiveReference(i,scope))
+            #temp.append(primitives.PrimitiveReference(i,scope))
+        else:
+            temp.append(i)
+    e = temp
+    return e
+
+symbols = ['<=','>=','==','[*]{2}','\(','\)','[-]','[+]','[/]','[!]']
+symbols += ['(?<![*])[*](?![*])', # matches '*' not part of '**'
+            '[<](?![=])',         # matches '<' not part of '<='
+            '[>](?![=])']         # matches '>' not part of '>='
+
+for keyword in keywords:
+    symbols += '(?<![a-zA-Z0-9])' + keyword + '(?![a-zA-Z0-9])', # matches 'keyword' unless preceded by or followed by an alphanumeric character
+
+
+def tokenizeExpression(e,scope):
+    e = [e]
+    for reg,actual in [("[']{3}","'''"),('["]{3}','"""'),("[']","'"),('["]','"')]:
+        pattern = r'(' + reg + '.*?' + reg + ')'
+        temp = []
+        for w in e:
+            if type(w) != type('str'):
+                temp.append(w)
+            else:
+                for i in re.split(pattern,w):
+                    if i.startswith(actual) or i.startswith(actual):
+                        i = i[len(actual):-len(actual)]
+                        temp.append(('literal',i))
+                    else:
+                        temp.append(i)
+        e = temp
+    
+    for symbol in symbols:
+        temp = []
+        for i in e:
+            if type(i) != type('str'):
+                temp.append(i)
+            else:
+                for a in re.split(r'(' + symbol + ')',i):
+                    if a.strip() != '':
+                        temp += [a.strip()]
+        e = temp
+
+    e = buildLiteralsAndVariables(e,scope)
+    return e
 
 def collapse(e,op,c):
     if e[0] not in op:
@@ -93,8 +157,6 @@ def collapse(e,op,c):
     return c(inputs)
 
 def recurse(exp):    
-    print(exp)
-    
     assert(exp.count('(') == exp.count(')'))
     
     # reduce parenthetical expressions to single values
