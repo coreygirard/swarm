@@ -303,6 +303,7 @@ class TestExpressions(unittest.TestCase):
         self.assertEqual(len(result),3)
         self.assertEqual(result[1],('**',))
 
+    '''
     def test_step_through_addition(self):
         s = '1 + 2 + 3 + 4'
         result = build_expressions.tokenizeExpression(s,None)
@@ -319,7 +320,7 @@ class TestExpressions(unittest.TestCase):
         
         result = build_expressions.recurse(result)
         #self.assertEqual(result,3)
-
+    '''
 
 
 if __name__ == '__main__':
