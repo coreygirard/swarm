@@ -9,17 +9,6 @@ import build_expressions as expressions
 
 
 
-'''
-class Parent(object):
-    def __init__(self,code,children):
-        self.code = code
-        self.children = children
-
-    def exe(self):
-        print("fake-executing '" + self.code + "'")
-        for c in self.children:
-            c.exe()
-'''
 
 
 # -----------------------------------------------------------
