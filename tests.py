@@ -361,7 +361,10 @@ class TestScopes(unittest.TestCase):
         subagentScope.d = {}
         self.assertEqual(subagentScope.getLocals(),{})
 
-    def test_basic_make_reference(self):
+
+
+
+
         agentScope = build_program.AgentScope()
         subagentScope = build_program.SubagentScope(agentScope)
 
