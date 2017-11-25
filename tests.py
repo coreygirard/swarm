@@ -324,6 +324,37 @@ class TestExpressions(unittest.TestCase):
         #self.assertEqual(result,3)
     '''
 
+class TestComplexReference(unittest.TestCase):
+    def test_basic_make_reference(self):
+        agentScope = build_program.AgentScope()
+        subagentScope = build_program.SubagentScope(agentScope)
+        
+        ref = build_primitives.PrimitiveReference('var',subagentScope)
+        self.assertEqual(subagentScope.d,{})
+        ref.set(4)
+        self.assertEqual(subagentScope.d,{'var':4})
+        self.assertEqual(ref.exe(),4)
+        ref.set('hey')
+        self.assertEqual(subagentScope.d,{'var':'hey'})
+        self.assertEqual(ref.exe(),'hey')
+
+        ref2 = build_primitives.PrimitiveReference('otherVar',subagentScope)
+        self.assertEqual(subagentScope.d,{'var':'hey'})
+        self.assertEqual(ref.exe(),'hey')
+        ref2.set(-2)
+        self.assertEqual(subagentScope.d,{'var':'hey','otherVar':-2})
+        self.assertEqual(ref2.exe(),-2)
+
+
+
+
+class TestPrimitives(unittest.TestCase):
+    def test_make_literal_object(self):
+        result = build_expressions.buildLiteral('test string')
+
+    def test_make_variable_object(self):
+        result = build_expressions.buildVariable('var',None)
+
 class TestRouter(unittest.TestCase):
     def test_basic_routing(self):
         class Dummy(object):

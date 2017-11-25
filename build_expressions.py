@@ -141,7 +141,7 @@ def tokenizeExpression(s,scope):
 
 
 
-
+'''
 # same operation for +,- and *,/ pairs
 def collapse(e,op,c):
     if e[0] not in op:
@@ -151,6 +151,7 @@ def collapse(e,op,c):
     for a,b in zip(indices,indices[1:]):
         inputs.append([e[a][0],recurse(e[a+1:b])])
     return c(inputs)
+'''
 
 # simplify all addition/subtraction in the expression to a single object with subobjects
 def collapseAddSub(exp):
