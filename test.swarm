@@ -5,7 +5,7 @@ define test:
             i,6 -> test.run
 
         "Goodbyeworld" -> example.prtStr
-        "Goodbye, world" -> example.prtStr
+        'Goodbye world' -> example.prtStr
 
     run(n,t):
         n+1,t+2 -> test.run2

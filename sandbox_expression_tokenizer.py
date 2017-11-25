@@ -1,71 +1,7 @@
 import re
 
-keywords = ['and','or','not','nand','nor','xor','xnor']
-
-def buildLiteralsAndVariables(e,scope):
-    temp = []
-    for i in e:
-        if type(i) != type('str'):
-            temp.append(i)
-            continue
-
-        i = i.strip()
-        if re.fullmatch(r'([0-9]+[.][0-9]+)',i):
-            temp.append(primitives.PrimitiveLiteral(float(i)))
-        elif re.fullmatch(r'([0-9]+)',i): # integer
-            temp.append(primitives.PrimitiveLiteral(int(i)))
-            #temp.append(primitives.PrimitiveLiteral(int(i))) # TODO: handle non-ints
-        elif re.fullmatch(r'([a-zA-Z0-9]+)',i) and i not in keywords:
-            temp.append(primitives.PrimitiveReference(i,scope))
-            #temp.append(primitives.PrimitiveReference(i,scope))
-        else:
-            temp.append(i)
-    e = temp
-    return e
-
-symbols = ['<=','>=','==','[*]{2}','\(','\)','[-]','[+]','[/]','[!]']
-symbols += ['(?<![*])[*](?![*])', # matches '*' not part of '**'
-            '[<](?![=])',         # matches '<' not part of '<='
-            '[>](?![=])']         # matches '>' not part of '>='
-
-for keyword in keywords:
-    symbols += '(?<![a-zA-Z0-9])' + keyword + '(?![a-zA-Z0-9])', # matches 'keyword' unless preceded by or followed by an alphanumeric character
 
 
-def tokenizeExpression2(e,scope):
-    e = [e]
-    for reg,actual in [("[']{3}","'''"),('["]{3}','"""'),("[']","'"),('["]','"')]:
-        pattern = r'(' + reg + '.*?' + reg + ')'
-        temp = []
-        for w in e:
-            if type(w) != type('str'):
-                temp.append(w)
-            else:
-                for i in re.split(pattern,w):
-                    print(i,actual)
-                    if i.startswith(actual) or i.startswith(actual):
-                        #print(i)
-                        i = i[len(actual):-len(actual)]
-                        #print(i)
-                        temp.append(primitives.PrimitiveLiteral(i))
-                        #print(temp[-1].exe())
-                    else:
-                        temp.append(i)
-        e = temp
-
-    for symbol in symbols:
-        temp = []
-        for i in e:
-            if type(i) != type('str'):
-                temp.append(i)
-            else:
-                for a in re.split(r'(' + symbol + ')',i):
-                    if a.strip() != '':
-                        temp += [a.strip()]
-        e = temp
-
-    e = buildLiteralsAndVariables(e,scope)
-    return e
 
 test = [
 'a+b',
@@ -138,6 +74,7 @@ def buildVariable(e,scope):
     return ('variable',e)
     #return primitives.PrimitiveReference(e,scope)
 
+# creates executable objects
 def buildLiteralsAndVariables(e,scope):
     temp = []
     for i in e:
@@ -186,16 +123,20 @@ def extractStringLiterals(s):
     st = []
     buff = []
     delim = None
+
+    # iterate through each character/delimiter
     for c in findStringEnds(s):
         if type(c) == type((0,)):
-            if delim == None: # if we're starting a string literal
+            if delim == None:   # if we're starting a string literal
                 st.append(''.join(buff))
                 buff = []
                 delim = c[0]
-            elif delim == c[0]:
+
+            elif delim == c[0]: # if we're ending a string literal
                 st.append(('literal',''.join(buff)))
                 buff = []
                 delim = None
+
             else:
                 buff.append(c[0])
         else:
@@ -211,9 +152,12 @@ symbols = ['<=','>=','==','[*]{2}','\(','\)','[-]','[+]','[/]','[!]','[+]','[<]'
 for keyword in keywords:
     symbols += ['(?<![a-zA-Z0-9])' + keyword + '(?![a-zA-Z0-9])'] # matches 'keyword' unless preceded by or followed by an alphanumeric character
 
+
 def tokenizeExpression(s,scope):
+    # set string literals off-limits for further parsing
     s = extractStringLiterals(s)
 
+    # package all meaningful symbols into tuples
     for symbol in symbols:
         temp = []
         for e in s:
@@ -228,6 +172,7 @@ def tokenizeExpression(s,scope):
                         temp.append(snippet)
         s = temp
 
+    # create literals and link variables
     s = buildLiteralsAndVariables(s,scope)
 
     # everything should be matched by now
