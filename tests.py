@@ -2,6 +2,8 @@ import unittest
 import build_program
 import build_expressions
 import build_primitives
+import build_structures
+import build_program
 
 class TestProgram(unittest.TestCase):
     def test_loading_file(self):
@@ -321,8 +323,56 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.recurse(result)
         #self.assertEqual(result,3)
     '''
-    
 
+class TestRouter(unittest.TestCase):
+    def test_basic_routing(self):
+        class Dummy(object):
+            def __init__(self):
+                self.var = None
+            
+            def recv(self,k):
+                self.var = k
+
+        dummy = Dummy()
+        
+        pr = build_program.ProgramRouter(debug=False)
+        ar = {'agent1':pr.makeAgentRouter('agent1'),
+              'agent2':pr.makeAgentRouter('agent2')}
+        sr = {'agent1.subagent1':ar['agent1'].makeSubagentRouter('subagent1'),
+              'agent1.subagent2':ar['agent1'].makeSubagentRouter('subagent2'),
+              'agent2.subagent1':ar['agent2'].makeSubagentRouter('subagent1'),
+              'agent2.subagent2':ar['agent2'].makeSubagentRouter('subagent2')}
+        
+
+
+        pr.builtins['print'] = dummy
+
+        pr.recv(3,['print'])
+        self.assertEqual(dummy.var,3)
+        ar['agent1'].recv(4,['print'])
+        self.assertEqual(dummy.var,4)
+        sr['agent1.subagent1'].recv(5,['print'])
+        self.assertEqual(dummy.var,5)
+
+
+        ep_1_1_1 = sr['agent1.subagent1'].makeEndpoint('print')
+        ep_1_1_1.recv('hello')
+        self.assertEqual(dummy.var,['hello'])
+
+
+'''
+class TestStructures(unittest.TestCase):
+    def test_basic_structure_build(self):
+        a = build_program.Node(0,'for n = [0:5):')
+        b = build_program.Node(0,'')
+        c = build_program.Node(0,'')
+        a.add(b)
+        a.add(c)
+                
+        result = build_structures.buildStructure(a,None,None)
+        expected = []
+        self.assertEqual(result,expected)
+'''
 
 if __name__ == '__main__':
     unittest.main()

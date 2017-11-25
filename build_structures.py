@@ -9,7 +9,7 @@ import build_expressions as expressions
 
 
 
-
+'''
 class Parent(object):
     def __init__(self,code,children):
         self.code = code
@@ -19,16 +19,10 @@ class Parent(object):
         print("fake-executing '" + self.code + "'")
         for c in self.children:
             c.exe()
-
+'''
 
 
 # -----------------------------------------------------------
-
-
-
-
-def buildParent(line):
-    return Parent(line.code,line.children)
 
 # handles conversion of any line of code that has children. Loops, conditionals, etc
 def buildStructure(t,scope,router):
@@ -68,8 +62,8 @@ def buildStructure(t,scope,router):
             return loop
 
 
-    else:
-        return buildParent(t)
+    #else:
+    #    return buildParent(t)
 
 
 
