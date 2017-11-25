@@ -1,24 +1,18 @@
 
 define test:
     init:
-        a,b = 13,42
+        for i in [0:5):
+            i -> test.run
 
-        a -> print
-        b -> print
-        a,b -> print
+    run(n):
+        n+1 -> test.run2
 
-        for n in [0:3]:
-            n,3 -> print
+    run2(v):
+        v*2 -> example.run
 
-        i = 0
-        while i <= 8:
-            i -> print
-            i = i + 2
-
-        3 -> error
-
-
-
+define example:
+    run(t):
+        t -> print
 
 
 

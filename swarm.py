@@ -1,68 +1,26 @@
-import sys
-from collections import namedtuple
 from pprint import pprint
 import build_program as program
-import re
-
-
-
-class Node(object):
-    def __init__(self,depth,code):
-        self.depth = depth
-        self.code = code
-        self.parent = None
-        self.children = []
-
-    def add(self,child):
-        child.parent = self
-        self.children.append(child)
-
-# returns iterator of Node objects containing indent depth and line of code
-def loadfile(filename):
-    code = []
-    with open(filename,'r') as f:
-        for line in f:
-            match = re.match('^([ ]*)([^#\s\n][^#]*[^#\s\n])',line)
-            if match:
-                a,b = match.groups()
-                yield Node(len(a),b)
-
-# folds stream of Node objects into a tree based upon indent depth
-def tree(filename):
-    root = Node(-4,'')
-    ptr = root
-    for line in loadfile(filename):
-        if line.depth > ptr.depth:
-            ptr.add(line)
-            ptr = ptr.children[-1]
-        elif line.depth == ptr.depth:
-            ptr = ptr.parent
-            ptr.add(line)
-            ptr = ptr.children[-1]
-        else:
-            while line.depth < ptr.depth:
-                ptr = ptr.parent
-            ptr = ptr.parent
-            ptr.add(line)
-            ptr = ptr.children[-1]
-
-    return root
+import random
 
 
 
 
 
-t = tree('test.swarm')
 
-
-p = program.makeProgram(t)
+p = program.makeProgram('test.swarm')
 p.init()
 
 
+while True:
+    q = [e[0] for e in p.getQueueLengths() if e[1] > 0]
+    if q == []:
+        break
 
-
-
-
+    sa = random.choice(q)
+    assert(not sa.endswith('.init'))
+    sa = sa.split('.')
+    #print("Executing: '" + str(sa) + "'")
+    p.execute(sa)
 
 
 
