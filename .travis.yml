@@ -5,3 +5,7 @@ script: python tests.py
 branches:
   only:
     - master
+before_install:
+  pip install codecov
+after_success:
+  codecov
