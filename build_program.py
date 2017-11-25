@@ -19,15 +19,19 @@ class Node(object):
         child.parent = self
         self.children.append(child)
 
-# returns iterator of Node objects containing indent depth and line of code
-def loadfile(filename):
-    code = []
+def fetchfile(filename):
     with open(filename,'r') as f:
         for line in f:
-            match = re.match('^([ ]*)([^#\s\n][^#]*[^#\s\n])',line)
-            if match:
-                a,b = match.groups()
-                yield Node(len(a),b)
+            yield line
+
+# returns iterator of Node objects containing indent depth and line of code
+def loadfile(it):
+    code = []
+    for line in it:
+        match = re.match('^([ ]*)([^#\s\n][^#]*[^#\s\n])',line)
+        if match:
+            a,b = match.groups()
+            yield Node(len(a),b)
 
 # folds stream of Node objects into a tree based upon indent depth
 def tree(filename):
@@ -315,7 +319,7 @@ class ProgramRouter(object):
             self.agentRouter[addr[0]].recv(v,addr)
 
 def makeProgram(filename,debug=False):
-    t = tree(filename)
+    t = tree(loadfile(fetchfile(filename)))
 
     # TODO: handle type definitions as well
     programRouter = ProgramRouter(debug=debug)

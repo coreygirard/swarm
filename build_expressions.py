@@ -6,12 +6,14 @@ import build_primitives as primitives
 
 
 def buildLiteral(e):
-    return ('literal',e)
-    #return primitives.PrimitiveLiteral(e)
+    #return ('literal',e)
+    return primitives.PrimitiveLiteral(e)
 
 def buildVariable(e,scope):
-    return ('variable',e)
-    #return primitives.PrimitiveReference(e,scope)
+    if scope == None:
+        return ('variable',e)
+    else:
+        return primitives.PrimitiveReference(e,scope)
 
 # creates executable objects
 def buildLiteralsAndVariables(e,scope):
@@ -22,7 +24,13 @@ def buildLiteralsAndVariables(e,scope):
             continue
 
         i = i.strip()
-        if re.fullmatch(r'([0-9]+[.][0-9]+)',i):
+        if i == 'true':
+            temp.append(buildLiteral(True))
+
+        elif i == 'false':
+            temp.append(buildLiteral(False))
+
+        elif re.fullmatch(r'([0-9]+[.][0-9]+)',i):
             temp.append(buildLiteral(float(i)))
 
         elif re.fullmatch(r'([0-9]+)',i): # integer
@@ -67,7 +75,8 @@ def extractStringLiterals(s):
     for c in findStringEnds(s):
         if type(c) == type((0,)):
             if delim == None:   # if we're starting a string literal
-                st.append(''.join(buff))
+                if len(buff) > 0:
+                    st.append(''.join(buff))
                 buff = []
                 delim = c[0]
 
@@ -80,9 +89,10 @@ def extractStringLiterals(s):
                 buff.append(c[0])
         else:
             buff.append(c)
-    print(delim)
+
     assert(delim == None)
-    st.append(''.join(buff))
+    if len(buff) > 0:
+        st.append(''.join(buff))
     return st
 
 keywords = ['and','or','not','nand','nor','xor','xnor']
@@ -132,26 +142,47 @@ def tokenizeExpression(s,scope):
 
 
 
-
+# same operation for +,- and *,/ pairs
 def collapse(e,op,c):
     if e[0] not in op:
         e.insert(0,op[0])
     indices = [i for i,x in enumerate(e) if x in op]+[len(e)]
     inputs = []
     for a,b in zip(indices,indices[1:]):
-        inputs.append([e[a],recurse(e[a+1:b])])
+        inputs.append([e[a][0],recurse(e[a+1:b])])
     return c(inputs)
 
+# simplify all addition/subtraction in the expression to a single object with subobjects
+def collapseAddSub(exp):
+    if exp[0] not in [('+',),('-',)]:
+        exp.insert(0,('+',))
+    indices = [i for i,x in enumerate(exp) if x[0] in ['+','-']]+[len(exp)]
+    inputs = []
+    for a,b in zip(indices,indices[1:]):
+        inputs.append([exp[a][0],exp[a+1:b]])
+    return primitives.ExpressionAdd(inputs)
+
+# simplify all multiplication/division in the expression to a single object with subobjects
+def collapseMultDiv(exp):
+    if exp[0] not in [('*',),('/',)]:
+        exp.insert(0,('*',))
+    indices = [i for i,x in enumerate(exp) if x[0] in ['*','/']]+[len(exp)]
+    inputs = []
+    for a,b in zip(indices,indices[1:]):
+        inputs.append([exp[a][0],exp[a+1:b]])
+    return primitives.ExpressionMult(inputs)
+
+
 def recurse(exp):
-    assert(exp.count('(') == exp.count(')'))
+    assert(exp.count(('(',)) == exp.count((')',)))
 
     # reduce parenthetical expressions to single values
-    while '(' in exp:
-        i = exp.index('(')
+    while ('(',) in exp:
+        i = exp.index(('(',))
         a = exp[:i]
         b = [exp[i]]
         c = exp[i+1:]
-        while b.count('(') != b.count(')'):
+        while b.count(('(',)) != b.count((')',)):
             b.append(c.pop(0))
         b = recurse(b[1:-1])
         exp = a+[b]+c
@@ -204,16 +235,17 @@ def recurse(exp):
     if len(exp) == 1:
         return exp[0]
 
-    if '+' in exp or '-' in exp:
-        return collapse(exp,['+','-'],primitives.ExpressionAdd)
-    if '*' in exp or '/' in exp:
-        return collapse(exp,['*','/'],primitives.ExpressionMult)
+    if ('+',) in exp or ('-',) in exp:
+        return collapseAddSub(exp)
+    if ('*',) in exp or ('/',) in exp:
+        return collapseMultDiv(exp)
 
     raise Exception('invalid expression')
 
 def buildSimpleExpression(e,scope):
     e = tokenizeExpression(e,scope)
     e = recurse(e)
+    print(e)
     return e
 
 # --------------------------------------------------------
