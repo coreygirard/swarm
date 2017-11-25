@@ -512,6 +512,70 @@ class TestPrimitives(unittest.TestCase):
         loop.exe()
         self.assertEqual(c.n,0)
                 
+    def test_basic_send(self):
+        
+        class DummyExe(object):
+            def __init__(self,var):
+                self.var = var
+            
+            def exe(self):
+                return self.var
+        
+        class DummyRecv(object):
+            def __init__(self):
+                self.var = None
+            
+            def recv(self,e):
+                self.var = e
+        
+        a = DummyExe(4)
+        b = DummyRecv()
+        
+        c = build_primitives.PrimitiveSend(a,b)
+        self.assertEqual(b.var,None)
+        c.exe()
+        self.assertEqual(b.var,4)
+
+        a = DummyExe('string')
+        b = DummyRecv()
+        
+        c = build_primitives.PrimitiveSend(a,b)
+        self.assertEqual(b.var,None)
+        c.exe()
+        self.assertEqual(b.var,'string')
+
+
+    def test_basic_assign(self):
+        
+        class DummyExe(object):
+            def __init__(self,var):
+                self.var = var
+            
+            def exe(self):
+                return self.var
+        
+        class DummySet(object):
+            def __init__(self):
+                self.var = None
+            
+            def set(self,e):
+                self.var = e
+        
+        a = DummySet()
+        b = DummyExe(4)
+    
+        c = build_primitives.PrimitiveAssign(a,b)
+        self.assertEqual(a.var,None)
+        c.exe()
+        self.assertEqual(a.var,4)
+
+        a = DummySet()
+        b = DummyExe('string')
+        
+        c = build_primitives.PrimitiveAssign(a,b)
+        self.assertEqual(a.var,None)
+        c.exe()
+        self.assertEqual(a.var,'string')
 
 
 
