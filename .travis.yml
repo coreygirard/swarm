@@ -6,7 +6,6 @@ branches:
   only:
     - master
 before_install:
-  pip install codecov
-  pip install coverage
+  pip install codecov coverage
 after_success:
   codecov
