@@ -324,27 +324,70 @@ class TestExpressions(unittest.TestCase):
         #self.assertEqual(result,3)
     '''
 
-class TestComplexReference(unittest.TestCase):
+class TestScopes(unittest.TestCase):
     def test_basic_make_reference(self):
         agentScope = build_program.AgentScope()
         subagentScope = build_program.SubagentScope(agentScope)
         
         ref = build_primitives.PrimitiveReference('var',subagentScope)
-        self.assertEqual(subagentScope.d,{})
+
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{})
+
         ref.set(4)
-        self.assertEqual(subagentScope.d,{'var':4})
+
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{'var':4})
         self.assertEqual(ref.exe(),4)
+
         ref.set('hey')
-        self.assertEqual(subagentScope.d,{'var':'hey'})
+
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{'var':'hey'})
         self.assertEqual(ref.exe(),'hey')
 
         ref2 = build_primitives.PrimitiveReference('otherVar',subagentScope)
-        self.assertEqual(subagentScope.d,{'var':'hey'})
-        self.assertEqual(ref.exe(),'hey')
-        ref2.set(-2)
-        self.assertEqual(subagentScope.d,{'var':'hey','otherVar':-2})
-        self.assertEqual(ref2.exe(),-2)
 
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{'var':'hey'})
+        self.assertEqual(ref.exe(),'hey')
+
+        ref2.set(-2)
+
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{'var':'hey','otherVar':-2})
+        self.assertEqual(ref2.exe(),-2)
+        
+        subagentScope.d = {}
+        self.assertEqual(subagentScope.getLocals(),{})
+
+    def test_basic_make_reference(self):
+        agentScope = build_program.AgentScope()
+        subagentScope = build_program.SubagentScope(agentScope)
+
+        
+        refPush = build_expressions.ComplexReference(['a','b','c'],subagentScope)
+        refPush.set([4,5,6])
+        self.assertEqual(agentScope.getLocals(),{})
+        self.assertEqual(subagentScope.getLocals(),{'a':4,'b':5,'c':6})
+        
+        refPull = build_expressions.ComplexExpression(['a','b','c'],subagentScope)
+        self.assertEqual(refPull.exe(),[4,5,6])
+        
+        refPush2 = build_expressions.buildReference('i,j,k',subagentScope)
+        refPush2.set([1,2,3])
+        self.assertEqual(subagentScope.getLocals(),{'a':4,'b':5,'c':6,'i':1,'j':2,'k':3})
+        
+        refPull2 = build_expressions.buildExpression('i,j,k',subagentScope)
+        self.assertEqual(refPull2.exe(),[1,2,3])
+
+        refPull3 = build_expressions.buildExpression('a,j,k',subagentScope)
+        self.assertEqual(refPull3.exe(),[4,2,3])
+
+        refPush2 = build_expressions.buildReference('b,c,i,j',subagentScope)
+        refPush2.set([-3,'str',42,'2'])
+        expected = {'j': '2', 'i': 42, 'b': -3, 'a': 4, 'c': 'str', 'k': 3}
+        self.assertEqual(subagentScope.getLocals(),expected)
 
 
 

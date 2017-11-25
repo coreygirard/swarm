@@ -6,7 +6,6 @@ import build_primitives as primitives
 
 
 def buildLiteral(e):
-    #return ('literal',e)
     return primitives.PrimitiveLiteral(e)
 
 def buildVariable(e,scope):
@@ -246,7 +245,6 @@ def recurse(exp):
 def buildSimpleExpression(e,scope):
     e = tokenizeExpression(e,scope)
     e = recurse(e)
-    print(e)
     return e
 
 # --------------------------------------------------------
