@@ -112,7 +112,8 @@ class PrimitiveRange(object):
 
     def iterate(self):
         i = self.start
-        while i <= self.stop:
+        # TODO: YUCK
+        while (self.step > 0 and i <= self.stop) or (self.step < 0 and i >= self.stop):
             yield i
             i += self.step
 

@@ -444,6 +444,18 @@ class TestPrimitives(unittest.TestCase):
         result = [e for e in r.iterate()]
         self.assertEqual(result,[0,1,2,3,4])
 
+        r = build_primitives.PrimitiveRange(*['(',0,5,')'])
+        result = [e for e in r.iterate()]
+        self.assertEqual(result,[1,2,3,4])
+
+        r = build_primitives.PrimitiveRange(*['(',0,5,']'])
+        result = [e for e in r.iterate()]
+        self.assertEqual(result,[1,2,3,4,5])
+
+        r = build_primitives.PrimitiveRange(*['[',10,-2,-9,')'])
+        result = [e for e in r.iterate()]
+        self.assertEqual(result,[10,8,6,4,2,0,-2,-4,-6,-8])
+
 
     def test_for(self):
         agentScope = build_program.AgentScope()
@@ -466,6 +478,41 @@ class TestPrimitives(unittest.TestCase):
         f.exe()
         refPull = build_expressions.buildExpression('n',subagentScope)
         self.assertEqual(refPull.exe(),[4])
+
+
+    def test_while(self):
+
+        class Counter(object):
+            def __init__(self):
+                self.n = 0
+            
+            def exe(self):
+                self.n += 1
+        
+        class DummyCondition(object):
+            def __init__(self,n):
+                self.n = n
+            
+            def exe(self):
+                if self.n <= 0:
+                    return False
+                else:
+                    self.n -= 1
+                    return True
+        
+        dc = DummyCondition(9)
+        c = Counter()        
+        loop = build_primitives.PrimitiveWhile(dc,None,[c])
+        loop.exe()
+        self.assertEqual(c.n,9)
+                
+        dc = DummyCondition(0)
+        c = Counter()        
+        loop = build_primitives.PrimitiveWhile(dc,None,[c])
+        loop.exe()
+        self.assertEqual(c.n,0)
+                
+
 
 
 class TestRouter(unittest.TestCase):
