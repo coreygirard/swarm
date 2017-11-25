@@ -5,11 +5,12 @@ language: python
 python:
   - 3.6
 
-install:
-  - pip install codecov
-
 script:
-  - coverage run tests.py
+  - python tests.py
+
+install:
+    pip install codecov
 
 after_success:
-  - codecov --token=bf0a8aaf-f2bb-452e-8dd2-172cebc6b447
+  - codecov
+  
