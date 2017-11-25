@@ -1,11 +1,12 @@
 language: python
 python:
   - "3.6"
-script: python tests.py
+script: coverage run tests.py
 branches:
   only:
     - master
 before_install:
   pip install codecov
+  pip install coverage
 after_success:
   codecov
