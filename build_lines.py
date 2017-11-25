@@ -16,7 +16,7 @@ class Line(object):
 
 
 # handles conversion of any line that has no children. Assignment, send, etc
-def buildLine(line,vh):
+def buildLine(line,vh,router):
     assert(line.children == [])
     c = line.code
     if '=' in c:
@@ -30,7 +30,6 @@ def buildLine(line,vh):
         a,b = a.strip(),b.strip()
 
         a = expressions.buildExpression(a,vh)
-        b = primitives.PrimitivePrint()
-        return primitives.PrimitiveSend(a,b)
+        return primitives.PrimitiveSend(a,router.makeEndpoint(b))
     else:
         return Line(c)

@@ -31,9 +31,9 @@ def buildParent(line):
     return Parent(line.code,line.children)
 
 # handles conversion of any line of code that has children. Loops, conditionals, etc
-def convert(t,scope):
+def buildStructure(t,scope,router):
     if t.children == []:
-        return lines.buildLine(t,scope)
+        return lines.buildLine(t,scope,router)
 
     c = t.code
     if c.startswith('for '):
@@ -52,7 +52,7 @@ def convert(t,scope):
 
             return primitives.PrimitiveFor(primitives.PrimitiveReference(variables,scope),
                                            primitives.PrimitiveRange(*rangeParams),
-                                           [convert(e,scope) for e in t.children])
+                                           [buildStructure(e,scope,router) for e in t.children])
     elif c.startswith('while '):
         assert(t.children != [])
 
@@ -64,7 +64,7 @@ def convert(t,scope):
 
             loop = primitives.PrimitiveWhile(condition,
                                              scope,
-                                             [convert(e,scope) for e in t.children])
+                                             [buildStructure(e,scope,router) for e in t.children])
             return loop
 
 

@@ -15,6 +15,7 @@ define test:
             i -> print
             i = i + 2
 
+        3 -> error
 
 
 
