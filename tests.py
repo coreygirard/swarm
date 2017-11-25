@@ -374,21 +374,33 @@ class TestScopes(unittest.TestCase):
         refPull = build_expressions.ComplexExpression(['a','b','c'],subagentScope)
         self.assertEqual(refPull.exe(),[4,5,6])
         
-        refPush2 = build_expressions.buildReference('i,j,k',subagentScope)
-        refPush2.set([1,2,3])
+        refPush = build_expressions.buildReference('i,j,k',subagentScope)
+        refPush.set([1,2,3])
         self.assertEqual(subagentScope.getLocals(),{'a':4,'b':5,'c':6,'i':1,'j':2,'k':3})
         
-        refPull2 = build_expressions.buildExpression('i,j,k',subagentScope)
-        self.assertEqual(refPull2.exe(),[1,2,3])
+        refPull = build_expressions.buildExpression('i,j,k',subagentScope)
+        self.assertEqual(refPull.exe(),[1,2,3])
 
-        refPull3 = build_expressions.buildExpression('a,j,k',subagentScope)
-        self.assertEqual(refPull3.exe(),[4,2,3])
+        refPull = build_expressions.buildExpression('a,j,k',subagentScope)
+        self.assertEqual(refPull.exe(),[4,2,3])
 
-        refPush2 = build_expressions.buildReference('b,c,i,j',subagentScope)
-        refPush2.set([-3,'str',42,'2'])
+        refPush = build_expressions.buildReference('b,c,i,j',subagentScope)
+        refPush.set([-3,'str',42,'2'])
         expected = {'j': '2', 'i': 42, 'b': -3, 'a': 4, 'c': 'str', 'k': 3}
         self.assertEqual(subagentScope.getLocals(),expected)
 
+        refPush = build_expressions.buildReference('b,c,i,j',subagentScope)
+        refPush.set([-3,'str',42,'2'])
+        expected = {'j': '2', 'i': 42, 'b': -3, 'a': 4, 'c': 'str', 'k': 3}
+        self.assertEqual(subagentScope.getLocals(),expected)
+
+        refPull = build_expressions.buildExpression('i',subagentScope)
+        self.assertEqual(refPull.exe(),[42])
+
+        refPush = build_expressions.buildReference('i',subagentScope)
+        refPush.set([891])
+        
+        self.assertEqual(refPull.exe(),[891])
 
 
 class TestPrimitives(unittest.TestCase):
@@ -397,6 +409,64 @@ class TestPrimitives(unittest.TestCase):
 
     def test_make_variable_object(self):
         result = build_expressions.buildVariable('var',None)
+
+    def test_comparison(self):
+        class Dummy(object):
+            def __init__(self,var):
+                self.var = var
+            
+            def exe(self):
+                return self.var
+
+        import operator
+        comp = build_primitives.PrimitiveComparison(Dummy(5),operator.lt,Dummy(7))
+        self.assertEqual(comp.exe(),True)
+
+        comp = build_primitives.PrimitiveComparison(Dummy(5),operator.gt,Dummy(7))
+        self.assertEqual(comp.exe(),False)
+
+        comp = build_primitives.PrimitiveComparison(Dummy(9),operator.lt,Dummy(-4))
+        self.assertEqual(comp.exe(),False)
+
+        comp = build_primitives.PrimitiveComparison(Dummy(9),operator.eq,Dummy(-4))
+        self.assertEqual(comp.exe(),False)
+
+        comp = build_primitives.PrimitiveComparison(Dummy(-4),operator.eq,Dummy(-4))
+        self.assertEqual(comp.exe(),True)
+
+
+    def test_range(self):
+        r = build_primitives.PrimitiveRange(*['[',0,1,5,')'])
+        result = [e for e in r.iterate()]
+        self.assertEqual(result,[0,1,2,3,4])
+
+        r = build_primitives.PrimitiveRange(*['[',0,5,')'])
+        result = [e for e in r.iterate()]
+        self.assertEqual(result,[0,1,2,3,4])
+
+
+    def test_for(self):
+        agentScope = build_program.AgentScope()
+        subagentScope = build_program.SubagentScope(agentScope)
+
+
+        class Counter(object):
+            def __init__(self):
+                self.n = 0
+            
+            def exe(self):
+                self.n += 1
+
+
+        refPush = build_expressions.buildReference('n',subagentScope)
+        r = build_primitives.PrimitiveRange(*['[',0,1,5,')'])
+        c = [Counter()]
+        f = build_primitives.PrimitiveFor(refPush,r,c)
+
+        f.exe()
+        refPull = build_expressions.buildExpression('n',subagentScope)
+        self.assertEqual(refPull.exe(),[4])
+
 
 class TestRouter(unittest.TestCase):
     def test_basic_routing(self):

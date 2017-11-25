@@ -256,10 +256,7 @@ class ComplexExpression(object):
         self.exp = [buildSimpleExpression(e,scope) for e in exp]
 
     def exe(self):
-        if len(self.exp) == 1:
-            return self.exp[0].exe()
-        else:
-            return [e.exe() for e in self.exp]
+        return [e.exe() for e in self.exp]
 
 def buildExpression(e,scope):
     e = [i for i in e.split(',') if i != '']
@@ -276,6 +273,8 @@ class ComplexReference(object):
 
     def set(self,v):
         if len(self.ref) == 1:
+            if len(v) == 1:
+                v = v[0]
             self.ref[0].set(v)
         else:
             assert(len(v) == len(self.ref))

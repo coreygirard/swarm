@@ -55,7 +55,7 @@ class PrimitiveFor(object):
 
     def exe(self):
         for i in self.iterator.iterate():
-            self.variable.set(i)
+            self.variable.set([i])
             for c in self.children:
                 c.exe()
 
