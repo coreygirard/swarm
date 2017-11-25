@@ -48,9 +48,13 @@ def tokenizeExpression(e,scope):
                 temp.append(w)
             else:
                 for i in re.split(pattern,w):
+                    print(i,actual)
                     if i.startswith(actual) or i.startswith(actual):
+                        #print(i)
                         i = i[len(actual):-len(actual)]
-                        temp.append(('literal',i))
+                        #print(i)
+                        temp.append(primitives.PrimitiveLiteral(i))
+                        #print(temp[-1].exe())
                     else:
                         temp.append(i)
         e = temp
@@ -152,6 +156,10 @@ def buildSimpleExpression(e,scope):
     e = recurse(e)
     return e
 
+# --------------------------------------------------------
+# -------- HANDLE PULLING FROM MEMORY --------------------
+# --------------------------------------------------------
+
 class ComplexExpression(object):
     def __init__(self,exp,scope):
         self.exp = [buildSimpleExpression(e,scope) for e in exp]
@@ -166,12 +174,9 @@ def buildExpression(e,scope):
     e = [i for i in e.split(',') if i != '']
     return ComplexExpression(e,scope)
 
-
-
-
-
-
-
+# --------------------------------------------------------
+# -------- HANDLE PUSHING TO MEMORY ----------------------
+# --------------------------------------------------------
 
 
 class ComplexReference(object):

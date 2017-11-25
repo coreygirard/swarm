@@ -2,17 +2,23 @@
 define test:
     init:
         for i in [0:5):
-            i -> test.run
+            i,6 -> test.run
 
-    run(n):
-        n+1 -> test.run2
+        "Goodbyeworld" -> example.prtStr
+        "Goodbye, world" -> example.prtStr
 
-    run2(v):
-        v*2 -> example.run
+    run(n,t):
+        n+1,t+2 -> test.run2
+
+    run2(v,e):
+        v*2,v+e -> example.run
 
 define example:
-    run(t):
-        t -> print
+    run(t,z):
+        t,z -> print
+
+    prtStr(s):
+        s -> print
 
 
 

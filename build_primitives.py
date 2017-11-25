@@ -1,22 +1,8 @@
 
-class PrimitivePrint(object):
-    def __init__(self):
-        self.separator = '\n'
 
-    def recv(self,e):
-        print(e,end=self.separator)
-
-    def setSeparator(self,c):
-        self.separator = c
-
-class PrimitiveSend(object):
-    def __init__(self,left,right):
-        self.left = left
-        self.right = right
-
-    def exe(self):
-        self.right.recv(self.left.exe())
-
+# --------------------------------------------------------
+# -------- VARIABLE-LEVEL --------------------------------
+# --------------------------------------------------------
 
 class PrimitiveLiteral(object):
     def __init__(self,v):
@@ -24,15 +10,6 @@ class PrimitiveLiteral(object):
 
     def exe(self):
         return self.v
-
-
-class PrimitiveAssign(object):
-    def __init__(self,left,right):
-        self.left = left
-        self.right = right
-
-    def exe(self):
-        self.left.set(self.right.exe())
 
 class PrimitiveReference(object):
     def __init__(self,k,ptr):
@@ -45,6 +22,29 @@ class PrimitiveReference(object):
     def set(self,v):
         self.ptr.set(self.k,v)
 
+# --------------------------------------------------------
+# -------- BASIC OPERATIONS ------------------------------
+# --------------------------------------------------------
+
+class PrimitiveSend(object):
+    def __init__(self,left,right):
+        self.left = left
+        self.right = right
+
+    def exe(self):
+        self.right.recv(self.left.exe())
+
+class PrimitiveAssign(object):
+    def __init__(self,left,right):
+        self.left = left
+        self.right = right
+
+    def exe(self):
+        self.left.set(self.right.exe())
+
+# --------------------------------------------------------
+# -------- LOOPS -----------------------------------------
+# --------------------------------------------------------
 
 
 class PrimitiveFor(object):
@@ -66,10 +66,13 @@ class PrimitiveWhile(object):
         self.children = children
 
     def exe(self):
-        #while eval(self.condition,self.scope.getLocals()):
         while self.condition.exe():
             for c in self.children:
                 c.exe()
+
+# --------------------------------------------------------
+# -------- COMPARISONS -----------------------------------
+# --------------------------------------------------------
 
 class PrimitiveComparison(object):
     def __init__(self,left,op,right):
@@ -80,37 +83,42 @@ class PrimitiveComparison(object):
     def exe(self):
         return self.op(self.left.exe(),self.right.exe())
 
+# --------------------------------------------------------
+# -------- RANGES ----------------------------------------
+# --------------------------------------------------------
 
 class PrimitiveRange(object):
     def __init__(self,*args):
         if len(args) == 4:
-            self.l = args[0]
-            self.a = args[1]
-            self.b = 1
-            self.c = args[2]
-            self.r = args[3]
+            a,b,d,e = args
+            c = 1
         elif len(args) == 5:
-            self.l = args[0]
-            self.a = args[1]
-            self.b = args[2]
-            self.c = args[3]
-            self.r = args[4]
+            a,b,c,d,e = args
+
+        self.step = c
+
+        if a == '(':
+            self.start = b + c
+        else:
+            self.start = b
+
+        if e == ')':
+            if c > 0:
+                self.stop = d - 1 # note deliberate asymmetry here
+            elif c < 0:
+                self.stop = d + 1
+        else:
+            self.stop = d
 
     def iterate(self):
-        start = self.a
-        if self.l == '(':
-            start = start + self.b
-        stop = self.c
-        if self.r == ')':
-            stop = stop - 1
-        t = start
-        while t <= stop:
-            yield t
-            t = t + self.b
+        i = self.start
+        while i <= self.stop:
+            yield i
+            i += self.step
 
-
-
-
+# --------------------------------------------------------
+# -------- EXPRESSION ATOMS ------------------------------
+# --------------------------------------------------------
 
 class ExpressionAdd(object):
     def __init__(self,inputs):
