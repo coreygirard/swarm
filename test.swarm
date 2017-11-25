@@ -1,26 +1,31 @@
 
 define test:
     init:
-        #a,b = 13,42
-        
-        #a -> print
-        #b -> print
-        #a,b -> print
-    
-        #for n in [0:3]:
-        #    n,3 -> print
-        
+        a,b = 13,42
+
+        a -> print
+        b -> print
+        a,b -> print
+
+        for n in [0:3]:
+            n,3 -> print
+
         i = 0
         while i <= 8:
             i -> print
             i = i + 2
 
 
+
+
+
+
+
 #define test:
 #    init:
 #        for i in [0:5):
 #            i -> test.p
-#        
+#
 #    p(n):
 #        n -> print
 #

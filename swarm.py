@@ -12,11 +12,12 @@ class Node(object):
         self.code = code
         self.parent = None
         self.children = []
-        
+
     def add(self,child):
         child.parent = self
         self.children.append(child)
 
+# returns iterator of Node objects containing indent depth and line of code
 def loadfile(filename):
     code = []
     with open(filename,'r') as f:
@@ -26,6 +27,7 @@ def loadfile(filename):
                 a,b = match.groups()
                 yield Node(len(a),b)
 
+# folds stream of Node objects into a tree based upon indent depth
 def tree(filename):
     root = Node(-4,'')
     ptr = root
@@ -43,7 +45,7 @@ def tree(filename):
             ptr = ptr.parent
             ptr.add(line)
             ptr = ptr.children[-1]
-            
+
     return root
 
 
@@ -54,10 +56,7 @@ t = tree('test.swarm')
 
 
 p = program.makeProgram(t)
-
 p.init()
-#print(p.agent['test'].scope.d)
-#print(p.agent['test'].subagent['init'].scope.d)
 
 
 
