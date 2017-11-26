@@ -649,6 +649,81 @@ class TestSend(unittest.TestCase):
 
 
 
+class TestExpressions2(unittest.TestCase):
+    def test_basic_addition_and_subtraction(self):
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionAdd([['+',a],
+                                            ['+',b]])
+        self.assertEqual(e.exe(),9)
+
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionAdd([['-',a],
+                                            ['+',b]])
+        self.assertEqual(e.exe(),1)
+
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionAdd([['+',a],
+                                            ['-',b]])
+        self.assertEqual(e.exe(),-1)
+
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionAdd([['-',a],
+                                            ['-',b]])
+        self.assertEqual(e.exe(),-9)
+
+        # making sure double negatives play nice
+        a = build_primitives.PrimitiveLiteral(-4)
+        b = build_primitives.PrimitiveLiteral(-5)
+        e = build_primitives.ExpressionAdd([['+',a],
+                                            ['-',b]])
+        self.assertEqual(e.exe(),1)
+
+        # complicated
+        a = ['+','-','-','+','+','+','-']
+        b = [build_primitives.PrimitiveLiteral(i) for i in [-5,3,8,-55,2,8,5]]
+        e = build_primitives.ExpressionAdd(list(zip(a,b)))
+        self.assertEqual(e.exe(),-66)
+
+    def test_basic_multiplication_and_division(self):
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionMult([['*',a],
+                                             ['*',b]])
+        self.assertEqual(e.exe(),4*5)
+
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionMult([['*',a],
+                                             ['/',b]])
+        self.assertEqual(e.exe(),4/5)
+
+        a = build_primitives.PrimitiveLiteral(4)
+        b = build_primitives.PrimitiveLiteral(5)
+        e = build_primitives.ExpressionMult([['/',a],
+                                             ['*',b]])
+        self.assertEqual(e.exe(),5/4)
+
+
+        # complicated
+        a = ['*','/','/','*','*','*','/']
+        b = [build_primitives.PrimitiveLiteral(i) for i in [-5,3,8,-55,2,8,5]]
+        e = build_primitives.ExpressionMult(list(zip(a,b)))
+        self.assertEqual(e.exe(),-5/3/8*-55*2*8/5)
+
+    def test_basic_exponentiation(self):
+        for i in range(-5,6):
+            for j in range(-5,6):
+                if not (i == 0 and j < 0):
+                    a = build_primitives.PrimitiveLiteral(i)
+                    b = build_primitives.PrimitiveLiteral(j)
+
+                    e = build_primitives.ExpressionExponent(a,b)
+                    self.assertEqual(e.exe(),i**j)
+
 
 
 

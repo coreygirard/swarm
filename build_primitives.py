@@ -135,9 +135,6 @@ class ExpressionAdd(object):
                 total = total + n.exe()
         return total
 
-    def __repr__(self):
-        return 'ExpressionAdd(' + str(self.inputs) + ')'
-
 class ExpressionMult(object):
     def __init__(self,inputs):
         self.inputs = inputs
@@ -152,9 +149,6 @@ class ExpressionMult(object):
                 total = total / n.exe()
         return total
 
-    def __repr__(self):
-        return 'ExpressionMult(' + str(self.inputs) + ')'
-
 class ExpressionExponent(object):
     def __init__(self,a,b):
         self.a = a
@@ -162,9 +156,6 @@ class ExpressionExponent(object):
 
     def exe(self):
         return self.a.exe() ** self.b.exe()
-
-    def __repr__(self):
-        return 'ExpressionExponent(' + str(self.a) + '**' + str(self.b) + ')'
 
 
 
