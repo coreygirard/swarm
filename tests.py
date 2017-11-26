@@ -62,65 +62,65 @@ class TestExpressions(unittest.TestCase):
         result = list(build_expressions.findStringEnds(s))
         expected = list('this ') + [('"',),'i','s',('"',)] + list(' a ') + [('"',),'s','i','m','p','l','e',('"',)] + list(' string')
         self.assertEqual(result,expected)
-    
+
         s = "this 'is' a 'simple' string"
         result = list(build_expressions.findStringEnds(s))
         expected = list('this ') + [("'",),'i','s',("'",)] + list(' a ') + [("'",),'s','i','m','p','l','e',("'",)] + list(' string')
         self.assertEqual(result,expected)
-    
+
     def test_handling_interleaved_strings(self):
         s = '''this "i's" a "sim'ple" string'''
         result = list(build_expressions.findStringEnds(s))
         expected = list('this ') + [('"',),'i',("'",),'s',('"',)] + list(' a ') + [('"',),'s','i','m',("'",),'p','l','e',('"',)] + list(' string')
         self.assertEqual(result,expected)
-    
+
     def test_weird_edge_cases(self):
         s = ''
         result = list(build_expressions.findStringEnds(s))
         expected = []
         self.assertEqual(result,expected)
-        
+
         s = "''"
         result = list(build_expressions.findStringEnds(s))
         expected = [("'",),("'",)]
         self.assertEqual(result,expected)
-        
+
         s = '""'
         result = list(build_expressions.findStringEnds(s))
         expected = [('"',),('"',)]
         self.assertEqual(result,expected)
-        
+
         s = "''''''"
         result = list(build_expressions.findStringEnds(s))
         expected = [("'''",),("'''",)]
         self.assertEqual(result,expected)
-        
+
         s = '""""""'
         result = list(build_expressions.findStringEnds(s))
         expected = [('"""',),('"""',)]
         self.assertEqual(result,expected)
-        
+
         # a non-empty string that takes up the entire expression
         s = "'this is a test string'"
         result = list(build_expressions.findStringEnds(s))
         expected = [("'",)] + list('this is a test string') + [("'",)]
         self.assertEqual(result,expected)
-        
+
         s = '"this is a test string"'
         result = list(build_expressions.findStringEnds(s))
         expected = [('"',)] + list('this is a test string') + [('"',)]
         self.assertEqual(result,expected)
-        
+
         s = "'''this is a test string'''"
         result = list(build_expressions.findStringEnds(s))
         expected = [("'''",)] + list('this is a test string') + [("'''",)]
         self.assertEqual(result,expected)
-        
+
         s = '"""this is a test string"""'
         result = list(build_expressions.findStringEnds(s))
         expected = [('"""',)] + list('this is a test string') + [('"""',)]
         self.assertEqual(result,expected)
-        
+
     def test_basic_string_extracting(self):
         s = ''
         result = build_expressions.extractStringLiterals(s)
@@ -132,17 +132,17 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = '""""""'
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = "''"
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = "''''''"
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', '')]
@@ -153,17 +153,17 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', ''),' test']
         self.assertEqual(result,expected)
-    
+
         s = '"""""" test'
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', ''),' test']
         self.assertEqual(result,expected)
-    
+
         s = "'' test"
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', ''),' test']
         self.assertEqual(result,expected)
-    
+
         s = "'''''' test"
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', ''),' test']
@@ -174,17 +174,17 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = 'test """"""'
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = "test ''"
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', '')]
         self.assertEqual(result,expected)
-    
+
         s = "test ''''''"
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', '')]
@@ -195,17 +195,17 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', 'this is a test string')]
         self.assertEqual(result,expected)
-    
+
         s = '"this is a test string"'
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', 'this is a test string')]
         self.assertEqual(result,expected)
-    
+
         s = "'''this is a test string'''"
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', 'this is a test string')]
         self.assertEqual(result,expected)
-    
+
         s = '"""this is a test string"""'
         result = build_expressions.extractStringLiterals(s)
         expected = [('literal', 'this is a test string')]
@@ -218,22 +218,22 @@ class TestExpressions(unittest.TestCase):
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', 'this is a test string'),' test']
         self.assertEqual(result,expected)
-    
+
         s = 'test "this is a test string" test'
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', 'this is a test string'),' test']
         self.assertEqual(result,expected)
-    
+
         s = "test '''this is a test string''' test"
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', 'this is a test string'),' test']
         self.assertEqual(result,expected)
-    
+
         s = 'test """this is a test string""" test'
         result = build_expressions.extractStringLiterals(s)
         expected = ['test ',('literal', 'this is a test string'),' test']
         self.assertEqual(result,expected)
-    
+
     def test_overlapping_string_extracting(self):
         s = '''aaa 'bbb "ccc' 'ddd" eee' fff'''
         result = build_expressions.extractStringLiterals(s)
@@ -280,7 +280,7 @@ class TestExpressions(unittest.TestCase):
         self.assertEqual(result[1],('and',))
         self.assertEqual(result[2],('!',))
         self.assertEqual(result[3].exe(),False)
-        
+
         s = '''var + otherVar - thirdVar * something / another'''
         result = build_expressions.tokenizeExpression(s,None)
         self.assertEqual(len(result),9)
@@ -289,7 +289,7 @@ class TestExpressions(unittest.TestCase):
         self.assertEqual(result[4],('variable','thirdVar'))
         self.assertEqual(result[6],('variable','something'))
         self.assertEqual(result[8],('variable','another'))
-        
+
     def test_match_superstring_first(self):
         s = '3 <= var'
         result = build_expressions.tokenizeExpression(s,None)
@@ -315,12 +315,12 @@ class TestExpressions(unittest.TestCase):
         self.assertEqual(result[2].exe(),2)
         self.assertEqual(result[4].exe(),3)
         self.assertEqual(result[6].exe(),4)
-        
+
         self.assertEqual(result[1],('+',))
         self.assertEqual(result[3],('+',))
         self.assertEqual(result[5],('+',))
-        
-        
+
+
         result = build_expressions.recurse(result)
         #self.assertEqual(result,3)
     '''
@@ -329,7 +329,7 @@ class TestScopes(unittest.TestCase):
     def test_basic_make_reference(self):
         agentScope = build_program.AgentScope()
         subagentScope = build_program.SubagentScope(agentScope)
-        
+
         ref = build_primitives.PrimitiveReference('var',subagentScope)
 
         self.assertEqual(agentScope.getLocals(),{})
@@ -358,7 +358,7 @@ class TestScopes(unittest.TestCase):
         #self.assertEqual(agentScope.getLocals(),{})
         self.assertEqual(subagentScope.getLocals(),{'var':'hey','otherVar':-2})
         self.assertEqual(ref2.exe(),-2)
-        
+
 
 
 
@@ -367,19 +367,19 @@ class TestScopes(unittest.TestCase):
         agentScope = build_program.AgentScope()
         subagentScope = build_program.SubagentScope(agentScope)
 
-        
+
         refPush = build_expressions.ComplexTarget(['a','b','c'],subagentScope)
         refPush.set([4,5,6])
         self.assertEqual(agentScope.getLocals(),{})
         self.assertEqual(subagentScope.getLocals(),{'a':4,'b':5,'c':6})
-        
+
         refPull = build_expressions.ComplexSource(['a','b','c'],subagentScope)
         self.assertEqual(refPull.exe(),[4,5,6])
-        
+
         refPush = build_expressions.buildTarget('i,j,k',subagentScope)
         refPush.set([1,2,3])
         self.assertEqual(subagentScope.getLocals(),{'a':4,'b':5,'c':6,'i':1,'j':2,'k':3})
-        
+
         refPull = build_expressions.buildSource('i,j,k',subagentScope)
         self.assertEqual(refPull.exe(),[1,2,3])
 
@@ -401,7 +401,7 @@ class TestScopes(unittest.TestCase):
 
         refPush = build_expressions.buildTarget('i',subagentScope)
         refPush.set([891])
-        
+
         self.assertEqual(refPull.exe(),[891])
 
 
@@ -416,7 +416,7 @@ class TestPrimitives(unittest.TestCase):
         class Dummy(object):
             def __init__(self,var):
                 self.var = var
-            
+
             def exe(self):
                 return self.var
 
@@ -467,7 +467,7 @@ class TestPrimitives(unittest.TestCase):
         class Counter(object):
             def __init__(self):
                 self.n = 0
-            
+
             def exe(self):
                 self.n += 1
 
@@ -487,52 +487,52 @@ class TestPrimitives(unittest.TestCase):
         class Counter(object):
             def __init__(self):
                 self.n = 0
-            
+
             def exe(self):
                 self.n += 1
-        
+
         class DummyCondition(object):
             def __init__(self,n):
                 self.n = n
-            
+
             def exe(self):
                 if self.n <= 0:
                     return False
                 else:
                     self.n -= 1
                     return True
-        
+
         dc = DummyCondition(9)
-        c = Counter()        
+        c = Counter()
         loop = build_primitives.PrimitiveWhile(dc,None,[c])
         loop.exe()
         self.assertEqual(c.n,9)
-                
+
         dc = DummyCondition(0)
-        c = Counter()        
+        c = Counter()
         loop = build_primitives.PrimitiveWhile(dc,None,[c])
         loop.exe()
         self.assertEqual(c.n,0)
-                
+
     def test_basic_send(self):
-        
+
         class DummyExe(object):
             def __init__(self,var):
                 self.var = var
-            
+
             def exe(self):
                 return self.var
-        
+
         class DummyRecv(object):
             def __init__(self):
                 self.var = None
-            
+
             def recv(self,e):
                 self.var = e
-        
+
         a = DummyExe(4)
         b = DummyRecv()
-        
+
         c = build_primitives.PrimitiveSend(a,b)
         self.assertEqual(b.var,None)
         c.exe()
@@ -540,7 +540,7 @@ class TestPrimitives(unittest.TestCase):
 
         a = DummyExe('string')
         b = DummyRecv()
-        
+
         c = build_primitives.PrimitiveSend(a,b)
         self.assertEqual(b.var,None)
         c.exe()
@@ -548,24 +548,24 @@ class TestPrimitives(unittest.TestCase):
 
 
     def test_basic_assign(self):
-        
+
         class DummyExe(object):
             def __init__(self,var):
                 self.var = var
-            
+
             def exe(self):
                 return self.var
-        
+
         class DummySet(object):
             def __init__(self):
                 self.var = None
-            
+
             def set(self,e):
                 self.var = e
-        
+
         a = DummySet()
         b = DummyExe(4)
-    
+
         c = build_primitives.PrimitiveAssign(a,b)
         self.assertEqual(a.var,None)
         c.exe()
@@ -573,7 +573,7 @@ class TestPrimitives(unittest.TestCase):
 
         a = DummySet()
         b = DummyExe('string')
-        
+
         c = build_primitives.PrimitiveAssign(a,b)
         self.assertEqual(a.var,None)
         c.exe()
@@ -586,12 +586,12 @@ class TestRouter(unittest.TestCase):
         class Dummy(object):
             def __init__(self):
                 self.var = None
-            
+
             def recv(self,k):
                 self.var = k
 
         dummy = Dummy()
-        
+
         pr = build_program.ProgramRouter(debug=False)
         ar = {'agent1':pr.makeAgentRouter('agent1'),
               'agent2':pr.makeAgentRouter('agent2')}
@@ -599,7 +599,7 @@ class TestRouter(unittest.TestCase):
               'agent1.subagent2':ar['agent1'].makeSubagentRouter('subagent2'),
               'agent2.subagent1':ar['agent2'].makeSubagentRouter('subagent1'),
               'agent2.subagent2':ar['agent2'].makeSubagentRouter('subagent2')}
-        
+
 
 
         pr.builtins['print'] = dummy
@@ -625,10 +625,27 @@ class TestSend(unittest.TestCase):
         pr = build_program.ProgramRouter(debug=False)
         ar = pr.makeAgentRouter('agent1')
         sr = ar.makeSubagentRouter('subagent1')
-        
+
+        agentScope = build_program.AgentScope()
+        subagentScope = build_program.SubagentScope(agentScope)
+
         line = build_program.Node(6,'a -> b')
-        
-        result = build_lines.buildLine(line,None,sr)
+        result = build_lines.buildLine(line,subagentScope,sr)
+
+
+    def test_make_assign(self):
+        pr = build_program.ProgramRouter(debug=False)
+        ar = pr.makeAgentRouter('agent1')
+        sr = ar.makeSubagentRouter('subagent1')
+
+        agentScope = build_program.AgentScope()
+        subagentScope = build_program.SubagentScope(agentScope)
+
+        line = build_program.Node(6,'n = 3')
+        result = build_lines.buildLine(line,subagentScope,sr)
+        self.assertEqual(subagentScope.getLocals(),{})
+        result.exe()
+        self.assertEqual(subagentScope.getLocals(),{'n':3})
 
 
 
@@ -643,7 +660,7 @@ class TestStructures(unittest.TestCase):
         c = build_program.Node(0,'')
         a.add(b)
         a.add(c)
-                
+
         result = build_structures.buildStructure(a,None,None)
         expected = []
         self.assertEqual(result,expected)
