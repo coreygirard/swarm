@@ -379,27 +379,41 @@ class TestProgramAgentSubagent(unittest.TestCase):
         subagent[0].setVar('a',4)
         self.assertEqual(agent.scope,{})
         self.assertEqual(subagent[0].scope,{'a':4})
+        self.assertEqual(subagent[0].getVar('a'),4)
         self.assertEqual(subagent[1].scope,{})
 
         subagent[0].setVar('self.a',5)
         self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].getVar('self.a'),5)
+        self.assertEqual(subagent[1].getVar('self.a'),5)
         self.assertEqual(subagent[0].scope,{'a':4})
+        self.assertEqual(subagent[0].getVar('a'),4)
         self.assertEqual(subagent[1].scope,{})
 
         subagent[0].setVar('a',42)
         self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].getVar('self.a'),5)
+        self.assertEqual(subagent[1].getVar('self.a'),5)
         self.assertEqual(subagent[0].scope,{'a':42})
         self.assertEqual(subagent[1].scope,{})
 
         subagent[1].setVar('a',81)
         self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].getVar('self.a'),5)
+        self.assertEqual(subagent[1].getVar('self.a'),5)
         self.assertEqual(subagent[0].scope,{'a':42})
+        self.assertEqual(subagent[0].getVar('a'),42)
         self.assertEqual(subagent[1].scope,{'a':81})
+        self.assertEqual(subagent[1].getVar('a'),81)
 
         subagent[1].setVar('self.a',81)
         self.assertEqual(agent.scope,{'self.a':81})
+        self.assertEqual(subagent[0].getVar('self.a'),81)
+        self.assertEqual(subagent[1].getVar('self.a'),81)
         self.assertEqual(subagent[0].scope,{'a':42})
+        self.assertEqual(subagent[0].getVar('a'),42)
         self.assertEqual(subagent[1].scope,{'a':81})
+        self.assertEqual(subagent[1].getVar('a'),81)
 
 
 
