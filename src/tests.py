@@ -1,5 +1,6 @@
 import unittest
 import tokenizer
+import tree
 
 Token = tokenizer.Token
 
@@ -48,6 +49,9 @@ class TestStringLiterals(unittest.TestCase):
                  ],
                 ['"""test""" string',
                  [Token(tag='literal', value='test'), Token(tag='raw', value=' string')]
+                 ],
+                ["""'test"  string'""",
+                 [Token(tag='literal', value='test"  string')]
                  ],
                  ]
 
@@ -152,8 +156,27 @@ class TestTokenizer(unittest.TestCase):
             result = tokenizer.tokenize(c)
             self.assertEqual(result,e)
 
+# -------------------------------------
+# -------- TEST TREE GENERATOR --------
+# -------------------------------------
 
+class TestFileLoading(unittest.TestCase):
+    def test_file_load(self):
+        code = '\n'.join(['define stuff:',
+                          '    init:',
+                          '        3 -> print #print',
+                          '',
+                          '   # taking awkward space',
+                          '    run(n): #run',
+                          '        n*2 -> test'])
 
+        result = tree.loadfile(code.split('\n'))
+        expected = [(0, 'define stuff:'),
+                    (4, 'init:'),
+                    (8, '3 -> print'),
+                    (4, 'run(n):'),
+                    (8, 'n*2 -> test')]
+        self.assertEqual(result,expected)
 
 
 
