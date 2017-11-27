@@ -1,5 +1,5 @@
 
-define HTTP:
+define http:
     receive(req):
         switch req.folder: # something that means what subfolder of the url it was addressed to
             'flic':
@@ -10,8 +10,8 @@ define HTTP:
 define credentials:
     init:
         self.creds = {'lifx':     'aaaaaaaa',
-                      'facebook': 'bbbbbbbb',
-                 
+                      'facebook': 'bbbbbbbb'}
+
 
         self.creds['lifx']     ->     lifx.setToken
         self.creds['facebook'] -> facebook.setToken
@@ -38,13 +38,13 @@ define watchdog:
             else:
                 temp[service] = resp('no response',timestamp())
         self.status = temp
-            
+
     buildReport(ip):
         # blah blah blah
         # html stuff
         # blah blah blah
         # build from self.status
-        ip,finishedHTMLreport -> HTTP.send
+        ip,finishedHTMLreport -> http.send
 
 define flic:
     run(req):
@@ -89,14 +89,14 @@ define facebook:
         message = data['entry'][0]['messaging'][0]['message']['text']
 
         sender,message -> main.facebook
-        
+
         # gotta do something to return a 200 to FB
 
     send(userID,message):
         data = {'recipient': {'id': userID},
                 'message': {'text': message}}
 
-        {'type':'post','url':url+accessToken,'data':data} -> HTTP.send
+        {'type':'post','url':url+accessToken,'data':data} -> http.send
 
     setToken(token):
         self.accessToken = token
@@ -110,17 +110,17 @@ define lifx:
 
     off(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
-        data = {'power':state}    
-        {'type':'put','headers':headers,'url':url,'data':data} -> HTTP.send
+        data = {'power':state}
+        {'type':'put','headers':headers,'url':url,'data':data} -> http.send
 
     on(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/state'
-        data = {'power':state}    
-        {'type':'put','headers':headers,'url':url,'data':data} -> HTTP.send
+        data = {'power':state}
+        {'type':'put','headers':headers,'url':url,'data':data} -> http.send
 
     toggle(light):
         url = 'https://api.lifx.com/v1/lights/' + light + '/toggle'
-        {'type':'post','headers':headers,'url':url,'data':{}} -> HTTP.send
+        {'type':'post','headers':headers,'url':url,'data':{}} -> http.send
 
     setToken(token):
         headers = {'Authorization': 'Bearer ' + token}
@@ -131,7 +131,7 @@ define lifx:
 define weather:
     init:
         self.lat,self.lon = 0.0,0.0
-        
+
     setLocation(lat,lon):
         self.lat,self.lon = lat,lon
 
