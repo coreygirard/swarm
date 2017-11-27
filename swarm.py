@@ -24,12 +24,7 @@ while True:
 '''
 
 
-
-code = tree.fetchfile('test.swarm')
-code = tree.loadfile(code)
-code = tree.tree(code)
-
-p = tree.Program(code)
+p = tree.buildProgram('test.swarm')
 
 for k,v in p.agent.items():
     print(k)

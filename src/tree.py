@@ -1,5 +1,25 @@
 import re
-import tokenizer
+from collections import deque
+
+try:
+    import tokenizer
+except ImportError: # TODO: THIS IS UGLY
+    from src import tokenizer
+
+try:
+    import expressions
+except ImportError: # TODO: THIS IS UGLY
+    from src import expressions
+
+
+
+
+def buildProgram(filename):
+    code = fetchfile('test.swarm')
+    code = loadfile(code)
+    code = tree(code)
+    return Program(code)
+
 
 
 class Node(object):
@@ -86,29 +106,26 @@ def tree(lines):
 # -------- PROGRAM/AGENT/SUBAGENT OBJECTS --------
 # ------------------------------------------------
 
-class Subagent(object):
-    def __init__(self,parent,subagent):
-        self.parent = parent
-        self.scope = {}
+class Program(object):
+    def __init__(self,node):
+        self.agent = {}
+        for agent in node.children:
+            code = agent.code
 
-    def getVar(self,name):
-        if name.startswith('self.'):
-            return self.parent.getVar(name)
-        else:
-            assert(name in self.scope.keys())
-            return self.scope[name]
+            if code[0].value == 'define':
+                name = code[1].value
+                self.buildAgent(name,agent)
+            elif code[0].value == 'type':
+                pass # TODO: implement types
 
-    def setVar(self,name,val):
-        if name.startswith('self.'):
-            return self.parent.setVar(name,val)
-        else:
-            self.scope[name] = val
-
+    def buildAgent(self,name,agent):
+        self.agent[name] = Agent(self,agent)
 
 class Agent(object):
-    def __init__(self,agent):
+    def __init__(self,parent,node):
+        self.parent = parent
         self.subagent = {}
-        for subagent in agent.children:
+        for subagent in node.children:
             code = subagent.code
 
             assert(code[0].tag in ['raw','init','run'])
@@ -130,25 +147,79 @@ class Agent(object):
         assert(name.startswith('self.'))
         self.scope[name] = val
 
+class Subagent(object):
+    def __init__(self,parent,node):
+        self.parent = parent
+        self.scope = {}
 
-class Program(object):
-    def __init__(self,program):
-        self.agent = {}
-        for agent in program.children:
-            code = agent.code
+        self.queue = deque()
+        self.code = buildStructure(node.children,self)
 
-            if code[0].value == 'define':
-                name = code[1].value
-                self.buildAgent(name,agent)
-            elif code[0].value == 'type':
-                pass # TODO: implement types
+    def exe(self):
+        for c in self.code:
+            c.exe()
 
-    def buildAgent(self,name,agent):
-        self.agent[name] = Agent(agent)
+    def getVar(self,name):
+        if name.startswith('self.'):
+            return self.parent.getVar(name)
+        else:
+            assert(name in self.scope.keys())
+            return self.scope[name]
+
+    def setVar(self,name,val):
+        if name.startswith('self.'):
+            return self.parent.setVar(name,val)
+        else:
+            self.scope[name] = val
+
+    def sendMsg(self,dest,msg):
+        pass # TODO
+
 
 # --------------------------------------------
 # -------- LOOP/IF/SWITCH/ETC OBJECTS --------
 # --------------------------------------------
+
+
+
+
+
+# TODO: implement toy 'send'/'assign' examples
+
+def buildStructure(a,b):
+    return None
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

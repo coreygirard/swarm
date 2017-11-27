@@ -372,7 +372,7 @@ class TestProgramAgentSubagent(unittest.TestCase):
 
 
     def test_scope(self):
-        agent = tree.Agent(Node(0,''))
+        agent = tree.Agent(None,Node(0,''))
         subagent = [tree.Subagent(agent,Node(4,'')),
                     tree.Subagent(agent,Node(4,''))]
 
@@ -446,6 +446,12 @@ class TestLinkLiterals(unittest.TestCase):
         self.assertEqual(result[1].tag,'+-')
         self.assertEqual(result[1].value,'+')
 
+'''
+class TestLinkVariables(unittest.TestCase):
+    def test_linking_variables(self):
+        agent = tree.Agent(None,Node(0,''))
+        subagent =
+'''
 
 
 
