@@ -160,6 +160,89 @@ class TestTokenizer(unittest.TestCase):
 # -------- TEST TREE GENERATOR --------
 # -------------------------------------
 
+Node = tree.Node
+
+class TestNodeClass(unittest.TestCase):
+    def test_node_class(self):
+        a = Node(0,'a')
+        b = Node(4,'b')
+        c = Node(4,'c')
+        a.add(b)
+        a.add(c)
+
+    def test_tree_folding(self):
+        example = [(0,'aaa'),
+                       (4,'bbb'),
+                           (8,'ccc'),
+                           (8,'ddd'),
+                       (4,'eee'),
+                           (8,'fff'),
+                   (0,'ggg'),
+                       (4,'hhh'),
+                       (4,'iii'),
+                   (0,'jjj')]
+
+        p = tree.tree(example)
+        self.assertEqual(len(p.children),3)
+
+        a = p.children[0]
+        b = a.children[0]
+        c = b.children[0]
+        d = b.children[1]
+        e = a.children[1]
+        f = e.children[0]
+        g = p.children[1]
+        h = g.children[0]
+        i = g.children[1]
+        j = p.children[2]
+
+        self.assertEqual(a.code,'aaa')
+        self.assertEqual(b.code,'bbb')
+        self.assertEqual(c.code,'ccc')
+        self.assertEqual(d.code,'ddd')
+        self.assertEqual(e.code,'eee')
+        self.assertEqual(f.code,'fff')
+        self.assertEqual(g.code,'ggg')
+        self.assertEqual(h.code,'hhh')
+        self.assertEqual(i.code,'iii')
+        self.assertEqual(j.code,'jjj')
+
+        self.assertEqual(len(p.children),3)
+        self.assertEqual(p.children[0].code,'aaa')
+        self.assertEqual(p.children[1].code,'ggg')
+        self.assertEqual(p.children[2].code,'jjj')
+
+        self.assertEqual(len(a.children),2)
+        self.assertEqual(a.children[0].code,'bbb')
+        self.assertEqual(a.children[1].code,'eee')
+
+        self.assertEqual(len(b.children),2)
+        self.assertEqual(b.children[0].code,'ccc')
+        self.assertEqual(b.children[1].code,'ddd')
+
+        self.assertEqual(len(c.children),0)
+
+        self.assertEqual(len(d.children),0)
+
+        self.assertEqual(len(e.children),1)
+        self.assertEqual(e.children[0].code,'fff')
+
+        self.assertEqual(len(f.children),0)
+
+        self.assertEqual(len(g.children),2)
+        self.assertEqual(g.children[0].code,'hhh')
+        self.assertEqual(g.children[1].code,'iii')
+
+        self.assertEqual(len(h.children),0)
+
+        self.assertEqual(len(i.children),0)
+
+        self.assertEqual(len(j.children),0)
+
+
+
+
+
 class TestFileLoading(unittest.TestCase):
     def test_file_load(self):
         code = '\n'.join(['define stuff:',
