@@ -91,12 +91,18 @@ class Subagent(object):
         self.parent = parent
         self.scope = {}
 
-
     def getVar(self,name):
-        if name in self.scope.keys():
-            return self.scope[name]
-        else:
+        if name.startswith('self.'):
             return self.parent.getVar(name)
+        else:
+            assert(name in self.scope.keys())
+            return self.scope[name]
+
+    def setVar(self,name,val):
+        if name.startswith('self.'):
+            return self.parent.setVar(name,val)
+        else:
+            self.scope[name] = val
 
 
 class Agent(object):
@@ -114,6 +120,15 @@ class Agent(object):
 
     def buildSubagent(self,name,subagent):
         self.subagent[name] = Subagent(self,subagent)
+
+    def getVar(self,name):
+        assert(name.startswith('self.'))
+        assert(name in self.scope.keys())
+        return self.scope[name]
+
+    def setVar(self,name,val):
+        assert(name.startswith('self.'))
+        self.scope[name] = val
 
 
 class Program(object):

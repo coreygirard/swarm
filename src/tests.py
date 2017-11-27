@@ -371,6 +371,38 @@ class TestProgramAgentSubagent(unittest.TestCase):
         self.assertTrue(sorted(list(p.agent['agent2'].subagent.keys())) == ['run'])
 
 
+    def test_scope(self):
+        agent = tree.Agent(Node(0,''))
+        subagent = [tree.Subagent(agent,Node(4,'')),
+                    tree.Subagent(agent,Node(4,''))]
+
+        subagent[0].setVar('a',4)
+        self.assertEqual(agent.scope,{})
+        self.assertEqual(subagent[0].scope,{'a':4})
+        self.assertEqual(subagent[1].scope,{})
+
+        subagent[0].setVar('self.a',5)
+        self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].scope,{'a':4})
+        self.assertEqual(subagent[1].scope,{})
+
+        subagent[0].setVar('a',42)
+        self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].scope,{'a':42})
+        self.assertEqual(subagent[1].scope,{})
+
+        subagent[1].setVar('a',81)
+        self.assertEqual(agent.scope,{'self.a':5})
+        self.assertEqual(subagent[0].scope,{'a':42})
+        self.assertEqual(subagent[1].scope,{'a':81})
+
+        subagent[1].setVar('self.a',81)
+        self.assertEqual(agent.scope,{'self.a':81})
+        self.assertEqual(subagent[0].scope,{'a':42})
+        self.assertEqual(subagent[1].scope,{'a':81})
+
+
+
 
 # ----------------------------------------
 # -------- TEST EXPRESSION PARSER --------

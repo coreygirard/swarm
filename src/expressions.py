@@ -37,6 +37,31 @@ def linkLiterals(exp):
             temp.append(e)
     return temp
 
+class Variable(object):
+    def __init__(self,ptr,name):
+        self.ptr = ptr
+        self.name = name
+
+    def exe(self):
+        return self.ptr.getVar(self.name)
+
+    def recv(self,val):
+        self.ptr.setVar(self.name,val)
+
+def linkVariables(exp):
+    # TODO
+    return exp
+
+def parseExpression(exp):
+    exp = linkLiterals(exp)
+    exp = linkVariables(exp)
+
+
+
+
+
+
+
 
 
 
