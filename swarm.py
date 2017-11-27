@@ -1,7 +1,6 @@
 from pprint import pprint
 #import build_program as program
 import random
-from src import tokenizer
 from src import tree
 
 

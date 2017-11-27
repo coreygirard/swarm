@@ -1,5 +1,5 @@
 import re
-from src import tokenizer
+import tokenizer
 
 
 class Node(object):
