@@ -41,8 +41,7 @@ def buildLiteralsAndVariables(e,scope):
         else:
             temp.append(i)
 
-    e = temp
-    return e
+    return temp
 
 # generator that yields all characters in a string, lumping and designating all possible string literal boundaries
 def findStringEnds(s):
@@ -140,37 +139,32 @@ def tokenizeExpression(s,scope):
 
 
 
-'''
-# same operation for +,- and *,/ pairs
-def collapse(e,op,c):
-    if e[0] not in op:
-        e.insert(0,op[0])
-    indices = [i for i,x in enumerate(e) if x in op]+[len(e)]
-    inputs = []
-    for a,b in zip(indices,indices[1:]):
-        inputs.append([e[a][0],recurse(e[a+1:b])])
-    return c(inputs)
-'''
 
 # simplify all addition/subtraction in the expression to a single object with subobjects
 def collapseAddSub(exp):
     if exp[0] not in [('+',),('-',)]:
         exp.insert(0,('+',))
-    indices = [i for i,x in enumerate(exp) if x[0] in ['+','-']]+[len(exp)]
+    indices = [i for i,x in enumerate(exp) if x in [('+',),('-',)]]+[len(exp)]
     inputs = []
     for a,b in zip(indices,indices[1:]):
-        inputs.append([exp[a][0],exp[a+1:b]])
+        inputs.append([exp[a][0],recurse(exp[a+1:b])])
     return primitives.ExpressionAdd(inputs)
 
 # simplify all multiplication/division in the expression to a single object with subobjects
 def collapseMultDiv(exp):
     if exp[0] not in [('*',),('/',)]:
         exp.insert(0,('*',))
-    indices = [i for i,x in enumerate(exp) if x[0] in ['*','/']]+[len(exp)]
+    indices = [i for i,x in enumerate(exp) if x in [('*',),('/',)]]+[len(exp)]
     inputs = []
     for a,b in zip(indices,indices[1:]):
-        inputs.append([exp[a][0],exp[a+1:b]])
+        inputs.append([exp[a][0],recurse(exp[a+1:b])])
     return primitives.ExpressionMult(inputs)
+
+
+
+
+
+
 
 
 def recurse(exp):
@@ -189,6 +183,8 @@ def recurse(exp):
 
     if len(exp) == 1:
         return exp[0]
+
+
 
     assert(sum([s in exp for s in ['<','>','==','!=','<=','>=']]) <= 1) # TODO: add support for expressions like 'A < B < C'
     if any([s in exp for s in ['<','>','==','!=','<=','>=']]):

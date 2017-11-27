@@ -724,6 +724,53 @@ class TestExpressions2(unittest.TestCase):
                     e = build_primitives.ExpressionExponent(a,b)
                     self.assertEqual(e.exe(),i**j)
 
+class TestExpressions3(unittest.TestCase):
+    def test_(self):
+        e = [('+',),build_primitives.PrimitiveLiteral(4),
+             ('+',),build_primitives.PrimitiveLiteral(5)]
+
+        r = build_expressions.collapseAddSub(e)
+        self.assertEqual(r.exe(),9)
+
+        e = [build_primitives.PrimitiveLiteral(4),
+             ('+',),build_primitives.PrimitiveLiteral(5)]
+
+        r = build_expressions.collapseAddSub(e)
+        self.assertEqual(r.exe(),9)
+
+
+        e = [('*',),build_primitives.PrimitiveLiteral(4),
+             ('/',),build_primitives.PrimitiveLiteral(5)]
+
+        r = build_expressions.collapseMultDiv(e)
+        self.assertEqual(r.exe(),4/5)
+
+        e = [build_primitives.PrimitiveLiteral(4),
+             ('/',),build_primitives.PrimitiveLiteral(5)]
+
+        r = build_expressions.collapseMultDiv(e)
+        self.assertEqual(r.exe(),4/5)
+
+
+
+
+class TestBuild(unittest.TestCase):
+    def test_build_float(self):
+        result = build_expressions.buildLiteralsAndVariables(['0.999'],None)
+        self.assertEqual(result[0].exe(),0.999)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
