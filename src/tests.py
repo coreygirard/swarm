@@ -158,9 +158,9 @@ class TestTokenizer(unittest.TestCase):
             result = tokenizer.tokenize(c)
             self.assertEqual(result,e)
 
-# -------------------------------------
-# -------- TEST TREE GENERATOR --------
-# -------------------------------------
+# --------------------------------------
+# -------- TEST FILE LOAD/PARSE --------
+# --------------------------------------
 
 class TestFetchFile(unittest.TestCase):
     def setUp(self):
@@ -235,6 +235,10 @@ class TestFileLoading(unittest.TestCase):
         self.assertEqual(result,expected)
 
 
+# -----------------------------------
+# -------- TEST TREE FOLDING --------
+# -----------------------------------
+
 Node = tree.Node
 
 class TestNodeClass(unittest.TestCase):
@@ -244,6 +248,15 @@ class TestNodeClass(unittest.TestCase):
         c = Node(4,'c')
         a.add(b)
         a.add(c)
+
+        self.assertEqual(a.code,'a')
+        self.assertEqual(len(a.children),2)
+
+        self.assertEqual(a.children[0].code,'b')
+        self.assertEqual(len(a.children[0].children),0)
+
+        self.assertEqual(a.children[1].code,'c')
+        self.assertEqual(len(a.children[1].children),0)
 
     def test_tree_folding(self):
         example = [(0,'aaa'),
@@ -318,12 +331,84 @@ class TestNodeClass(unittest.TestCase):
 
 
 
+# -----------------------------------------------------
+# -------- TEST PROGRAM/AGENT/SUBAGENT OBJECTS --------
+# -----------------------------------------------------
+
+class TestProgramAgentSubagent(unittest.TestCase):
+    def test_program_objects(self):
+
+        '''
+        define agent1:
+            init:
+                4 -> print
+
+            run(n):
+                5 -> print
+
+        define agent2:
+            run(n):
+                5 -> print
+
+        '''
+
+        a = Node(-4,'')
+        a.add(Node(0,[
+                      Token('define','define'),
+                      Token('raw','agent1'),
+                      Token(':',':')
+                     ]))
+
+        a.children[0].add(Node(4,[
+                                  Token('init','init'),
+                                  Token(':',':')
+                                 ]))
+
+        a.children[0].children[0].add(Node(8,[
+                                              Token('raw','4'),
+                                              Token('->','->'),
+                                              Token('print','print')
+                                             ]))
+
+        a.children[0].add(Node(4,[
+                                  Token('raw','run'),
+                                  Token('()','('),
+                                  Token('raw','n'),
+                                  Token('()',')'),
+                                  Token(':',':')
+                                 ]))
+
+        a.children[0].children[1].add(Node(8,[
+                                              Token('raw','5'),
+                                              Token('->','->'),
+                                              Token('print','print')
+                                             ]))
 
 
+        a.add(Node(0,[
+                      Token('define','define'),
+                      Token('raw','agent2'),
+                      Token(':',':')
+                     ]))
 
+        a.children[1].add(Node(4,[
+                                  Token('raw','run'),
+                                  Token('()','('),
+                                  Token('raw','n'),
+                                  Token('()',')'),
+                                  Token(':',':')
+                                 ]))
 
+        a.children[1].children[0].add(Node(8,[
+                                              Token('raw','5'),
+                                              Token('->','->'),
+                                              Token('print','print')
+                                             ]))
 
-
+        p = tree.Program(a)
+        self.assertTrue(sorted(list(p.agent.keys())) == ['agent1','agent2'])
+        self.assertTrue(sorted(list(p.agent['agent1'].subagent.keys())) == ['init','run'])
+        self.assertTrue(sorted(list(p.agent['agent2'].subagent.keys())) == ['run'])
 
 
 
