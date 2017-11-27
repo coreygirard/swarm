@@ -1,4 +1,5 @@
 import re
+from src import tokenizer
 
 
 class Node(object):
@@ -29,7 +30,7 @@ def loadfile(it):
         match = re.match('^([ ]*)([^#\s\n][^#]*[^#\s\n])',line)
         if match:
             a,b = match.groups()
-            code.append((len(a),b))
+            code.append((len(a),tokenizer.tokenize(b)))
     return code
 
 def tree(lines):
@@ -80,5 +81,51 @@ def tree(lines):
             ptr = ptr.children[-1]
 
     return root
+
+# ------------------------------------------------
+# -------- PROGRAM/AGENT/SUBAGENT OBJECTS --------
+# ------------------------------------------------
+
+class Subagent(object):
+    def __init__(self,subagent):
+        pass
+
+
+class Agent(object):
+    def __init__(self,agent):
+        self.subagent = {}
+        for subagent in agent.children:
+            code = subagent.code
+
+            assert(code[0].tag in ['raw','init','run'])
+
+            name = code[0].value
+            self.buildSubagent(name,subagent)
+
+    def buildSubagent(self,name,subagent):
+        self.subagent[name] = Subagent(subagent)
+
+
+class Program(object):
+    def __init__(self,program):
+        self.agent = {}
+        for agent in program.children:
+            code = agent.code
+
+            if code[0].value == 'define':
+                name = code[1].value
+                self.buildAgent(name,agent)
+            elif code[0].value == 'type':
+                pass # TODO: implement types
+
+    def buildAgent(self,name,agent):
+        self.agent[name] = Agent(agent)
+
+
+
+
+
+
+
 
 

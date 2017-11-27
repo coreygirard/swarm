@@ -1,3 +1,5 @@
+import shutil, tempfile
+from os import path
 import unittest
 import tokenizer
 import tree
@@ -124,7 +126,7 @@ class TestTokenizer(unittest.TestCase):
                    Token('literal', 'url'),
                    Token(':',       ':'),
                    Token('raw',     'url'),
-                   Token('+',       '+'),
+                   Token('+-',       '+'),
                    Token('raw',     'accessToken'),
                    Token(',',       ','),
                    Token('literal', 'data'),
@@ -159,6 +161,79 @@ class TestTokenizer(unittest.TestCase):
 # -------------------------------------
 # -------- TEST TREE GENERATOR --------
 # -------------------------------------
+
+class TestFetchFile(unittest.TestCase):
+    def setUp(self):
+        # temporary directory
+        self.test_dir = tempfile.mkdtemp()
+
+        # temporary file
+        with open(path.join(self.test_dir, 'test.swarm'), 'w') as f:
+            f.write('\n'.join(['aaa',
+                               '    bbb',
+                               '    ccc']))
+
+    def tearDown(self):
+        # remove directory
+        shutil.rmtree(self.test_dir)
+
+    def test_something(self):
+        results = []
+        for line in tree.fetchfile(path.join(self.test_dir, 'test.swarm')):
+            results.append(line)
+
+        expected = ['aaa\n',
+                    '    bbb\n',
+                    '    ccc']
+
+        self.assertEqual(results,expected)
+
+class TestFileLoading(unittest.TestCase):
+    def test_file_load(self):
+        self.maxDiff = None
+
+        code = '\n'.join(['define stuff:',
+                          '    init:',
+                          '        3 -> print #print',
+                          '',
+                          '   # taking awkward space',
+                          '    run(n): #run',
+                          '        n*2 -> test'])
+
+        result = tree.loadfile(code.split('\n'))
+
+        expected = [(0,
+                     [Token('define', 'define'),
+                      Token('raw',    'stuff'),
+                      Token(':',      ':')]
+                     ),
+                    (4,
+                     [Token('init',   'init'),
+                      Token(':',      ':')]
+                     ),
+                    (8,
+                     [Token('raw',    '3'),
+                      Token('->',     '->'),
+                      Token('raw',    'print')]
+                     ),
+                    (4,
+                     [Token('run',    'run'),
+                      Token('()',     '('),
+                      Token('raw',    'n'),
+                      Token('()',     ')'),
+                      Token(':',      ':')]
+                     ),
+                    (8,
+                     [Token('raw',    'n'),
+                      Token('*/',     '*'),
+                      Token('raw',    '2'),
+                      Token('->',     '->'),
+                      Token('raw',    'test')]
+                     )
+                    ]
+
+        self.assertEqual(result,expected)
+
 
 Node = tree.Node
 
@@ -243,23 +318,6 @@ class TestNodeClass(unittest.TestCase):
 
 
 
-class TestFileLoading(unittest.TestCase):
-    def test_file_load(self):
-        code = '\n'.join(['define stuff:',
-                          '    init:',
-                          '        3 -> print #print',
-                          '',
-                          '   # taking awkward space',
-                          '    run(n): #run',
-                          '        n*2 -> test'])
-
-        result = tree.loadfile(code.split('\n'))
-        expected = [(0, 'define stuff:'),
-                    (4, 'init:'),
-                    (8, '3 -> print'),
-                    (4, 'run(n):'),
-                    (8, 'n*2 -> test')]
-        self.assertEqual(result,expected)
 
 
 
