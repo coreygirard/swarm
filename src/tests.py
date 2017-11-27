@@ -3,6 +3,7 @@ from os import path
 import unittest
 import tokenizer
 import tree
+import expressions
 
 Token = tokenizer.Token
 
@@ -353,62 +354,52 @@ class TestProgramAgentSubagent(unittest.TestCase):
         '''
 
         a = Node(-4,'')
-        a.add(Node(0,[
-                      Token('define','define'),
-                      Token('raw','agent1'),
-                      Token(':',':')
-                     ]))
 
-        a.children[0].add(Node(4,[
-                                  Token('init','init'),
-                                  Token(':',':')
-                                 ]))
+        a.add(Node(0,[Token('define','define'), Token('raw','agent1'), Token(':',':')]))
+        a.children[0].add(Node(4,[Token('init','init'), Token(':',':')]))
+        a.children[0].children[0].add(Node(8,[Token('raw','4'), Token('->','->'), Token('print','print')]))
+        a.children[0].add(Node(4,[Token('raw','run'), Token('()','('), Token('raw','n'), Token('()',')'), Token(':',':')]))
+        a.children[0].children[1].add(Node(8,[Token('raw','5'), Token('->','->'), Token('print','print')]))
 
-        a.children[0].children[0].add(Node(8,[
-                                              Token('raw','4'),
-                                              Token('->','->'),
-                                              Token('print','print')
-                                             ]))
-
-        a.children[0].add(Node(4,[
-                                  Token('raw','run'),
-                                  Token('()','('),
-                                  Token('raw','n'),
-                                  Token('()',')'),
-                                  Token(':',':')
-                                 ]))
-
-        a.children[0].children[1].add(Node(8,[
-                                              Token('raw','5'),
-                                              Token('->','->'),
-                                              Token('print','print')
-                                             ]))
-
-
-        a.add(Node(0,[
-                      Token('define','define'),
-                      Token('raw','agent2'),
-                      Token(':',':')
-                     ]))
-
-        a.children[1].add(Node(4,[
-                                  Token('raw','run'),
-                                  Token('()','('),
-                                  Token('raw','n'),
-                                  Token('()',')'),
-                                  Token(':',':')
-                                 ]))
-
-        a.children[1].children[0].add(Node(8,[
-                                              Token('raw','5'),
-                                              Token('->','->'),
-                                              Token('print','print')
-                                             ]))
+        a.add(Node(0,[Token('define','define'), Token('raw','agent2'), Token(':',':')]))
+        a.children[1].add(Node(4,[Token('raw','run'), Token('()','('), Token('raw','n'), Token('()',')'), Token(':',':')]))
+        a.children[1].children[0].add(Node(8,[Token('raw','5'), Token('->','->'), Token('print','print')]))
 
         p = tree.Program(a)
         self.assertTrue(sorted(list(p.agent.keys())) == ['agent1','agent2'])
         self.assertTrue(sorted(list(p.agent['agent1'].subagent.keys())) == ['init','run'])
         self.assertTrue(sorted(list(p.agent['agent2'].subagent.keys())) == ['run'])
+
+
+
+# ----------------------------------------
+# -------- TEST EXPRESSION PARSER --------
+# ----------------------------------------
+
+class TestLinkLiterals(unittest.TestCase):
+    def test_linking_literals(self):
+        exp = [Token('raw','3')]
+        result = expressions.linkLiterals(exp)
+        self.assertEqual(result[0].tag,'object')
+        self.assertEqual(result[0].value.exe(),3)
+
+        exp = [Token('raw','0.999')]
+        result = expressions.linkLiterals(exp)
+        self.assertEqual(result[0].tag,'object')
+        self.assertEqual(result[0].value.exe(),0.999)
+
+        exp = [Token('literal','hello world')]
+        result = expressions.linkLiterals(exp)
+        self.assertEqual(result[0].tag,'object')
+        self.assertEqual(result[0].value.exe(),'hello world')
+
+        exp = [Token('raw','3'),Token('+-','+')]
+        result = expressions.linkLiterals(exp)
+        self.assertEqual(result[0].tag,'object')
+        self.assertEqual(result[0].value.exe(),3)
+        self.assertEqual(result[1].tag,'+-')
+        self.assertEqual(result[1].value,'+')
+
 
 
 

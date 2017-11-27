@@ -87,8 +87,16 @@ def tree(lines):
 # ------------------------------------------------
 
 class Subagent(object):
-    def __init__(self,subagent):
-        pass
+    def __init__(self,parent,subagent):
+        self.parent = parent
+        self.scope = {}
+
+
+    def getVar(self,name):
+        if name in self.scope.keys():
+            return self.scope[name]
+        else:
+            return self.parent.getVar(name)
 
 
 class Agent(object):
@@ -102,8 +110,10 @@ class Agent(object):
             name = code[0].value
             self.buildSubagent(name,subagent)
 
+        self.scope = {}
+
     def buildSubagent(self,name,subagent):
-        self.subagent[name] = Subagent(subagent)
+        self.subagent[name] = Subagent(self,subagent)
 
 
 class Program(object):
@@ -120,6 +130,11 @@ class Program(object):
 
     def buildAgent(self,name,agent):
         self.agent[name] = Agent(agent)
+
+# --------------------------------------------
+# -------- LOOP/IF/SWITCH/ETC OBJECTS --------
+# --------------------------------------------
+
 
 
 
