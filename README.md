@@ -102,17 +102,27 @@ html -> print
 Note that no particular syntax is required to denote where to replace, ie `<<<title>>>` and `{{{body}}}` both worked fine. Anything you can specify via regex, you can replace. The replacement happens one pair at a time, over the entire document:
 ```
 s = 'aab'
-s.replace((('ab','aab'),
-           ('aab','aa')))
+s.replace([['ab', 'aab'],
+           ['aab','aa']])
 s -> print
 s = 'aab'
-s.replace((('aab','aa'),
-           ('ab','aab')))
+s.replace([['aab','aa'],
+           ['ab', 'aab']])
 s -> print
 ```
 ```
 aaa
 aa
+```
+```
+s = 'a'
+s.replace([['a','ac'],
+           ['a','ab'],
+           ['c','cd']])
+s -> print
+```
+```
+abcd
 ```
 
 Let's try a somewhat more complex HTML generation example:
@@ -129,7 +139,7 @@ define records:
 
     run(ip):
         ip,{'Status: Group 1':status1,'Status: Group 2':status2} -> build
-    
+
 define build(ip,data):
         template = '''
         <!DOCTYPE html>
@@ -146,6 +156,7 @@ define build(ip,data):
         body = ''
         for group,elem in data:
             body += '<h2>{{{group}}}</h2>'.replace('{{{group}}}',group)
+
             body += '<p><ul>'
             for service,status in elem:
                 body += '<li style="color:{{{status}}}">{{{service}}}</li>'.replace((('{{{service}}}',service),
@@ -154,7 +165,7 @@ define build(ip,data):
 
         template.replace((('{{{title}}}','STATUS REPORT'),
                           ('{{{body}}}',body)))
-        
+
         template.human
         template -> HTTP.send(ip)
 ```
