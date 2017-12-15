@@ -14,13 +14,6 @@ except ImportError: # TODO: THIS IS UGLY
 
 
 
-def buildProgram(filename):
-    code = fetchfile('test.swarm')
-    code = loadfile(code)
-    code = tree(code)
-    return Program(code)
-
-
 
 class Node(object):
     def __init__(self,depth,code):
@@ -42,7 +35,7 @@ def fetchfile(filename):
 def loadfile(it):
     '''
     >>> loadfile(['aaa','    bbb # comment  ','    ccc'])
-    [(0, 'aaa'), (4, 'bbb'), (4, 'ccc')]
+    [(0, [Token(tag='raw', value='aaa')]), (4, [Token(tag='raw', value='bbb')]), (4, [Token(tag='raw', value='ccc')])]
     '''
 
     code = []
@@ -112,10 +105,12 @@ class Program(object):
         for agent in node.children:
             code = agent.code
 
-            if code[0].value == 'define':
+            form = ' '.join([e.tag for e in code])
+
+            if form == 'define raw :': # TODO: implement concise definitions when only 'run' subagent
                 name = code[1].value
                 self.buildAgent(name,agent)
-            elif code[0].value == 'type':
+            elif form == 'type raw :':
                 pass # TODO: implement types
 
     def buildAgent(self,name,agent):
@@ -128,10 +123,17 @@ class Agent(object):
         for subagent in node.children:
             code = subagent.code
 
-            assert(code[0].tag in ['raw','init','run'])
+            form = ' '.join([e.tag for e in code])
 
-            name = code[0].value
-            self.buildSubagent(name,subagent)
+            if form == 'init :':
+                name = code[0].value
+                self.buildSubagent(name,subagent)
+            elif re.fullmatch(r'run \(\) raw( , raw)* \(\) :',form):
+                name = code[0].value
+                self.buildSubagent(name,subagent)
+            elif re.fullmatch(r'raw \(\) raw( , raw)* \(\) :',form):
+                name = code[0].value
+                self.buildSubagent(name,subagent)
 
         self.scope = {}
 
@@ -153,7 +155,7 @@ class Subagent(object):
         self.scope = {}
 
         self.queue = deque()
-        self.code = buildStructure(node.children,self)
+        self.code = node.children
 
     def exe(self):
         for c in self.code:
@@ -174,55 +176,6 @@ class Subagent(object):
 
     def sendMsg(self,dest,msg):
         pass # TODO
-
-
-# --------------------------------------------
-# -------- LOOP/IF/SWITCH/ETC OBJECTS --------
-# --------------------------------------------
-
-
-
-
-
-# TODO: implement toy 'send'/'assign' examples
-
-def buildStructure(a,b):
-    return None
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

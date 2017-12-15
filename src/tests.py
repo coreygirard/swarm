@@ -1,6 +1,7 @@
 import shutil, tempfile
 from os import path
 import unittest
+import doctest
 import tokenizer
 import tree
 import expressions
@@ -455,6 +456,11 @@ class TestLinkVariables(unittest.TestCase):
 
 
 
+def load_tests(loader, tests, ignore):
+    tests.addTests(doctest.DocTestSuite(tree))
+    tests.addTests(doctest.DocTestSuite(tokenizer))
+    tests.addTests(doctest.DocTestSuite(expressions))
+    return tests
 
 
 if __name__ == '__main__':
